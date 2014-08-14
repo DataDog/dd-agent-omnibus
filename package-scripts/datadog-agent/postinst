@@ -1,0 +1,76 @@
+#!/bin/sh
+
+CONFIG_DIR=/etc/dd-agent
+LOG_DIR=/var/log/datadog
+
+LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue)
+
+error_exit()
+{
+  echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
+  exit 1
+}
+
+mkdir -p ${LOG_DIR} || error_exit "Cannot create ${LOG_DIR}!"
+
+# If we are inside the Docker container, do nothing
+if [ -n "$DOCKER_DD_AGENT" ]; then
+  echo "Installation from docker-dd-agent, nothing to do in postinst"
+  exit 0
+fi
+
+# Since we now package our own supervisor config, we no longer want
+# the old config to be loaded. Since supervisor automatically loads
+# configs in conf.d, we have to delete the old config file.
+if [ -f /etc/supervisor/conf.d/ddagent.conf ]; then
+    echo "Removing old configuration from system supervisord"
+    rm /etc/supervisor/conf.d/ddagent.conf
+fi
+
+if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LINUX_DISTRIBUTION" == "Ubuntu" ]; then
+  set -e
+  case "$1" in
+      configure)
+          update-rc.d datadog-agent defaults
+          adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
+          usermod -d /opt/datadog-agent dd-agent
+          set +e
+      ;;
+      abort-upgrade|abort-remove|abort-deconfigure)
+      ;;
+
+      *)
+      ;;
+  esac
+  #DEBHELPER#
+fi
+
+chmod 755 /etc/init.d/datadog-agent
+
+# Set proper rights to the dd-agent user
+chown -R dd-agent:root ${CONFIG_DIR}
+chown -R dd-agent:root ${LOG_DIR}
+chown root:root /etc/init.d/datadog-agent
+chown -R root:root /opt/datadog-agent
+
+if which chkconfig >/dev/null 2>&1; then
+  chkconfig --add datadog-agent
+fi
+
+if which invoke-rc.d >/dev/null 2>&1; then
+    invoke-rc.d datadog-agent restart
+else
+    /etc/init.d/datadog-agent restart
+fi
+RETVAL=$?
+if [ $RETVAL -ne 0 ]; then
+    if [ $RETVAL -eq 3 ]; then
+        # No datadog.conf file is present. The user is probably following
+        # the step-by-step instructions and will add the config file next.
+        exit 0
+    else
+        exit $RETVAL
+    fi
+fi
+
+exit 0
