@@ -1,5 +1,7 @@
-dd-agent-omnibus
+Datadog Agent - Omnibus Project
 ================
+
+This is an [Omnibus](https://github.com/opscode/omnibus) project to build the Datadog Agent packages.
 
 ## Use omnibus locally
 
@@ -20,5 +22,5 @@ PKG_TYPE should be "deb" or "rpm".
 
 ARCH should be "i386" or "x64".
 
-You can use `AGENT_LOCAL_REPO` variable and set it to a path on your host machine to use your repo.
+You can use `AGENT_LOCAL_REPO` variable and set it to a path on your host machine to use your repo, otherwise it will pull from the [dd-agent Github repository](https://github.com/datadog/dd-agent)
 
