@@ -3,6 +3,8 @@ Datadog Agent - Omnibus Project
 
 This is an [Omnibus](https://github.com/opscode/omnibus) project to build the Datadog Agent packages.
 
+It's using a [fork](https://github.com/DataDog/omnibus-ruby/compare/opscode:3.0-stable...custom3.0) of the official 3.0 release of the Omnibus project.
+
 ## Use omnibus locally
 
 * Clone the dd-agent-omnibus repo
