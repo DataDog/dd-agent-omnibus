@@ -45,7 +45,7 @@ Vagrant.configure("2") do |config|
       "modifyvm", :id,
       "--memory", "3072",
       "--cpus", "3",
-      "--ioapic", "on"
+      "--ioapic", "on" # Required for the centos-5-32 bits to boot
     ]
   end
 
