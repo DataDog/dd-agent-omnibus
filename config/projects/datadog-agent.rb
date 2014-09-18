@@ -70,6 +70,7 @@ dependency "python-redis"
 dependency "python-rrdtool"
 dependency "requests"
 dependency "snakebite"
+dependency "paramiko"
 
 # Datadog agent
 dependency "datadog-agent"
