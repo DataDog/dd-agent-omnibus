@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
         "install_dir" => "/opt/#{project_name}"
       },
       "go" => {
-        "version" => "1.2.2"
+        "version" => "1.3.3"
       }
     }
 
