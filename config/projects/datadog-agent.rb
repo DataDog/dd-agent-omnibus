@@ -1,7 +1,7 @@
 name "datadog-agent"
 maintainer "Datadog Packages <package@datadoghq.com>"
 homepage "http://www.datadoghq.com"
-install_path    "/opt/datadog-agent"
+install_dir    "/opt/datadog-agent"
 build_version   ENV['AGENT_VERSION'] || "5.0.0"
 build_iteration ENV['BUILD_NUMBER'] || 0
 vendor "Datadog"
