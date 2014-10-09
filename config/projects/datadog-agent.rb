@@ -21,11 +21,6 @@ if ENV['PKG_TYPE'] == "rpm"
     replaces "datadog-agent-base < 5.0.0"
     replaces "datadog-agent-lib < 5.0.0"
 
-    # fixme: Trick to pass extra parameters to fpm to sign rpm package
-    # This works because that's basically what omnibus will do. 
-    # It will take these parameters and add them to the FPM command
-    extra_package_file "--rpm-sign"
-    extra_package_file
 elsif ENV['PKG_TYPE'] == "deb"
     replaces "datadog-agent (<< #{ENV['AGENT_VERSION']})"
     replaces "datadog-agent-base (<< 5.0.0)"
