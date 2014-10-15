@@ -1,5 +1,5 @@
 name "datadog-agent"
-default_version ENV['AGENT_BRANCH'] || "omnibus_bundling"
+default_version ENV['AGENT_BRANCH'] || "master"
 source :git => ENV['AGENT_REPO'] || "https://github.com/DataDog/dd-agent.git"
 relative_path "dd-agent"
 always_build true
