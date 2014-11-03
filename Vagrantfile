@@ -96,8 +96,8 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell",
       inline: "echo Clearing Omnibus cache && rm -rf /var/cache/omnibus/*"
   end
-  
-    
+
+
   config.vm.provision :shell, :inline => <<-OMNIBUS_BUILD
     export PATH=/usr/local/bin:$PATH
     export AGENT_VERSION=#{ENV['AGENT_VERSION']}
@@ -109,6 +109,8 @@ Vagrant.configure("2") do |config|
     export PKG_TYPE=#{ENV['PKG_TYPE']}
     export ARCH=#{ENV['ARCH']}
     export AGENT_REPO=#{agent_repo}
+    export GPG_PASSPHRASE=#{ENV['GPG_PASSPHRASE']}
+    export GPG_KEY_NAME=#{ENV['GPG_KEY_NAME']}
     rm -rf /var/cache/omnibus/pkg/*
     sudo rm -f /etc/init.d/datadog-agent
     sudo rm -rf /etc/dd-agent
@@ -117,5 +119,8 @@ Vagrant.configure("2") do |config|
     cd #{guest_project_path}
     su vagrant -c "bundle install --binstubs"
     su vagrant -c "bin/omnibus build -l=#{ENV['LOG_LEVEL']} #{project_name}"
+    if [ #{ENV['PKG_TYPE']} == "rpm" ] && [ #{ENV['GPG_PASSPHRASE']} ] && [ #{ENV['GPG_KEY_NAME']} ]; then
+        su vagrant -c "bin/rpm-sign #{ENV['GPG_KEY_NAME']} #{ENV['GPG_PASSPHRASE']} pkg/#{project_name}-#{ENV['AGENT_VERSION']}-#{ENV['BUILD_NUMBER']}.*.rpm"
+    fi
   OMNIBUS_BUILD
 end
