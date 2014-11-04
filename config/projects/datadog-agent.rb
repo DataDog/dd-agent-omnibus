@@ -57,6 +57,7 @@ dependency "uuid"
 dependency "zlib"
 
 # Check dependencies
+dependency "adodbapi"
 dependency "httplib2"
 dependency "kafka-python"
 dependency "kazoo"
