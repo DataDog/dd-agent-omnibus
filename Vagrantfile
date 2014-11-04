@@ -120,7 +120,8 @@ Vagrant.configure("2") do |config|
     su vagrant -c "bundle install --binstubs"
     su vagrant -c "bin/omnibus build -l=#{ENV['LOG_LEVEL']} #{project_name}"
     if [ #{ENV['PKG_TYPE']} == "rpm" ] && [ #{ENV['GPG_PASSPHRASE']} ] && [ #{ENV['GPG_KEY_NAME']} ]; then
-        su vagrant -c "bin/rpm-sign #{ENV['GPG_KEY_NAME']} #{ENV['GPG_PASSPHRASE']} pkg/#{project_name}-#{ENV['AGENT_VERSION']}-#{ENV['BUILD_NUMBER']}.*.rpm"
+        chmod +x rpm-sign
+        su vagrant -c "./rpm-sign #{ENV['GPG_KEY_NAME']} #{ENV['GPG_PASSPHRASE']} pkg/#{project_name}-#{ENV['AGENT_VERSION']}-#{ENV['BUILD_NUMBER']}.*.rpm"
     fi
   OMNIBUS_BUILD
 end
