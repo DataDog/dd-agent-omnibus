@@ -27,7 +27,9 @@ build do
    command "sudo ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent"
    command "sudo ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd"
    command "sudo ln -sf /opt/datadog-agent/agent/ddagent.py /usr/bin/dd-forwarder"
+   command "sudo ln -sf /opt/datadog-agent/agent/bernard.py /usr/bin/bernard"
    command "sudo chmod 755 /usr/bin/dd-agent"
    command "sudo chmod 755 /usr/bin/dogstatsd"
    command "sudo chmod 755 /usr/bin/dd-forwarder"
+   command "sudo chmod 755 /usr/bin/bernard"
 end
