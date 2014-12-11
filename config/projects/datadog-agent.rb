@@ -33,6 +33,7 @@ extra_package_file "/etc/dd-agent"
 extra_package_file "/usr/bin/dd-agent"
 extra_package_file "/usr/bin/dogstatsd"
 extra_package_file "/usr/bin/dd-forwarder"
+extra_package_file "/usr/bin/bernard"
 
 provides "datadog-agent-base"
 
