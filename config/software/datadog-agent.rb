@@ -10,7 +10,6 @@ build do
    command "cp -R checks.d #{install_dir}/agent/"
    command "cp -R checks #{install_dir}/agent/"
    command "cp -R dogstream #{install_dir}/agent/"
-   command "cp -R pup #{install_dir}/agent/"
    command "cp -R resources #{install_dir}/agent/"
    command "cp *.py #{install_dir}/agent/"
    command "cp datadog-cert.pem #{install_dir}/agent/"

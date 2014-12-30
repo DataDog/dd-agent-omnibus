@@ -91,6 +91,13 @@ Vagrant.configure("2") do |config|
     agent_repo = "https://github.com/DataDog/dd-agent.git"
   end
 
+  unless "#{ENV['OMNIBUS_LOCAL_REPO']}".empty?
+    config.vm.synced_folder ENV['OMNIBUS_LOCAL_REPO'], "/home/vagrant/omnibus-software-repo"
+    omnibus_repo = "/home/vagrant/omnibus-software-repo"
+  else
+    omnibus_repo = "https://github.com/DataDog/omnibus-software.git"
+  end
+
 
   if ENV['CLEAR_CACHE'] == "true"
     config.vm.provision "shell",
@@ -109,6 +116,7 @@ Vagrant.configure("2") do |config|
     export PKG_TYPE=#{ENV['PKG_TYPE']}
     export ARCH=#{ENV['ARCH']}
     export AGENT_REPO=#{agent_repo}
+    export OMNIBUS_REPO=#{omnibus_repo}
     export GPG_PASSPHRASE=#{ENV['GPG_PASSPHRASE']}
     export GPG_KEY_NAME=#{ENV['GPG_KEY_NAME']}
     rm -rf /var/cache/omnibus/pkg/*
