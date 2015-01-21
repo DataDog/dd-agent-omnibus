@@ -4,7 +4,7 @@ source :git => ENV['AGENT_REPO'] || "https://github.com/DataDog/dd-agent.git"
 relative_path "dd-agent"
 always_build true
 build do
-
+   license "https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE"
    # Agent code
    command "mkdir -p #{install_dir}/agent/"
    command "cp -R checks.d #{install_dir}/agent/"
