@@ -2,8 +2,11 @@ name "datadog-agent"
 maintainer "Datadog Packages <package@datadoghq.com>"
 homepage "http://www.datadoghq.com"
 install_dir    "/opt/datadog-agent"
-build_version   ENV['AGENT_VERSION'] || "5.0.0"
-build_iteration ENV['BUILD_NUMBER'] || 0
+
+build_version do
+  source :git, from_dependency: 'datadog-agent'
+end
+
 vendor "Datadog"
 epoch 1
 description "Datadog Monitoring Agent
