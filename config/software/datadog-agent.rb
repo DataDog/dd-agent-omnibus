@@ -31,7 +31,7 @@ build do
   command "cp datadog-cert.pem #{install_dir}/agent/"
 
   # Internal /run directory
-  command "mkdir -p #{install_dir}/run/"
+  command 'mkdir -p #{install_dir}/run/'
 
   # Configuration files
   command 'mkdir -p /etc/dd-agent'
@@ -44,17 +44,30 @@ build do
     command 'cp packaging/debian/start_agent.sh /opt/datadog-agent/bin/start_agent.sh'
     command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
   end
-  command 'cp packaging/supervisor.conf /etc/dd-agent/supervisor.conf'
-  command 'cp datadog.conf.example /etc/dd-agent/datadog.conf.example'
-  command 'cp -R conf.d /etc/dd-agent/'
-  command 'mkdir -p /etc/dd-agent/checks.d/'
-  command 'chmod 755 /etc/init.d/datadog-agent'
 
-  # Create symlinks
-  command 'ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent'
-  command 'ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd'
-  command 'ln -sf /opt/datadog-agent/agent/ddagent.py /usr/bin/dd-forwarder'
-  command 'chmod 755 /usr/bin/dd-agent'
-  command 'chmod 755 /usr/bin/dogstatsd'
-  command 'chmod 755 /usr/bin/dd-forwarder'
+  if %w(rhel debian).include? Ohai['platform_family']
+    command 'cp packaging/supervisor.conf /etc/dd-agent/supervisor.conf'
+    command 'cp datadog.conf.example /etc/dd-agent/datadog.conf.example'
+    command 'cp -R conf.d /etc/dd-agent/'
+    command 'mkdir -p /etc/dd-agent/checks.d/'
+    command 'chmod 755 /etc/init.d/datadog-agent'
+
+    # Create symlinks
+    command 'ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent'
+    command 'ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd'
+    command 'ln -sf /opt/datadog-agent/agent/ddagent.py /usr/bin/dd-forwarder'
+    command 'chmod 755 /usr/bin/dd-agent'
+    command 'chmod 755 /usr/bin/dogstatsd'
+    command 'chmod 755 /usr/bin/dd-forwarder'
+
+  # Mac
+  else
+    command "mkdir #{install_dir}/etc #{install_dir}/launchd"
+    command "cp packaging/supervisor.conf #{install_dir}/etc/supervisor.conf"
+    command "sed -in '/dd-agent/d' #{install_dir}/etc/supervisor.conf"
+    command "cp datadog.conf.example #{install_dir}/etc/datadog.conf.example"
+    command "cp -R conf.d #{install_dir}/etc/"
+    command "cp packaging/osx/com.datadoghq.Agent.plist.example #{install_dir}/launchd"
+    command "mkdir -p #{install_dir}/etc/checks.d/"
+  end
 end

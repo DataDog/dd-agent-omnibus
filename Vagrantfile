@@ -120,6 +120,5 @@ ENVSCRIPT
     config.vm.provision "shell",
       inline: "echo Clearing Omnibus cache && rm -rf /var/cache/omnibus/*"
   end
-
-
 end
+

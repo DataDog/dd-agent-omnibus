@@ -33,28 +33,32 @@ elsif Ohai['platform_family'] == 'debian'
   conflict 'datadog-agent-base (<< 5.0.0)'
 end
 
-extra_package_file '/etc/init.d/datadog-agent'
 if Ohai['platform_family'] == 'debian'
   extra_package_file '/lib/systemd/system/datadog-agent.service'
 end
-extra_package_file '/etc/dd-agent'
-extra_package_file '/usr/bin/dd-agent'
-extra_package_file '/usr/bin/dogstatsd'
-extra_package_file '/usr/bin/dd-forwarder'
+if %w(rhel debian).include? Ohai['platform_family']
+  extra_package_file '/etc/init.d/datadog-agent'
+  extra_package_file '/etc/dd-agent'
+  extra_package_file '/usr/bin/dd-agent'
+  extra_package_file '/usr/bin/dogstatsd'
+  extra_package_file '/usr/bin/dd-forwarder'
+end
 
 # creates required build directories
 dependency 'preparation'
 
 # Agent dependencies
+if %w(rhel debian).include? Ohai['platform_family']
+  dependency 'procps-ng'
+  dependency 'sysstat'
+end
 dependency 'boto'
 dependency 'ntplib'
-dependency 'procps-ng'
 dependency 'pycrypto'
 dependency 'pyopenssl'
 dependency 'pyyaml'
 dependency 'simplejson'
 dependency 'supervisor'
-dependency 'sysstat'
 dependency 'tornado'
 dependency 'uuid'
 dependency 'zlib'
@@ -85,6 +89,8 @@ dependency 'datadog-agent'
 
 # version manifest file
 dependency 'version-manifest'
+
+mac_pkg_identifier 'com.datadoghq.agent'
 
 exclude "\.git*"
 exclude "bundler\/git"
