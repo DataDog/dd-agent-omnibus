@@ -2,7 +2,8 @@
 
 # Just in case there are leftovers from previous installation (we are now using our own
 # supervisord)
-LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue)
+KNOWN_DISTRIBUTION="(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)"
+LINUX_DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  || grep -Eo $KNOWN_DISTRIBUTION /etc/issue)
 
 if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LINUX_DISTRIBUTION" == "Ubuntu" ]; then
   set -e
@@ -30,7 +31,7 @@ if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LI
 
   #DEBHELPER#
 
-elif [ -f /etc/redhat-release ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
+elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
     getent group dd-agent >/dev/null || groupadd -r dd-agent
     getent passwd dd-agent >/dev/null || \
         useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
