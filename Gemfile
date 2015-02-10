@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-gem 'omnibus', :git => 'git://github.com/datadog/omnibus-ruby.git', :branch => 'remh/licenses'
-gem 'omnibus-software', :git => 'git://github.com/datadog/omnibus-software.git', :branch => 'remh/licenses'
+gem 'omnibus', :git => 'git://github.com/datadog/omnibus-ruby.git'
+gem 'omnibus-software', :git => 'git://github.com/datadog/omnibus-software.git'
 gem 'fpm', '~> 1.2.0'
 gem 'httparty'
