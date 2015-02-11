@@ -24,8 +24,7 @@ LOG_FILE=`mktemp -t ddagentomnibus_${DISTRO}_${ARCH}.XXXXXXX`
 ###################
 
 up_and_provision() {
-    vagrant up $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
-    vagrant provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
+    vagrant up --provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
 }
 reload_and_provision() {
     vagrant reload --provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
