@@ -23,9 +23,6 @@ LOG_FILE=`mktemp -t ddagentomnibus_${DISTRO}_${ARCH}.XXXXXXX`
 # Helper functions
 ###################
 
-up_and_provision() {
-    vagrant up --provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
-}
 reload_and_provision() {
     vagrant reload --provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
 }
@@ -41,11 +38,7 @@ if [ ! -z "$FORCE_DESTROY" ]; then
     destroy
 fi
 
-if [ -z "$FORCE_RELOAD" ]; then
-    up_and_provision
-else
-    reload_and_provision
-fi
+reload_and_provision
 
 # Known bug, reload and retry
 # https://github.com/berkshelf/vagrant-berkshelf/issues/78
