@@ -25,6 +25,11 @@ LOG_FILE=`mktemp -t ddagentomnibus_${DISTRO}_${ARCH}.XXXXXXX`
 
 reload_and_provision() {
     vagrant reload --provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
+    # If VM is not present, create it with `up`, `reload` never creates
+    if grep -q "VM not created" $LOG_FILE; then
+        echo "Berkshelf error, trying to reload the VM"
+        vagrant up --provision $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
+    fi
 }
 destroy() {
     vagrant destroy -f $DISTRO-$ARCH 2>&1 | tee -a $LOG_FILE
