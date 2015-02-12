@@ -15,6 +15,7 @@ if [ -z "$JENKINS" ]; then
 else
     echo "JENKINS build"
     export LOG_LEVEL="info"
+    export OMNIBUS_APPEND_TIMESTAMP="false"
 fi
 
 LOG_FILE=`mktemp -t ddagentomnibus_${DISTRO}_${ARCH}.XXXXXXX`
