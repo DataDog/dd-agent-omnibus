@@ -2,8 +2,8 @@
 
 LOG_DIR=/var/log/datadog
 INSTALL_DIR=/opt/datadog-agent
-TEMP_DIR=/opt/datadog-agent/tmp
-CONFIG_DIR=/opt/datadog-agent/etc
+CONFIG_DIR=$INSTALL_DIR/Datadog\ Agent.app/Contents/Resources
+APP_CONF_DIR=/Applications/Datadog\ Agent.app/Contents/Resources
 
 # OS/Distro Detection
 DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue 2>/dev/null || uname -s)
@@ -20,18 +20,31 @@ if [ $DISTRIBUTION = "Darwin" ]; then
   mkdir -p ${LOG_DIR} || error_exit "Cannot create ${LOG_DIR}!"
   chown -R root:admin $LOG_DIR
   chmod 775 $LOG_DIR
+  chown root:admin $LOG_DIR/collector.log $LOG_DIR/forwarder.log $LOG_DIR/dogstatsd.log $LOG_DIR/supervisord.log
+  chmod 664 $LOG_DIR/collector.log $LOG_DIR/forwarder.log $LOG_DIR/dogstatsd.log $LOG_DIR/supervisord.log
 
-  # Install executable in PATH
-  ln -sf $INSTALL_DIR/bin/datadog-agent /usr/bin/datadog-agent
-  chmod 755 /usr/bin/datadog-agent
-  sed "s|AGENT_BASE|$INSTALL_DIR|; s|USER_NAME|$(whoami)|" $INSTALL_DIR/launchd/com.datadoghq.Agent.plist.example > $INSTALL_DIR/launchd/com.datadoghq.Agent.plist
+  sed "s|AGENT_BASE|$INSTALL_DIR|; s|USER_NAME|$(whoami)|" $INSTALL_DIR/Datadog\ Agent.app/Contents/Resources/com.datadoghq.Agent.plist.example > $INSTALL_DIR/Datadog\ Agent.app/Contents/Resources/com.datadoghq.Agent.plist
 
 
-  # Set proper rights to the admin group
-  chown -R root:admin /opt/datadog-agent
-  mkdir -p $TEMP_DIR
-  chmod 775 $TEMP_DIR
-  chmod 775 $CONFIG_DIR $CONFIG_DIR/conf.d $CONFIG_DIR/checks.d
+  chmod 775 $CONFIG_DIR/conf.d $CONFIG_DIR/checks.d
   chmod 664 $CONFIG_DIR/datadog.conf.example $CONFIG_DIR/supervisor.conf $CONFIG_DIR/conf.d/*
+
+  # Copying existing conf is one exists
+  if [ -e "$APP_CONF_DIR/datadog.conf" ]; then
+    cp "$APP_CONF_DIR/datadog.conf" $CONFIG_DIR/
+  # Or copying default
+  else
+    cp $CONFIG_DIR/datadog.conf.example $CONFIG_DIR/datadog.conf
+  fi
+
+  # Installing the app
+  mv -rf /Applications/Datadog\ Agent.app
+  mv $INSTALL_DIR/Datadog\ Agent.app /Applications
+
+  # Correct rights
+  chown root:admin "$APP_CONF_DIR/datadog.conf"
+  chmod 664 "$APP_CONF_DIR/datadog.conf"
+  chown -R root:admin "$APP_CONF_DIR/conf.d"
+  chmod -R 664 "$APP_CONF_DIR/conf.d"
 fi
 exit 0

@@ -51,6 +51,8 @@ dependency 'preparation'
 if %w(rhel debian).include? Ohai['platform_family']
   dependency 'procps-ng'
   dependency 'sysstat'
+else
+  dependency 'gui'
 end
 dependency 'boto'
 dependency 'ntplib'

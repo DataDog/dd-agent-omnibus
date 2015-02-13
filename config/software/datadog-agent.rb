@@ -18,6 +18,17 @@ end
 relative_path 'dd-agent'
 always_build true
 
+env = {
+  "PATH" => "#{install_dir}/embedded/bin/:#{ENV['PATH']}"
+}
+
+app_temp_dir = "#{install_dir}/agent/dist/Datadog\\ Agent.app/Contents"
+pyside_build_dir =  "#{install_dir}/agent/build/bdist.macosx-10.5-intel/python2.7-standalone/app/collect/PySide"
+command_fix_shiboken = "install_name_tool -change @rpath/libshiboken-python2.7.1.2.dylib"\
+                      " @executable_path/../Frameworks/libshiboken-python2.7.1.2.dylib "
+command_fix_pyside = "install_name_tool -change @rpath/libpyside-python2.7.1.2.dylib"\
+                      " @executable_path/../Frameworks/libpyside-python2.7.1.2.dylib "\
+
 build do
   license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'
   # Agent code
@@ -31,13 +42,14 @@ build do
   command "cp datadog-cert.pem #{install_dir}/agent/"
 
   # Internal /run directory
-  command 'mkdir -p #{install_dir}/run/'
+  command "mkdir -p #{install_dir}/run"
 
   # Configuration files
-  command 'mkdir -p /etc/dd-agent'
   if Ohai['platform_family'] == 'rhel'
+    command 'mkdir -p /etc/dd-agent'
     command 'cp packaging/centos/datadog-agent.init /etc/init.d/datadog-agent'
   elsif Ohai['platform_family'] == 'debian'
+    command 'mkdir -p /etc/dd-agent'
     command 'cp packaging/debian/datadog-agent.init /etc/init.d/datadog-agent'
     command 'mkdir -p /lib/systemd/system'
     command 'cp packaging/debian/datadog-agent.service /lib/systemd/system/datadog-agent.service'
@@ -62,12 +74,42 @@ build do
 
   # Mac
   else
-    command "mkdir #{install_dir}/etc #{install_dir}/launchd"
-    command "cp packaging/supervisor.conf #{install_dir}/etc/supervisor.conf"
-    command "sed -in '/dd-agent/d' #{install_dir}/etc/supervisor.conf"
-    command "cp datadog.conf.example #{install_dir}/etc/datadog.conf.example"
-    command "cp -R conf.d #{install_dir}/etc/"
-    command "cp packaging/osx/com.datadoghq.Agent.plist.example #{install_dir}/launchd"
-    command "mkdir -p #{install_dir}/etc/checks.d/"
+    # GUI
+    command "cp -R packaging/datadog-agent/win32/install_files/guidata/images #{install_dir}/agent"
+    command "cp win32/gui.py #{install_dir}/agent"
+    command "cp win32/status.html #{install_dir}/agent"
+    command "mkdir -p #{install_dir}/agent/packaging"
+    command "cp packaging/osx/app/* #{install_dir}/agent/packaging"
+
+    # Shipping supervisor
+    command "cp #{install_dir}/embedded/lib/python2.7/site-packages/supervisor-*/supervisor/supervisor{d,ctl}.py"\
+            " #{install_dir}/agent"
+    command "cd #{install_dir}/agent && "\
+            "#{install_dir}/embedded/bin/python #{install_dir}/agent/setup.py py2app"\
+            " && cd -", :env => env
+    command "cp #{install_dir}/bin/gohai #{app_temp_dir}/MacOS"
+    command "cp packaging/osx/datadog-agent #{app_temp_dir}/MacOS"
+    command "chmod a+x #{app_temp_dir}/MacOS/datadog-agent"
+    # Time to patch the install, see py2app bug: (dependencies to system PySide)
+    # https://bitbucket.org/ronaldoussoren/py2app/issue/143/resulting-app-mistakenly-looks-for-pyside
+    command "cp #{pyside_build_dir}/libshiboken-python2.7.1.2.dylib #{app_temp_dir}/Frameworks"
+    command "cp #{pyside_build_dir}/libpyside-python2.7.1.2.dylib #{app_temp_dir}/Frameworks"
+    command "chmod a+x #{app_temp_dir}/Frameworks/{libpyside,libshiboken}-python2.7.1.2.dylib"
+    command "#{command_fix_shiboken} #{app_temp_dir}/Frameworks/libpyside-python2.7.1.2.dylib"
+    command "#{command_fix_shiboken} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
+    command "#{command_fix_shiboken} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
+    command "#{command_fix_pyside} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
+    command "#{command_fix_pyside} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
+
+    # And finally
+    command "mv #{install_dir}/agent/dist/Datadog\\ Agent.app #{install_dir}"
+
+    command "cp packaging/osx/supervisor.conf #{install_dir}/Datadog\\ Agent.app/Contents/Resources"
+    command "cp datadog.conf.example #{install_dir}/Datadog\\ Agent.app/Contents/Resources/datadog.conf.example"
+    command "cp -R conf.d #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
+    command "cp packaging/osx/com.datadoghq.Agent.plist.example #{install_dir}/Datadog\\ Agent.app/Contents/Resources/com.datadoghq.Agent.plist"
+    command "mv #{install_dir}/licenses #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
+    command "mv #{install_dir}/sources #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
+    command "rm -rf #{install_dir}/agent #{install_dir}/embedded #{install_dir}/bin"
   end
 end
