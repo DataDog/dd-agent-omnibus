@@ -96,6 +96,9 @@ build do
     command "cp #{pyside_build_dir}/libpyside-python2.7.1.2.dylib #{app_temp_dir}/Frameworks"
     command "chmod a+x #{app_temp_dir}/Frameworks/{libpyside,libshiboken}-python2.7.1.2.dylib"
     command "#{command_fix_shiboken} #{app_temp_dir}/Frameworks/libpyside-python2.7.1.2.dylib"
+    command "install_name_tool -change /usr/local/lib/QtCore.framework/Versions/4/QtCore "\
+            "@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore "\
+            "#{app_temp_dir}/Frameworks/libpyside-python2.7.1.2.dylib"
     command "#{command_fix_shiboken} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
     command "#{command_fix_shiboken} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
     command "#{command_fix_pyside} #{app_temp_dir}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
@@ -107,7 +110,7 @@ build do
     command "cp packaging/osx/supervisor.conf #{install_dir}/Datadog\\ Agent.app/Contents/Resources"
     command "cp datadog.conf.example #{install_dir}/Datadog\\ Agent.app/Contents/Resources/datadog.conf.example"
     command "cp -R conf.d #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
-    command "cp packaging/osx/com.datadoghq.Agent.plist.example #{install_dir}/Datadog\\ Agent.app/Contents/Resources/com.datadoghq.Agent.plist"
+    command "cp packaging/osx/com.datadoghq.Agent.plist.example #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
     command "mv #{install_dir}/licenses #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
     command "mv #{install_dir}/sources #{install_dir}/Datadog\\ Agent.app/Contents/Resources/"
     command "rm -rf #{install_dir}/agent #{install_dir}/embedded #{install_dir}/bin"
