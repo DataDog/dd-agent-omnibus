@@ -20,12 +20,13 @@ description "Datadog Monitoring Agent
 "
 platform_in_iteration false
 
-if ENV['PKG_TYPE'] == "rpm"
+
+
+if Ohai['platform'] == 'rhel'
     replaces "datadog-agent-base < 5.0.0"
     replaces "datadog-agent-lib < 5.0.0"
 
-elsif ENV['PKG_TYPE'] == "deb"
-    replaces "datadog-agent (<< #{ENV['AGENT_VERSION']})"
+if Ohai['platform'] == 'debian'
     replaces "datadog-agent-base (<< 5.0.0)"
     replaces "datadog-agent-lib (<< 5.0.0)"
     conflict "datadog-agent-base (<< 5.0.0)"
