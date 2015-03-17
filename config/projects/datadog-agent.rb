@@ -20,13 +20,11 @@ description "Datadog Monitoring Agent
 "
 platform_in_iteration false
 
-
-
 if Ohai['platform'] == 'rhel'
     replaces "datadog-agent-base < 5.0.0"
     replaces "datadog-agent-lib < 5.0.0"
 
-if Ohai['platform'] == 'debian'
+elsif Ohai['platform'] == 'debian'
     replaces "datadog-agent-base (<< 5.0.0)"
     replaces "datadog-agent-lib (<< 5.0.0)"
     conflict "datadog-agent-base (<< 5.0.0)"
