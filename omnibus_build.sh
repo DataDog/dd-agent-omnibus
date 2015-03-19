@@ -17,6 +17,7 @@ sudo rm -rf /opt/$PROJECT_NAME/*
 cd $PROJECT_DIR
 # Install the gems we need, with stubs in bin/
 su vagrant -c "bundle install --binstubs"
+su vagrant -c "bundle update" # Make sure to update to the latest version of omnibus-software
 su vagrant -c "./bin/omnibus build -l=$LOG_LEVEL $PROJECT_NAME"
 
 # TODO: add rpm signing
