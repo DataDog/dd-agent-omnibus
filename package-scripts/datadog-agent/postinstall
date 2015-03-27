@@ -15,22 +15,20 @@ exec > $LOG_FILE 2>&1
 DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue 2>/dev/null || uname -s)
 
 if [ $DISTRIBUTION = "Darwin" ]; then
-  # Determine current user
+  # Determine current user if he is using the Graphical installer
   INSTALL_USER=$(ps aux | grep "CoreServices/Installer" | grep -v grep | awk '{print $1;}')
   
+  # Otherwise, we hope he is using the install script and try to this user
+  # If it fails, no choice but to use root :'(
   if [ -z "$INSTALL_USER" ] || [ "$INSTALL_USER" == "root" ]; then
     SCRIPT_INSTALL="yes"
     INSTALL_USER=`cat /tmp/datadog-install-user || echo 'root'`
     rm /tmp/datadog-install-user || true
   fi
-  if [ "$INSTALL_USER" == "root" ]; then
-    echo 'INSTALL_USER is set to root, Datadog Agent app has been installed'
-    echo 'but is not configured. Running Datadog Agent as root is not advised!'
-    exit 1
-  fi
 
   # Reinstall is really different: 
   # the app is extracted directly where the old version is
+  # So we only try to install if the app is in /opt
   if [ -e "$OPT_APP_DIR" ]; then
     # Prepare log dir
     chown -R $INSTALL_USER:admin $LOG_DIR
@@ -39,6 +37,12 @@ if [ $DISTRIBUTION = "Darwin" ]; then
     # Installing the app
     rm -rf /Applications/Datadog\ Agent.app
     mv $INSTALL_DIR/Datadog\ Agent.app /Applications
+  fi
+
+  if [ "$INSTALL_USER" == "root" ]; then
+    echo 'INSTALL_USER is set to root, Datadog Agent app has been installed'
+    echo 'but is not configured. Running Datadog Agent as root is not advised!'
+    exit 1
   fi
 
   # Set the run directory for supervisord
@@ -63,6 +67,10 @@ if [ $DISTRIBUTION = "Darwin" ]; then
   chown $INSTALL_USER:admin "$APP_CONF_DIR/datadog.conf"
   chown -R $INSTALL_USER:admin "$APP_CONF_DIR/conf.d" "$APP_CONF_DIR/checks.d"
 
+  # `datadog-agent` command line
+  mkdir -p /usr/local/bin
+  ln -s "$APP_CONF_DIR/../MacOS/datadog-agent" /usr/local/bin/datadog-agent
+
   # Link for conf.d (let's ease the user's life)
   USER_HOME=`sudo -Hu $INSTALL_USER sh -c 'echo $HOME'`
   sudo -Hu $INSTALL_USER mkdir -p "$USER_HOME/.datadog-agent"
@@ -78,9 +86,9 @@ if [ $DISTRIBUTION = "Darwin" ]; then
   # Trick to get the right temp dir (for status pickles)
   export TMPDIR=`sudo -u $INSTALL_USER getconf DARWIN_USER_TEMP_DIR`
   sudo -Eu $INSTALL_USER "$APP_CONF_DIR/../MacOS/datadog-agent" start || true
-  # Start the app if it's not a script install
+  # Start the app only if it's not a script install
   if [ -z "$SCRIPT_INSTALL" ]; then
-    sudo -u $INSTALL_USER open -a 'Datadog Agent.app'
+    sudo -Eu $INSTALL_USER open -a 'Datadog Agent.app'
   fi
 fi
 exit 0

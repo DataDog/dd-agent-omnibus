@@ -29,4 +29,5 @@ if [ $DISTRIBUTION = "Darwin" ]; then
 
  	# Clean before install
     rm -rf $INSTALL_DIR
+    rm -f /usr/local/bin/datadog-agent
 fi

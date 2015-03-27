@@ -49,6 +49,8 @@ The Mac build platform should have:
 * Bundler installed: `sudo gem install bundler`,
 * Important directories created: `sudo mkdir -p /var/cache/omnibus /opt/datadog-agent`,
 * Owned by the right user: `sudo chown user:nogroup /var/cache/omnibus /opt/datadog-agent`.
+* Xcode license accepted (to sign package) `sudo xcodebuild -license`
+* Datadog signing key
 
 Then run:
 ```bash

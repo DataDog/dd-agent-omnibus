@@ -8,3 +8,7 @@ else
   s3_bucket ENV['S3_OMNIBUS_BUCKET']
   use_s3_caching true
 end
+
+sign_pkg true
+signing_identity 'Developer ID Installer: Datadog, Inc. (JKFCB4CN7C)'
+
