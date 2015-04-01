@@ -5,6 +5,7 @@ install_dir    "/opt/datadog-agent"
 
 build_version do
   source :git, from_dependency: 'datadog-agent'
+  output_format :dd_agent_format
 end
 
 vendor "Datadog"
