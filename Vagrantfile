@@ -99,6 +99,7 @@ echo "# vagrant profile script" > #{profile_file}
 ENVSCRIPT
   env_variables_passthru = %w[
     AGENT_BRANCH
+    AGENT_VERSION
     DISTRO
     LOCAL_AGENT_REPO
     LOG_LEVEL
