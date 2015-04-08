@@ -21,10 +21,12 @@ description "Datadog Monitoring Agent
 "
 platform_in_iteration false
 
+# Note: this is to try to avoid issues when upgrading from an
+# old version of the agent which shipped also a datadog-agent-base
+# package.
 if Ohai['platform_family'] == 'rhel'
     replaces "datadog-agent-base < 5.0.0"
     replaces "datadog-agent-lib < 5.0.0"
-
 elsif Ohai['platform_family'] == 'debian'
     replaces "datadog-agent-base (<< 5.0.0)"
     replaces "datadog-agent-lib (<< 5.0.0)"
@@ -36,9 +38,6 @@ extra_package_file "/etc/dd-agent"
 extra_package_file "/usr/bin/dd-agent"
 extra_package_file "/usr/bin/dogstatsd"
 extra_package_file "/usr/bin/dd-forwarder"
-
-provides "datadog-agent-base"
-
 
 # creates required build directories
 dependency "preparation"
