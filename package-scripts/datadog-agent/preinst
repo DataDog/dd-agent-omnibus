@@ -8,7 +8,7 @@ LINUX_DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  
 if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LINUX_DISTRIBUTION" == "Ubuntu" ]; then
   set -e
   if [ -f /etc/init.d/datadog-agent ]; then
-      if which invoke-rc.d >/dev/null 2>&1; then
+      if command -v invoke-rc.d >/dev/null 2>&1; then
           invoke-rc.d datadog-agent stop || true
       else
           /etc/init.d/datadog-agent stop || true
