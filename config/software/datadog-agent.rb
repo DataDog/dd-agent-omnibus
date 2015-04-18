@@ -31,18 +31,23 @@ build do
    command "cp datadog-cert.pem #{install_dir}/agent/"
 
    # Configuration files
-   command "sudo mkdir -p /etc/dd-agent"
-   command "sudo cp packaging/#{ENV['DISTRO']}/datadog-agent.init /etc/init.d/datadog-agent"
-   command "sudo cp packaging/supervisor.conf /etc/dd-agent/supervisor.conf"
-   command "sudo cp datadog.conf.example /etc/dd-agent/datadog.conf.example"
-   command "sudo cp -R conf.d /etc/dd-agent/"
-   command "sudo mkdir -p /etc/dd-agent/checks.d/"
+   command "mkdir -p /etc/dd-agent"
+   if Ohai['platform_family'] == 'rhel'
+     command "cp packaging/centos/datadog-agent.init /etc/init.d/datadog-agent"
+   elsif Ohai['platform_family'] == 'debian'
+     command "cp packaging/debian/datadog-agent.init /etc/init.d/datadog-agent"
+   end
+   
+   command "cp packaging/supervisor.conf /etc/dd-agent/supervisor.conf"
+   command "cp datadog.conf.example /etc/dd-agent/datadog.conf.example"
+   command "cp -R conf.d /etc/dd-agent/"
+   command "mkdir -p /etc/dd-agent/checks.d/"
 
    # Create symlinks
-   command "sudo ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent"
-   command "sudo ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd"
-   command "sudo ln -sf /opt/datadog-agent/agent/ddagent.py /usr/bin/dd-forwarder"
-   command "sudo chmod 755 /usr/bin/dd-agent"
-   command "sudo chmod 755 /usr/bin/dogstatsd"
-   command "sudo chmod 755 /usr/bin/dd-forwarder"
+   command "ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent"
+   command "ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd"
+   command "ln -sf /opt/datadog-agent/agent/ddagent.py /usr/bin/dd-forwarder"
+   command "chmod 755 /usr/bin/dd-agent"
+   command "chmod 755 /usr/bin/dogstatsd"
+   command "chmod 755 /usr/bin/dd-forwarder"
 end
