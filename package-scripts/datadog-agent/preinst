@@ -36,20 +36,6 @@ elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$LINUX_DISTR
     getent passwd dd-agent >/dev/null || \
         useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
         -c "Datadog Agent" dd-agent
-
-    grep -q "datadog" /etc/supervisord.conf
-    if [ $? -eq 0 ]
-      then
-      echo -n "Removing old configuration from system supervisord"
-       if [ -x "/usr/bin/supervisorctl" ]; then
-            supervisorctl stop collector
-            supervisorctl stop forwarder
-       fi
-
-      /opt/datadog-agent/setup-supervisor.py /etc/dd-agent/supervisor.conf /etc/supervisord.conf remove
-      rm /opt/datadog-agent/setup-supervisor.py
-    fi
-
 else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";
     exit 1;
