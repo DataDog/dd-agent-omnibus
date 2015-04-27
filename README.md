@@ -5,29 +5,34 @@ This is an [Omnibus](https://github.com/opscode/omnibus) project to build the Da
 
 It's using a [fork](https://github.com/DataDog/omnibus-ruby/compare/chef:v3.2.2...custom3.2.2-2) of the official 3.2.2 release of the Omnibus project.
 
-## Use omnibus locally
+Builds are run in docker containers with Circleci.
+See:
+* https://github.com/DataDog/docker-dd-agent-build-deb-i386
+* https://github.com/DataDog/docker-dd-agent-build-rpm-i386
+* https://github.com/DataDog/docker-dd-agent-build-deb-x64
+* https://github.com/DataDog/docker-dd-agent-build-rpm-x64
 
-* Clone the dd-agent-omnibus repo
 
-* Install necessary vagrant plugins
+## Build a package locally
+
+* Install Docker
+
+* Run the following script with the desired parameters
+
+```bash
+PLATFORM="deb-x64" # must be in "deb-x64", "deb-i386", "rpm-x64", "rpm-i386"
+AGENT_BRANCH="master" # default "master"
+AGENT_VERSION="5.4.0" # default to the latest tag on that branch
+LOG_LEVEL="debug" # default to "info"
+LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from. Defaut is not set and the build will be done against the github repo
+
+mkdir -p pkg
+mkdir -p "cache/$PLATFORM"
+docker run --name "dd-agent-build-$PLATFORM" \
+  -e LOG_LEVEL=$LOG_LEVEL \
+  -e AGENT_BRANCH=$AGENT_BRANCH \
+  -e AGENT_VERSION=$AGENT_VERSION \
+  -v `pwd`/pkg:/dd-agent-omnibus/pkg \
+  -v "`pwd`/cache/$PLATFORM:/var/cache/omnibus" \
+  "datadog/docker-dd-agent-build-$PLATFORM"
 ```
-vagrant plugin install vagrant-cachier --plugin-version=0.7.2
-vagrant plugin install vagrant-berkshelf --plugin-version=2.0.1
-vagrant plugin install vagrant-omnibus --plugin-version=1.4.1
-```
-* Build one package from the GitHub repo master branch
-```
-DISTRO=debian ARCH=x64 ./build
-```
-
-Supported options:
-
-* Build matrix:
-
-| DISTRO/ARCH | i386 | x64 |
-|:-----------:|:----:|:---:|
-|    debian   |   y  |  y  |
-|    centos   |   y  |  y  |
-
-* `LOCAL_AGENT_REPO` can be used if you want it to build a local version of the agent code. It should be an absolute path to your local copy of dd-agent.
-* `FORCE_RELOAD` if set will force a reload of your VM, can be useful if you're having with filesystem sync for instance.
