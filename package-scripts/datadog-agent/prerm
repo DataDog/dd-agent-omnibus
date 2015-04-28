@@ -6,7 +6,7 @@ if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LI
         invoke-rc.d datadog-agent stop || true
         
         # Removing the service form startup (since it's not there anymore)
-        update-rc.d -f datadog-agent disable
+        update-rc.d -f datadog-agent disable >/dev/null 2>&1
         update-rc.d -f datadog-agent remove 
     else
         /etc/init.d/datadog-agent stop || true

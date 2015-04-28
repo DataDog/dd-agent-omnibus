@@ -32,7 +32,7 @@ if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LI
     case "$1" in
         configure)
             update-rc.d datadog-agent defaults
-            update-rc.d datadog-agent enable
+            update-rc.d datadog-agent enable >/dev/null 2>&1
             adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
             usermod -d /opt/datadog-agent dd-agent
             set +e
