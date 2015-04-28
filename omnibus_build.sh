@@ -14,8 +14,10 @@ rm -rf /opt/$PROJECT_NAME/*
 
 cd $PROJECT_DIR
 # Allow to use a different dd-agent-omnibus branch
+git fetch --all
 git checkout $OMNIBUS_BRANCH 
-git pull
+git reset --hard origin/$OMNIBUS_BRANCH
+
 # Install the gems we need, with stubs in bin/
 bundle update # Make sure to update to the latest version of omnibus-software
 bin/omnibus build -l=$LOG_LEVEL $PROJECT_NAME
