@@ -21,7 +21,8 @@ See:
 
 ```bash
 PLATFORM="deb-x64" # must be in "deb-x64", "deb-i386", "rpm-x64", "rpm-i386"
-AGENT_BRANCH="master" # default "master"
+AGENT_BRANCH="master" # Branch of dd-agent repo to use, default "master"
+OMNIBUS_BRANCH="master" # Branch of dd-agent-omnibus repo to use, default "master"
 AGENT_VERSION="5.4.0" # default to the latest tag on that branch
 LOG_LEVEL="debug" # default to "info"
 LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from. Defaut is not set and the build will be done against the github repo
@@ -29,6 +30,7 @@ LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from.
 mkdir -p pkg
 mkdir -p "cache/$PLATFORM"
 docker run --name "dd-agent-build-$PLATFORM" \
+  -e OMNIBUS_BRANCH=$OMNIBUS_BRANCH \
   -e LOG_LEVEL=$LOG_LEVEL \
   -e AGENT_BRANCH=$AGENT_BRANCH \
   -e AGENT_VERSION=$AGENT_VERSION \
