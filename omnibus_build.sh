@@ -1,4 +1,11 @@
 #!/bin/bash -e
+
+###########################
+#
+# WARNING: You need to rebuild the docker images if you do any changes to this file
+#
+############################
+
 PROJECT_DIR=dd-agent-omnibus
 PROJECT_NAME=datadog-agent
 LOG_LEVEL=${LOG_LEVEL:-"info"}
