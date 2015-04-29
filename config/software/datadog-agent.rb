@@ -36,12 +36,16 @@ build do
      command "cp packaging/centos/datadog-agent.init /etc/init.d/datadog-agent"
    elsif Ohai['platform_family'] == 'debian'
      command "cp packaging/debian/datadog-agent.init /etc/init.d/datadog-agent"
+     command "mkdir -p /lib/systemd/system"
+     command "cp packaging/debian/datadog-agent.service /lib/systemd/system/datadog-agent.service"
+     command "cp packaging/debian/start_agent.sh /opt/datadog-agent/bin/start_agent.sh"
+     command "chmod 755 /opt/datadog-agent/bin/start_agent.sh"
    end
-   
    command "cp packaging/supervisor.conf /etc/dd-agent/supervisor.conf"
    command "cp datadog.conf.example /etc/dd-agent/datadog.conf.example"
    command "cp -R conf.d /etc/dd-agent/"
    command "mkdir -p /etc/dd-agent/checks.d/"
+   command "chmod 755 /etc/init.d/datadog-agent"
 
    # Create symlinks
    command "ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent"

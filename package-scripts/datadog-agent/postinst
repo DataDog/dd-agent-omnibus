@@ -7,16 +7,16 @@ LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /e
 
 error_exit()
 {
-  echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
-  exit 1
+    echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
+    exit 1
 }
 
 mkdir -p ${LOG_DIR} || error_exit "Cannot create ${LOG_DIR}!"
 
 # If we are inside the Docker container, do nothing
 if [ -n "$DOCKER_DD_AGENT" ]; then
-  echo "Installation from docker-dd-agent, nothing to do in postinst"
-  exit 0
+    echo "Installation from docker-dd-agent, nothing to do in postinst"
+    exit 0
 fi
 
 # Since we now package our own supervisor config, we no longer want
@@ -28,24 +28,23 @@ if [ -f /etc/supervisor/conf.d/ddagent.conf ]; then
 fi
 
 if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LINUX_DISTRIBUTION" == "Ubuntu" ]; then
-  set -e
-  case "$1" in
-      configure)
-          update-rc.d datadog-agent defaults
-          adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
-          usermod -d /opt/datadog-agent dd-agent
-          set +e
-      ;;
-      abort-upgrade|abort-remove|abort-deconfigure)
-      ;;
+    set -e
+    case "$1" in
+        configure)
+            update-rc.d datadog-agent defaults
+            update-rc.d datadog-agent enable >/dev/null 2>&1
+            adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
+            usermod -d /opt/datadog-agent dd-agent
+            set +e
+        ;;
+        abort-upgrade|abort-remove|abort-deconfigure)
+        ;;
 
-      *)
-      ;;
-  esac
-  #DEBHELPER#
+        *)
+        ;;
+    esac
+    #DEBHELPER#
 fi
-
-chmod 755 /etc/init.d/datadog-agent
 
 # Set proper rights to the dd-agent user
 chown -R dd-agent:root ${CONFIG_DIR}
@@ -53,16 +52,28 @@ chown -R dd-agent:root ${LOG_DIR}
 chown root:root /etc/init.d/datadog-agent
 chown -R root:root /opt/datadog-agent
 
-if which chkconfig >/dev/null 2>&1; then
-  chkconfig --add datadog-agent
+if command -v chkconfig >/dev/null 2>&1; then
+    chkconfig --add datadog-agent
 fi
 
-if which invoke-rc.d >/dev/null 2>&1; then
-    invoke-rc.d datadog-agent restart
-else
-    /etc/init.d/datadog-agent restart
-fi
+# The configcheck call will return zero if the config is valid, which means we 
+# can restart the agent without taking the risk to trigger an error in the 
+# postinst script . If the config file doesn't exist (RETVAL=3), the user is 
+# probably using the source install script so let's consider the postinst script 
+# did its job and exist zero, otherwise, if the file exists but it's wrong we
+# have to return a non zero exit status so that the system (and the user) are 
+# notified the installation went wrong.
+/etc/init.d/datadog-agent configcheck 
 RETVAL=$?
+if [ $RETVAL -eq 0 ]; then
+    echo "(Re)starting datadog-agent now..."	
+    if command -v invoke-rc.d >/dev/null 2>&1; then
+        invoke-rc.d datadog-agent restart
+    else
+        /etc/init.d/datadog-agent restart
+    fi
+fi
+
 if [ $RETVAL -ne 0 ]; then
     if [ $RETVAL -eq 3 ]; then
         # No datadog.conf file is present. The user is probably following
