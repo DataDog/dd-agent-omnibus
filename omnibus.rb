@@ -1,3 +1,5 @@
+base_dir './local'
+
 bucket = ENV['S3_OMNIBUS_BUCKET']
 
 if bucket.nil? || bucket.empty?
