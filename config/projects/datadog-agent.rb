@@ -47,7 +47,6 @@ dependency "preparation"
 
 # Agent dependencies
 dependency "boto"
-dependency "datadog-gohai"
 dependency "ntplib"
 dependency "procps-ng"
 dependency "pycrypto"
@@ -81,6 +80,7 @@ dependency "requests"
 dependency "snakebite"
 
 # Datadog agent
+dependency "datadog-gohai"
 dependency "datadog-agent"
 
 # version manifest file
