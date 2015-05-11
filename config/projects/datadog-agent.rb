@@ -8,9 +8,9 @@ build_version do
   output_format :dd_agent_format
 end
 
-vendor 'Datadog'
-epoch 1
-description "Datadog Monitoring Agent
+build_iteration 1
+
+description 'Datadog Monitoring Agent
  The Datadog Monitoring Agent is a lightweight process that monitors system
  processes and services, and sends information back to your Datadog account.
  .
@@ -18,26 +18,40 @@ description "Datadog Monitoring Agent
  forwards metrics from your applications as well as system services.
  .
  See http://www.datadoghq.com/ for more information
-"
-platform_in_iteration false
+'
+
+# .deb specific flags
+package :deb do
+  vendor 'DataDog <info@datadoghq.com>'
+  license 'Simplified BSD License'
+  section 'utils'
+  priority 'extra'
+end
+
+package :rpm do
+  vendor 'DataDog <info@datadoghq.com>'
+  license 'Simplified BSD License'
+  category 'System Environment/Daemons'
+  priority 'extra'
+end
 
 # Note: this is to try to avoid issues when upgrading from an
 # old version of the agent which shipped also a datadog-agent-base
 # package.
-if Ohai['platform_family'] == 'rhel'
-  replaces 'datadog-agent-base < 5.0.0'
-  replaces 'datadog-agent-lib < 5.0.0'
-elsif Ohai['platform_family'] == 'debian'
-  replaces 'datadog-agent-base (<< 5.0.0)'
-  replaces 'datadog-agent-lib (<< 5.0.0)'
+if ohai['platform_family'] == 'rhel'
+  replace 'datadog-agent-base < 5.0.0'
+  replace 'datadog-agent-lib < 5.0.0'
+elsif ohai['platform_family'] == 'debian'
+  replace 'datadog-agent-base (<< 5.0.0)'
+  replace 'datadog-agent-lib (<< 5.0.0)'
   conflict 'datadog-agent-base (<< 5.0.0)'
 end
 
 extra_package_file '/etc/init.d/datadog-agent'
-if Ohai['platform_family'] == 'debian'
+if ohai['platform_family'] == 'debian'
   extra_package_file '/lib/systemd/system/datadog-agent.service'
 end
-extra_package_file '/etc/dd-agent'
+# extra_package_file '/etc/dd-agent/' --> https://github.com/chef/omnibus/issues/464
 extra_package_file '/usr/bin/dd-agent'
 extra_package_file '/usr/bin/dogstatsd'
 extra_package_file '/usr/bin/dd-forwarder'
@@ -47,6 +61,7 @@ dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
+dependency 'datadog-gohai'
 dependency 'ntplib'
 dependency 'procps-ng'
 dependency 'pycrypto'
@@ -80,11 +95,10 @@ dependency 'requests'
 dependency 'snakebite'
 
 # Datadog agent
-dependency 'datadog-gohai'
 dependency 'datadog-agent'
 
 # version manifest file
 dependency 'version-manifest'
 
-exclude "\.git*"
-exclude "bundler\/git"
+exclude '\.git*'
+exclude 'bundler\/git'
