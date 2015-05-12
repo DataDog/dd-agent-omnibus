@@ -2,6 +2,7 @@
 
 CONFIG_DIR=/etc/dd-agent
 LOG_DIR=/var/log/datadog
+RUN_DIR=/opt/datadog-agent/run
 
 LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue)
 
@@ -49,6 +50,7 @@ fi
 # Set proper rights to the dd-agent user
 chown -R dd-agent:root ${CONFIG_DIR}
 chown -R dd-agent:root ${LOG_DIR}
+chown -R dd-agent:root ${RUN_DIR}
 chown root:root /etc/init.d/datadog-agent
 chown -R root:root /opt/datadog-agent
 
@@ -56,17 +58,17 @@ if command -v chkconfig >/dev/null 2>&1; then
     chkconfig --add datadog-agent
 fi
 
-# The configcheck call will return zero if the config is valid, which means we 
-# can restart the agent without taking the risk to trigger an error in the 
-# postinst script . If the config file doesn't exist (RETVAL=3), the user is 
-# probably using the source install script so let's consider the postinst script 
-# did its job and exist zero, otherwise, if the file exists but it's wrong we
-# have to return a non zero exit status so that the system (and the user) are 
-# notified the installation went wrong.
-/etc/init.d/datadog-agent configcheck 
+# The configcheck call will return zero if the config is valid, which means we
+# can restart the agent without taking the risk to trigger an error in the
+# postinst script . If the config file doesn't exist (RETVAL=3), the user is
+# probably using the packaged install script so let's consider the postinst
+# script did its job and exist zero, otherwise, if the file exists but it's
+# wrong we have to return a non zero exit status so that the system
+# (and the user) are notified the installation went wrong.
+/etc/init.d/datadog-agent configcheck
 RETVAL=$?
 if [ $RETVAL -eq 0 ]; then
-    echo "(Re)starting datadog-agent now..."	
+    echo "(Re)starting datadog-agent now..."
     if command -v invoke-rc.d >/dev/null 2>&1; then
         invoke-rc.d datadog-agent restart
     else
@@ -77,7 +79,8 @@ fi
 if [ $RETVAL -ne 0 ]; then
     if [ $RETVAL -eq 3 ]; then
         # No datadog.conf file is present. The user is probably following
-        # the step-by-step instructions and will add the config file next.
+        # the step-by-step instructions (or using the packaged install script)
+        # and will add the config file next.
         exit 0
     else
         exit $RETVAL

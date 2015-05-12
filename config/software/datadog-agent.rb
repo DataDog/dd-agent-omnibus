@@ -30,6 +30,9 @@ build do
    command "cp *.py #{install_dir}/agent/"
    command "cp datadog-cert.pem #{install_dir}/agent/"
 
+   # Internal /run directory
+   command "mkdir -p #{install_dir}/run/"
+
    # Configuration files
    command "mkdir -p /etc/dd-agent"
    if Ohai['platform_family'] == 'rhel'
