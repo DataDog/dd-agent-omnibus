@@ -27,6 +27,15 @@ AGENT_VERSION="5.4.0" # default to the latest tag on that branch
 LOG_LEVEL="debug" # default to "info"
 LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from. Defaut is not set and the build will be done against the github repo
 
+# The passphrase of the key you want to use to sign your .rpm package (if
+# building an RPM package). If you don't set this variable, the RPM won't be
+# sign but the build should succeed. Note that you must also mount a volume
+# under /keys and bind it to a folder containing an RPM-SIGNING-KEY.private
+# file containing your exported signing key. Finally, be aware that the
+# package_maintainer DSL defined in config/projects/datadog_agent.rb and the
+# full key name (My Name (comments) <my@email.com>) must match.
+RPM_SIGNING_PASSPHRASE="my_super_secret_passphrase"
+
 mkdir -p pkg
 mkdir -p "cache/$PLATFORM"
 docker run --name "dd-agent-build-$PLATFORM" \
@@ -34,7 +43,9 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -e LOG_LEVEL=$LOG_LEVEL \
   -e AGENT_BRANCH=$AGENT_BRANCH \
   -e AGENT_VERSION=$AGENT_VERSION \
+  -e RPM_SIGNING_PASSPHRASE=$RPM_SIGNING_PASSPHRASE \
   -v `pwd`/pkg:/dd-agent-omnibus/pkg \
+  -v `pwd`/keys:/keys \
   -v "`pwd`/cache/$PLATFORM:/var/cache/omnibus" \
   "datadog/docker-dd-agent-build-$PLATFORM"
 ```

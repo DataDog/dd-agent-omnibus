@@ -1,5 +1,5 @@
 name 'datadog-agent'
-maintainer 'Datadog Packages <package@datadoghq.com>'
+maintainer 'Etienne Omnitests <etienne.lafarge@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
 install_dir '/opt/datadog-agent'
 
@@ -33,6 +33,9 @@ package :rpm do
   license 'Simplified BSD License'
   category 'System Environment/Daemons'
   priority 'extra'
+  if ENV.has_key?('RPM_SIGNING_PASSPHRASE') and not ENV['RPM_SIGNING_PASSPHRASE'].empty?
+    signing_passphrase "#{ENV['RPM_SIGNING_PASSPHRASE']}"
+  end
 end
 
 # Note: this is to try to avoid issues when upgrading from an
@@ -51,7 +54,7 @@ extra_package_file '/etc/init.d/datadog-agent'
 if ohai['platform_family'] == 'debian'
   extra_package_file '/lib/systemd/system/datadog-agent.service'
 end
-# extra_package_file '/etc/dd-agent/' --> https://github.com/chef/omnibus/issues/464
+extra_package_file '/etc/dd-agent'
 extra_package_file '/usr/bin/dd-agent'
 extra_package_file '/usr/bin/dogstatsd'
 extra_package_file '/usr/bin/dd-forwarder'
