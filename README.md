@@ -49,3 +49,21 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -v "`pwd`/cache/$PLATFORM:/var/cache/omnibus" \
   "datadog/docker-dd-agent-build-$PLATFORM"
 ```
+
+## Build on Mac OS X
+
+The Mac build platform should have:
+
+* Xcode installed (type `git` in a terminal),
+* [Go](http://golang.org/dl/) installed,
+* sudoer rights for the build user,
+* Bundler installed: `sudo gem install bundler`,
+* Important directories created: `sudo mkdir -p /var/cache/omnibus /opt/datadog-agent`,
+* Owned by the right user: `sudo chown user:nogroup /var/cache/omnibus /opt/datadog-agent`.
+* Xcode license accepted (to sign package) `sudo xcodebuild -license`
+* Datadog signing key
+
+Then run:
+```bash
+sh omnibus_build.sh
+```
