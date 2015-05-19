@@ -1,3 +1,5 @@
+require "./lib/ostools.rb"
+
 name 'datadog-agent'
 maintainer 'Datadog Packages <package@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
@@ -20,6 +22,10 @@ description 'Datadog Monitoring Agent
  See http://www.datadoghq.com/ for more information
 '
 
+# ------------------------------------
+# Generic package information
+# ------------------------------------
+
 # .deb specific flags
 package :deb do
   vendor 'Datadog <info@datadoghq.com>'
@@ -28,6 +34,7 @@ package :deb do
   priority 'extra'
 end
 
+# .rpm specific flags
 package :rpm do
   vendor 'Datadog <info@datadoghq.com>'
   license 'Simplified BSD License'
@@ -38,26 +45,58 @@ package :rpm do
   end
 end
 
+# OSX .pkg specific flags
+package :pkg do
+  identifier 'com.datadoghq.agent'
+  signing_identity 'Developer ID Installer: Datadog, Inc. (JKFCB4CN7C)'
+end
+compress :dmg do
+  window_bounds '200, 200, 750, 600'
+  pkg_position '10, 10'
+end
+
 # Note: this is to try to avoid issues when upgrading from an
 # old version of the agent which shipped also a datadog-agent-base
 # package.
-if ohai['platform_family'] == 'rhel'
+if redhat?
   replace 'datadog-agent-base < 5.0.0'
   replace 'datadog-agent-lib < 5.0.0'
-elsif ohai['platform_family'] == 'debian'
+elsif debian?
   replace 'datadog-agent-base (<< 5.0.0)'
   replace 'datadog-agent-lib (<< 5.0.0)'
   conflict 'datadog-agent-base (<< 5.0.0)'
 end
 
-extra_package_file '/etc/init.d/datadog-agent'
-if ohai['platform_family'] == 'debian'
-  extra_package_file '/lib/systemd/system/datadog-agent.service'
+# ------------------------------------
+# OS specific DSLs and dependencies
+# ------------------------------------
+
+# Linux
+if linux?
+  # Debian
+  if debian?
+    extra_package_file '/lib/systemd/system/datadog-agent.service'
+  end
+
+  extra_package_file '/etc/init.d/datadog-agent'
+  extra_package_file '/etc/dd-agent/' # --> https://github.com/chef/omnibus/issues/464 TODO FIXME
+  extra_package_file '/usr/bin/dd-agent'
+  extra_package_file '/usr/bin/dogstatsd'
+  extra_package_file '/usr/bin/dd-forwarder'
+
+  dependency 'procps-ng'
+  dependency 'sysstat'
+
 end
-extra_package_file '/etc/dd-agent'
-extra_package_file '/usr/bin/dd-agent'
-extra_package_file '/usr/bin/dogstatsd'
-extra_package_file '/usr/bin/dd-forwarder'
+
+# Mac and Windows
+if osx? or windows?
+  dependency 'gui'
+end
+
+# ------------------------------------
+# Dependencies
+# ------------------------------------
 
 # creates required build directories
 dependency 'preparation'
@@ -66,13 +105,11 @@ dependency 'preparation'
 dependency 'boto'
 dependency 'datadog-gohai'
 dependency 'ntplib'
-dependency 'procps-ng'
 dependency 'pycrypto'
 dependency 'pyopenssl'
 dependency 'pyyaml'
 dependency 'simplejson'
 dependency 'supervisor'
-dependency 'sysstat'
 dependency 'tornado'
 dependency 'uuid'
 dependency 'zlib'
