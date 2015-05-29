@@ -3,7 +3,8 @@
 LOG_DIR=/var/log/datadog
 INSTALL_DIR=/opt/datadog-agent
 OPT_APP_DIR="$INSTALL_DIR/Datadog Agent.app"
-APP_CONF_DIR="/Applications/Datadog Agent.app/Contents/Resources"
+APP_DIRECTORY="/Applications/Datadog Agent.app"
+APP_CONF_DIR="$APP_DIRECTORY/Contents/Resources"
 RUN_DIR="$APP_CONF_DIR/run"
 
 # We log stdout & stderr of this script
@@ -26,16 +27,12 @@ if [ $DISTRIBUTION = "Darwin" ]; then
     rm /tmp/datadog-install-user || true
   fi
 
-  # Reinstall is really different: 
-  # the app is extracted directly where the old version is
-  # So we only try to install if the app is in /opt
   if [ -e "$OPT_APP_DIR" ]; then
     # Prepare log dir
     chown -R $INSTALL_USER:admin $LOG_DIR
     chmod 755 $LOG_DIR
 
     # Installing the app
-    rm -rf /Applications/Datadog\ Agent.app
     mv $INSTALL_DIR/Datadog\ Agent.app /Applications
   fi
 
@@ -60,7 +57,7 @@ if [ $DISTRIBUTION = "Darwin" ]; then
     rm -rf /tmp/datadog.conf /tmp/conf.d /tmp/checks.d
   # Or copying default
   else
-    cp "$APP_CONF_DIR/datadog.conf.example" "$APP_CONF_DIR/datadog.conf"
+    sed -E 's/^api_key:$/api_key: APIKEY/' "$APP_CONF_DIR/datadog.conf.example" > "$APP_CONF_DIR/datadog.conf"
   fi
 
   # Correct rights
@@ -71,25 +68,31 @@ if [ $DISTRIBUTION = "Darwin" ]; then
   mkdir -p /usr/local/bin
   ln -s "$APP_CONF_DIR/../MacOS/datadog-agent" /usr/local/bin/datadog-agent
 
-  # Link for conf.d (let's ease the user's life)
+  # Link for conf files (let's ease the user's life)
   USER_HOME=`sudo -Hu $INSTALL_USER sh -c 'echo $HOME'`
   sudo -Hu $INSTALL_USER mkdir -p "$USER_HOME/.datadog-agent"
-  rm -f "$USER_HOME/.datadog-agent/conf.d"
+  rm -f "$USER_HOME/.datadog-agent/conf.d" "$USER_HOME/.datadog-agent/datadog.conf" "$USER_HOME/.datadog-agent/checks.d"
   sudo -Hu $INSTALL_USER ln -s "$APP_CONF_DIR/conf.d" "$USER_HOME/.datadog-agent/conf.d"
+  sudo -Hu $INSTALL_USER ln -s "$APP_CONF_DIR/datadog.conf" "$USER_HOME/.datadog-agent/datadog.conf"
+  sudo -Hu $INSTALL_USER ln -s "$APP_CONF_DIR/checks.d" "$USER_HOME/.datadog-agent/checks.d"
 
   # Error if app not properly installed
   if [ ! -e "$APP_CONF_DIR/datadog.conf" ]; then
     exit 1
   fi
 
-  # Launch the app
-  # Trick to get the right temp dir (for status pickles)
-  export TMPDIR=`sudo -u $INSTALL_USER getconf DARWIN_USER_TEMP_DIR`
-  sudo -Eu $INSTALL_USER "$APP_CONF_DIR/../MacOS/datadog-agent" start || true
   # Start the app only if it's not a script install
   if [ -z "$SCRIPT_INSTALL" ]; then
+    # Trick to get the right temp dir (for status pickles)
+    export TMPDIR=`sudo -u $INSTALL_USER getconf DARWIN_USER_TEMP_DIR`
     sudo -Eu $INSTALL_USER open -a 'Datadog Agent.app'
   fi
+
+  # And finally configure the app to be launched at login
+  sudo -u $INSTALL_USER osascript -e 'tell application "System Events" to delete every login item whose name is "Datadog Agent"'
+  # It uses the hardcoded path instead of $APP_DIRECTORY because
+  # osascript wants '' (bash doesn't interpolate $APP_DIRECTORY) and no "" 
+  sudo -u $INSTALL_USER osascript -e 'tell application "System Events" to make login item at end with properties {path:"/Applications/Datadog Agent.app", name:"Datadog Agent", hidden:false}'
 fi
 exit 0
 

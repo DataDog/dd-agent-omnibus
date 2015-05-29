@@ -2,7 +2,8 @@
 
 INSTALL_DIR=/opt/datadog-agent
 LOG_DIR=/var/log/datadog
-APP_CONF_DIR="/Applications/Datadog Agent.app/Contents/Resources"
+APP_DIR="/Applications/Datadog Agent.app"
+APP_CONF_DIR="$APP_DIR/Contents/Resources"
 
 # We log stdout & stderr of this script
 LOG_FILE=$LOG_DIR/preinstall.log
@@ -13,21 +14,24 @@ exec > $LOG_FILE 2>&1
 DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue 2>/dev/null || uname -s)
 
 if [ $DISTRIBUTION = "Darwin" ]; then
-	if [ -e "$APP_CONF_DIR/datadog.conf" ]; then
-	  # Stop old version
-          "$APP_CONF_DIR/../MacOS/datadog-agent" stop || true
-          kill `ps aux | grep 'Datadog Agent.app' | grep -v grep  | cut -d ' ' -f 4` || true
+  if [ -e "$APP_CONF_DIR/datadog.conf" ]; then
+    # Stop old version
+    "$APP_CONF_DIR/../MacOS/datadog-agent" stop || true
+    kill `ps aux | grep 'Datadog Agent.app' | grep -v grep  | cut -d ' ' -f 4` || true
 
-          # Save old conf
-          mkdir -p /tmp/conf.d
-          rm -rf /tmp/checks.d
-          rm -f /tmp/datadog.conf /tmp/conf.d/*
-	  cp -f "$APP_CONF_DIR/datadog.conf" /tmp
-	  cp -f "$APP_CONF_DIR/conf.d/"*.yaml /tmp/conf.d
-	  cp -fR "$APP_CONF_DIR/checks.d" /tmp/
- 	fi
+    # Save old conf
+    mkdir -p /tmp/conf.d
+    rm -rf /tmp/checks.d
+    rm -f /tmp/datadog.conf /tmp/conf.d/*
+    cp -f "$APP_CONF_DIR/datadog.conf" /tmp
+    cp -f "$APP_CONF_DIR/conf.d/"*.yaml /tmp/conf.d
+    cp -fR "$APP_CONF_DIR/checks.d" /tmp/
+ fi
 
- 	# Clean before install
-    rm -rf $INSTALL_DIR
-    rm -f /usr/local/bin/datadog-agent
+  # Clean before install
+  rm -rf $INSTALL_DIR
+  rm -f /usr/local/bin/datadog-agent
+
+  # So sometimes the upgrade process works, sometimes not, so let's kill it with fire to be sure
+  rm -rf "$APP_DIR"
 fi
