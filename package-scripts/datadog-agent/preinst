@@ -29,13 +29,6 @@ if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LI
       rm /etc/dd-agent/supervisor_ddagent.conf
   fi
 
-  # Delete .pyc files
-  # FIXME: it shouldn't be done there, but only in prerm (see 6.6
-  # of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
-  # It is also here because version < 5.4 didn't delete .pyc,
-  # so we need to be sure to clean them here (if a file is deleted for instance)
-  find /opt/datadog-agent -name '*.py[co]' -type f -delete || true
-
   #DEBHELPER#
 
 elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
@@ -47,4 +40,16 @@ else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";
     exit 1;
 fi
+
+# Delete .pyc files
+# FIXME: it shouldn't be done there, but only in prerm (see 6.6
+# of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
+# It is also here because version < 5.4 didn't delete .pyc,
+# so we need to be sure to clean them here (if a file is deleted for instance)
+find /opt/datadog-agent -name '*.py[co]' -type f -delete || true
+
+# FIXME: remove when CentOS5 support is dropped (03/31/2017) or when everybody
+# has stopped using dd-agent 5.3 (and older versions ofc)
+rm -f /opt/datadog-agent/agent/checks/utils.py
+
 exit 0
