@@ -3,6 +3,8 @@
 CONFIG_DIR=/etc/dd-agent
 LOG_DIR=/var/log/datadog
 RUN_DIR=/opt/datadog-agent/run
+JMX_STATUS_PYTHON=/tmp/jmx_status_python.yaml
+JMX_STATUS=/tmp/jmx_status.yaml
 
 LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue)
 
@@ -53,6 +55,9 @@ chown -R dd-agent:root ${LOG_DIR}
 chown root:root /etc/init.d/datadog-agent
 chown -R root:root /opt/datadog-agent
 chown -R dd-agent:root ${RUN_DIR}
+
+# Remove JMXFetch status files
+rm -f ${JMX_STATUS_PYTHON} ${JMX_STATUS}
 
 if command -v chkconfig >/dev/null 2>&1; then
     chkconfig --add datadog-agent
