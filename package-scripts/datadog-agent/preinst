@@ -46,7 +46,7 @@ fi
 # of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
 # It is also here because version < 5.4 didn't delete .pyc,
 # so we need to be sure to clean them here (if a file is deleted for instance)
-find /opt/datadog-agent -name '*.py[co]' -type f -delete || true
+find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || true
 
 # FIXME: remove when CentOS5 support is dropped (03/31/2017) or when everybody
 # has stopped using dd-agent 5.3 (and older versions ofc)
