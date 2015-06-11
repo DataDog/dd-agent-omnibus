@@ -36,6 +36,8 @@ elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$LINUX_DISTR
     getent passwd dd-agent >/dev/null || \
         useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
         -c "Datadog Agent" dd-agent
+    # Stop the old agent before installing
+    /etc/init.d/datadog-agent stop || true
 else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";
     exit 1;
