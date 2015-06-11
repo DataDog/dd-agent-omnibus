@@ -36,6 +36,8 @@ elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$LINUX_DISTR
     getent passwd dd-agent >/dev/null || \
         useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
         -c "Datadog Agent" dd-agent
+    # Stop the old agent before installing
+    /etc/init.d/datadog-agent stop || true
 else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";
     exit 1;
@@ -46,7 +48,7 @@ fi
 # of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
 # It is also here because version < 5.4 didn't delete .pyc,
 # so we need to be sure to clean them here (if a file is deleted for instance)
-find /opt/datadog-agent -name '*.py[co]' -type f -delete || true
+find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || true
 
 # FIXME: remove when CentOS5 support is dropped (03/31/2017) or when everybody
 # has stopped using dd-agent 5.3 (and older versions ofc)

@@ -29,7 +29,7 @@ else
 fi
 
 # Delete all.pyc files
-find /opt/datadog-agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
+find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
 
 exit 0
 
