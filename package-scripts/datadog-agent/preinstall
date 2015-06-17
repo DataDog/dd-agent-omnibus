@@ -3,7 +3,8 @@
 INSTALL_DIR=/opt/datadog-agent
 LOG_DIR=/var/log/datadog
 APP_DIR="/Applications/Datadog Agent.app"
-APP_CONF_DIR="$APP_DIR/Contents/Resources"
+DD_COMMAND="/opt/datadog-agent/bin/datadog-agent"
+CONF_DIR="/opt/datadog-agent/etc"
 
 # We log stdout & stderr of this script
 LOG_FILE=$LOG_DIR/preinstall.log
@@ -14,24 +15,42 @@ exec > $LOG_FILE 2>&1
 DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue 2>/dev/null || uname -s)
 
 if [ $DISTRIBUTION = "Darwin" ]; then
-  if [ -e "$APP_CONF_DIR/datadog.conf" ]; then
-    # Stop old version
-    "$APP_CONF_DIR/../MacOS/datadog-agent" stop || true
-    kill `ps aux | grep 'Datadog Agent.app' | grep -v grep  | cut -d ' ' -f 4` || true
+  if [ -e "$CONF_DIR/datadog.conf" ]; then
+    echo "# State at the beginning"
+    echo "## Agent version"
+    grep AGENT_VERSION $INSTALL_DIR/agent/config.py || echo "No config file"
+    echo "## $INSTALL_DIR"
+    ls -al $INSTALL_DIR || echo "No agent installed"
+    echo "## $APP_DIR/Contents/Resources"
+    ls -al "$APP_DIR/Contents/Resources" || echo "No app installed"
 
-    # Save old conf
-    mkdir -p /tmp/conf.d
-    rm -rf /tmp/checks.d
-    rm -f /tmp/datadog.conf /tmp/conf.d/*
-    cp -f "$APP_CONF_DIR/datadog.conf" /tmp
-    cp -f "$APP_CONF_DIR/conf.d/"*.yaml /tmp/conf.d
-    cp -fR "$APP_CONF_DIR/checks.d" /tmp/
+    echo '# Stop old agent'
+    $DD_COMMAND stop || true
+
+    echo '# Stop old GUI'
+    kill `ps aux | grep 'Datadog Agent.app' | grep -v grep  | awk '{ print $2 }'` || true
+
+    echo '# Save old conf'
+    mkdir -vp /tmp/{conf,checks}.d
+    rm -vf /tmp/{conf,checks}.d/* /tmp/datadog.conf
+    cp -vf $CONF_DIR/datadog.conf /tmp
+    cp -vf $CONF_DIR/conf.d/*.yaml /tmp/conf.d
+    cp -vf $CONF_DIR/checks.d/* /tmp/checks.d
  fi
 
   # Clean before install
-  rm -rf $INSTALL_DIR
-  rm -f /usr/local/bin/datadog-agent
+  echo '# Deleting old datadog-agent link'
+  rm -vf /usr/local/bin/datadog-agent
 
-  # So sometimes the upgrade process works, sometimes not, so let's kill it with fire to be sure
-  rm -rf "$APP_DIR"
+  # Clean .pyc files
+  echo '# Deleting pyc files'
+  find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || true
+
+  echo "# State at the end"
+  echo "## Agent version"
+  grep AGENT_VERSION $INSTALL_DIR/agent/config.py || echo "No config file"
+  echo "## $INSTALL_DIR"
+  ls -al $INSTALL_DIR || echo "No agent installed"
+  echo "## $APP_DIR/Contents/Resources"
+  ls -al "$APP_DIR/Contents/Resources" || echo "No app installed"
 fi
