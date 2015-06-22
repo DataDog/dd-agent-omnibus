@@ -22,14 +22,14 @@ description 'Datadog Monitoring Agent
 
 # .deb specific flags
 package :deb do
-  vendor 'DataDog <info@datadoghq.com>'
+  vendor 'Datadog <info@datadoghq.com>'
   license 'Simplified BSD License'
   section 'utils'
   priority 'extra'
 end
 
 package :rpm do
-  vendor 'DataDog <info@datadoghq.com>'
+  vendor 'Datadog <info@datadoghq.com>'
   license 'Simplified BSD License'
   category 'System Environment/Daemons'
   priority 'extra'
