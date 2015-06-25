@@ -1,6 +1,6 @@
-require "./lib/ostools.rb"
+require './lib/ostools.rb'
 
-name "datadog-agent"
+name 'datadog-agent'
 
 local_agent_repo = ENV['LOCAL_AGENT_REPO']
 if local_agent_repo.nil? || local_agent_repo.empty?
@@ -63,33 +63,31 @@ build do
 
   if osx?
     env = {
-      "PATH" => "#{install_dir}/embedded/bin/:#{ENV['PATH']}"
+      'PATH' => "#{install_dir}/embedded/bin/:#{ENV['PATH']}"
     }
 
     app_temp_dir = "#{install_dir}/agent/dist/Datadog Agent.app/Contents"
     app_temp_dir_escaped = "#{install_dir}/agent/dist/Datadog\\ Agent.app/Contents"
     pyside_build_dir =  "#{install_dir}/agent/build/bdist.macosx-10.5-intel/python2.7-standalone/app/collect/PySide"
-    command_fix_shiboken = "install_name_tool -change @rpath/libshiboken-python2.7.1.2.dylib"\
-                      " @executable_path/../Frameworks/libshiboken-python2.7.1.2.dylib "
-    command_fix_pyside = "install_name_tool -change @rpath/libpyside-python2.7.1.2.dylib"\
-                      " @executable_path/../Frameworks/libpyside-python2.7.1.2.dylib "
+    command_fix_shiboken = 'install_name_tool -change @rpath/libshiboken-python2.7.1.2.dylib'\
+                      ' @executable_path/../Frameworks/libshiboken-python2.7.1.2.dylib '
+    command_fix_pyside = 'install_name_tool -change @rpath/libpyside-python2.7.1.2.dylib'\
+                      ' @executable_path/../Frameworks/libpyside-python2.7.1.2.dylib '
+
+    # Command line tool
+    copy 'packaging/osx/datadog-agent', "#{install_dir}/bin"
+    command "chmod 755 #{install_dir}/bin/datadog-agent"
 
     # GUI
-    copy "packaging/datadog-agent/win32/install_files/guidata/images", "#{install_dir}/agent"
-    copy "win32/gui.py", "#{install_dir}/agent"
-    copy "win32/status.html", "#{install_dir}/agent"
+    copy 'packaging/datadog-agent/win32/install_files/guidata/images', "#{install_dir}/agent"
+    copy 'win32/gui.py', "#{install_dir}/agent"
+    copy 'win32/status.html', "#{install_dir}/agent"
     mkdir "#{install_dir}/agent/packaging"
-    copy "packaging/osx/app/*", "#{install_dir}/agent/packaging"
+    copy 'packaging/osx/app/*', "#{install_dir}/agent/packaging"
 
-    # Shipping supervisor
-    command "cp #{install_dir}/embedded/lib/python2.7/site-packages/supervisor-*/supervisor/supervisor{d,ctl}.py"\
-            " #{install_dir}/agent"
     command "cd #{install_dir}/agent && "\
             "#{install_dir}/embedded/bin/python #{install_dir}/agent/setup.py py2app"\
-            " && cd -", :env => env
-    copy "#{install_dir}/bin/gohai", "#{app_temp_dir}/MacOS/gohai"
-    copy "packaging/osx/datadog-agent", "#{app_temp_dir}/MacOS/datadog-agent"
-    command "chmod a+x #{app_temp_dir_escaped}/MacOS/datadog-agent"
+            ' && cd -', env: env
     # Time to patch the install, see py2app bug: (dependencies to system PySide)
     # https://bitbucket.org/ronaldoussoren/py2app/issue/143/resulting-app-mistakenly-looks-for-pyside
     copy "#{pyside_build_dir}/libshiboken-python2.7.1.2.dylib", "#{app_temp_dir}/Frameworks/libshiboken-python2.7.1.2.dylib"
@@ -97,8 +95,8 @@ build do
 
     command "chmod a+x #{app_temp_dir_escaped}/Frameworks/{libpyside,libshiboken}-python2.7.1.2.dylib"
     command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Frameworks/libpyside-python2.7.1.2.dylib"
-    command "install_name_tool -change /usr/local/lib/QtCore.framework/Versions/4/QtCore "\
-            "@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore "\
+    command 'install_name_tool -change /usr/local/lib/QtCore.framework/Versions/4/QtCore '\
+            '@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore '\
             "#{app_temp_dir_escaped}/Frameworks/libpyside-python2.7.1.2.dylib"
     command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
     command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
@@ -108,14 +106,25 @@ build do
     # And finally
     command "cp -Rf #{install_dir}/agent/dist/Datadog\\ Agent.app #{install_dir}"
 
-    copy "packaging/osx/supervisor.conf", "#{install_dir}/Datadog Agent.app/Contents/Resources/supervisor.conf"
-    copy "datadog.conf.example", "#{install_dir}/Datadog Agent.app/Contents/Resources/datadog.conf.example"
-    copy "conf.d", "#{install_dir}/Datadog Agent.app/Contents/Resources/"
-    copy "packaging/osx/com.datadoghq.Agent.plist.example", "#{install_dir}/Datadog Agent.app/Contents/Resources/com.datadoghq.Agent.plist.example"
-    move "#{install_dir}/licenses", "#{install_dir}/Datadog Agent.app/Contents/Resources/licenses"
-    move "#{install_dir}/sources", "#{install_dir}/Datadog Agent.app/Contents/Resources/sources"
-    delete "#{install_dir}/agent"
-    delete "#{install_dir}/embedded"
-    delete "#{install_dir}/bin"
+    # Clean GUI related things
+    %w(build dist images gui.py status.html packaging Datadog_Agent.egg-info).each do |file|
+        delete "#{install_dir}/agent/#{file}"
+    end
+    %w(py2app macholib modulegraph altgraph).each do |package|
+        command "yes | #{install_dir}/embedded/bin/pip uninstall #{package}"
+    end
+    %w(pyside guidata spyderlib).each do |dependency_name|
+      # Installed with `python setup.py install`, needs to be uninstalled manually
+      command "cat #{install_dir}/embedded/#{dependency_name}-files.txt | xargs rm -rf \"{}\""
+      delete "#{install_dir}/embedded/#{dependency_name}-files.txt"
+    end
+
+    # conf
+    mkdir "#{install_dir}/etc"
+    command "grep -v 'user=dd-agent' packaging/supervisor.conf > #{install_dir}/etc/supervisor.conf"
+    copy 'datadog.conf.example', "#{install_dir}/etc/datadog.conf.example"
+    command "cp -R conf.d #{install_dir}/etc/"
+    copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
+
   end
 end
