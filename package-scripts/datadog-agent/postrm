@@ -3,8 +3,8 @@ LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /e
 
 if [ -f /etc/debian_version ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LINUX_DISTRIBUTION" == "Ubuntu" ]; then
     set -e
+    
     if [ "$1" = purge ]; then
-        update-rc.d datadog-agent remove
         deluser dd-agent
         rm -rf /opt/datadog-agent
         rm -rf /var/log/datadog

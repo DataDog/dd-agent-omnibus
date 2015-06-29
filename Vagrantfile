@@ -50,7 +50,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Ensure a recent version of the Chef Omnibus packages are installed
-  config.omnibus.chef_version = "11.12.8"
+  config.omnibus.chef_version = "11.16.4"
 
   # Enable the berkshelf-vagrant plugin
   config.berkshelf.enabled = true
@@ -59,10 +59,15 @@ Vagrant.configure("2") do |config|
 
   config.ssh.forward_agent = true
 
-  host_project_path = File.expand_path("..", __FILE__)
-  guest_project_path = "/home/vagrant/#{File.basename(host_project_path)}"
-
-  config.vm.synced_folder host_project_path, guest_project_path
+  # Mount omnibus to have the builder code!
+  current_dir = File.expand_path('..', __FILE__)
+  config.vm.synced_folder current_dir, '/home/vagrant/dd-agent-omnibus'
+  # Mount local agent repo if asked to
+  if ENV['LOCAL_AGENT_REPO']
+    config.vm.synced_folder ENV['LOCAL_AGENT_REPO'], '/home/vagrant/dd-agent'
+    # For the VM replace by the new path where we mounted it
+    ENV['LOCAL_AGENT_REPO'] = '/home/vagrant/dd-agent'
+  end
 
   # prepare VM to be an Omnibus builder
   config.vm.provision :chef_solo do |chef|
@@ -74,8 +79,9 @@ Vagrant.configure("2") do |config|
         "install_dir" => "/opt/#{project_name}"
       },
       "go" => {
-        "version" => "1.2.2"
-      }
+        "version" => "1.2.2",
+        "scm" => false
+      },
     }
 
     chef.run_list = [
@@ -84,13 +90,31 @@ Vagrant.configure("2") do |config|
     ]
   end
 
-  unless "#{ENV['AGENT_LOCAL_REPO']}".empty?
-    config.vm.synced_folder ENV['AGENT_LOCAL_REPO'], "/home/vagrant/dd-agent-repo"
-    agent_repo = "/home/vagrant/dd-agent-repo"
-  else
-    agent_repo = "https://github.com/DataDog/dd-agent.git"
+  # Export the defaults we need to run the scripts
+  # No better way of passing args in the VM :/
+  profile_file = "/etc/profile.d/vagrant.sh"
+  env_variables_script = <<ENVSCRIPT
+rm -f #{profile_file}
+echo "# vagrant profile script" > #{profile_file}
+ENVSCRIPT
+  env_variables_passthru = %w[
+    AGENT_BRANCH
+    AGENT_VERSION
+    DISTRO
+    LOCAL_AGENT_REPO
+    LOG_LEVEL
+    OMNIBUS_APPEND_TIMESTAMP
+    S3_OMNIBUS_BUCKET
+    S3_ACCESS_KEY
+    S3_SECRET_KEY
+  ]
+  env_variables_passthru.each do |var|
+    env_variables_script += "\necho export #{var}=#{ENV[var]} >> #{profile_file}"
   end
+  config.vm.provision 'shell', inline: env_variables_script
 
+  # Do the real work, build it!
+  config.vm.provision 'shell', path: 'omnibus_build.sh'
 
   if ENV['CLEAR_CACHE'] == "true"
     config.vm.provision "shell",
@@ -98,30 +122,4 @@ Vagrant.configure("2") do |config|
   end
 
 
-  config.vm.provision :shell, :inline => <<-OMNIBUS_BUILD
-    export PATH=/usr/local/bin:$PATH
-    export AGENT_VERSION=#{ENV['AGENT_VERSION']}
-    export AGENT_BRANCH=#{ENV['AGENT_BRANCH']}
-    export BUILD_NUMBER=#{ENV['BUILD_NUMBER']}
-    export S3_ACCESS_KEY=#{ENV['S3_ACCESS_KEY']}
-    export S3_SECRET_KEY=#{ENV['S3_SECRET_KEY']}
-    export S3_OMNIBUS_BUCKET=#{ENV['S3_OMNIBUS_BUCKET']}
-    export PKG_TYPE=#{ENV['PKG_TYPE']}
-    export ARCH=#{ENV['ARCH']}
-    export AGENT_REPO=#{agent_repo}
-    export GPG_PASSPHRASE=#{ENV['GPG_PASSPHRASE']}
-    export GPG_KEY_NAME=#{ENV['GPG_KEY_NAME']}
-    rm -rf /var/cache/omnibus/pkg/*
-    sudo rm -f /etc/init.d/datadog-agent
-    sudo rm -rf /etc/dd-agent
-    sudo rm -rf /opt/#{project_name}/*
-    sudo rm -rf /tmp/pip_build_vagrant
-    cd #{guest_project_path}
-    su vagrant -c "bundle install --binstubs"
-    su vagrant -c "bin/omnibus build -l=#{ENV['LOG_LEVEL']} #{project_name}"
-    if [ #{ENV['PKG_TYPE']} == "rpm" ] && [ #{ENV['GPG_PASSPHRASE']} ] && [ #{ENV['GPG_KEY_NAME']} ]; then
-        chmod +x rpm-sign
-        su vagrant -c "./rpm-sign #{ENV['GPG_KEY_NAME']} #{ENV['GPG_PASSPHRASE']} pkg/#{project_name}-#{ENV['AGENT_VERSION']}-#{ENV['BUILD_NUMBER']}.*.rpm"
-    fi
-  OMNIBUS_BUILD
 end
