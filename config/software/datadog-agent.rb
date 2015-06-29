@@ -35,13 +35,9 @@ build do
   # Configuration files
   command 'mkdir -p /etc/dd-agent'
   if Ohai['platform_family'] == 'rhel'
-    command 'cp packaging/centos/datadog-agent.init /etc/init.d/datadog-agent'
+    command 'cp packaging/datadog-agent-rpm/datadog-agent.init /etc/init.d/datadog-agent'
   elsif Ohai['platform_family'] == 'debian'
-    command 'cp packaging/debian/datadog-agent.init /etc/init.d/datadog-agent'
-    command 'mkdir -p /lib/systemd/system'
-    command 'cp packaging/debian/datadog-agent.service /lib/systemd/system/datadog-agent.service'
-    command 'cp packaging/debian/start_agent.sh /opt/datadog-agent/bin/start_agent.sh'
-    command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+    command 'cp packaging/datadog-agent-deb/datadog-agent.init /etc/init.d/datadog-agent'
   end
   command 'cp packaging/supervisor.conf /etc/dd-agent/supervisor.conf'
   command 'cp datadog.conf.example /etc/dd-agent/datadog.conf.example'
