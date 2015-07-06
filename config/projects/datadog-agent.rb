@@ -1,5 +1,5 @@
 name 'datadog-agent'
-maintainer 'Etienne Omnitests <etienne.lafarge@datadoghq.com>'
+maintainer 'Datadog Packages <package@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
 install_dir '/opt/datadog-agent'
 
