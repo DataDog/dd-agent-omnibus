@@ -1,7 +1,7 @@
 Legend (W, M, L = windows / mac / linux only)
 
 adodbapi
-botoo
+boto
 ** bzip2
 ** cacerts
 *** cmake
@@ -11,7 +11,6 @@ datadog-gohai
 ** gdbm
 gui M W
 * guidata M W
-* syderlib M W
 **** homebrew
 httplib2
 kafka-python M L
@@ -19,6 +18,7 @@ kazoo
 ** libedit
 * libffi
 ** libgcc
+**** libiconv
 * libpq
 ** libsqlite3
 ** libtool
@@ -28,9 +28,9 @@ kazoo
 ntplib
 * openssl
 paramiko
-*** pkg-config
 pg8000
 * pip
+*** pkg-config
 preparation
 procps-ng L
 psutil
@@ -38,14 +38,24 @@ psycopg2
 pycrypto
 * pycurl
 pymongo
+pymysql
 pyopenssl
+pysnmp
+* pysnmp-mibs
+* pyro4
 ** pyside
 * python
-* pyro4
+python-gearman
+python-memcached
+python-redis
+python-rrdtool
 pyyaml
-*** qt
+pyvmomo
+*** qtorequests
 ** setuptools
 simplejson
+snakebite
+* spyderlib M W
 supervisor M L
 sysstat L
 tornado
