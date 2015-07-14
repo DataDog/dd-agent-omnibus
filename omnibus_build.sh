@@ -10,6 +10,7 @@ PROJECT_DIR=dd-agent-omnibus
 PROJECT_NAME=datadog-agent
 LOG_LEVEL=${LOG_LEVEL:-"info"}
 OMNIBUS_BRANCH=${OMNIBUS_BRANCH:-"master"}
+OMNIBUS_SOFTWARE_BRANCH=${AGENT_BRANCH:-"master"}
 
 # Clean up omnibus artifacts
 rm -rf /var/cache/omnibus/pkg/*
@@ -22,7 +23,7 @@ rm -rf /opt/$PROJECT_NAME/*
 cd $PROJECT_DIR
 # Allow to use a different dd-agent-omnibus branch
 git fetch --all
-git checkout $OMNIBUS_BRANCH 
+git checkout $OMNIBUS_BRANCH
 git reset --hard origin/$OMNIBUS_BRANCH
 
 # Install the gems we need, with stubs in bin/
