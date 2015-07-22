@@ -48,6 +48,9 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -v `pwd`/keys:/keys \
   -v "`pwd`/cache/$PLATFORM:/var/cache/omnibus" \
   "datadog/docker-dd-agent-build-$PLATFORM"
+
+# Cleanup (necessary to launch another build)
+docker rm dd-agent-build-$PLATFORM
 ```
 
 ## Build on Mac OS X
