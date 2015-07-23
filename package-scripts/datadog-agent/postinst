@@ -21,7 +21,7 @@ if [ -n "$DOCKER_DD_AGENT" ]; then
 fi
 
 # Linux installation
-if ["$DISTRIBUTION" != "Darwin"]; then
+if [ "$DISTRIBUTION" != "Darwin" ]; then
   # Linus specific variables
   CONFIG_DIR=/etc/dd-agent
 
@@ -90,7 +90,7 @@ if ["$DISTRIBUTION" != "Darwin"]; then
       fi
   fi
 # OSX installation
-elif [ $DISTRIBUTION = "Darwin"]; then
+elif [ "$DISTRIBUTION" = "Darwin" ]; then
   # OSX specific variables
   OPT_APP_DIR="$INSTALL_DIR/Datadog Agent.app"
   APP_DIR="/Applications/Datadog Agent.app"

@@ -4,19 +4,16 @@ INSTALL_DIR=/opt/datadog-agent
 LOG_DIR=/var/log/datad
 mkdir -p $LOG_DIR
 
-# Just in case there are leftovers from previous installation (we are now using our own
-# supervisord)
-KNOWN_LINUX_DISTRIBUTION="(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)"
-LINUX_DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_LINUX_DISTRIBUTION  || grep -Eo $KNOWN_DISTRIBUTION /etc/issue 2>/dev/null || uname -s)
+DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue 2>/dev/null || uname -s)
 
 # Linux installation
-if [$DISTRIBUTION != "Darwin"]; then
+if [ "$DISTRIBUTION" != "Darwin" ]; then
   if [ -f /etc/debian_version ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
     set -e
     if [ -f /etc/init.d/datadog-agent ]; then
       if command -v invoke-rc.d >/dev/null 2>&1; then
         invoke-rc.d datadog-agent stop || true
-      else
+    else
         /etc/init.d/datadog-agent stop || true
       fi
     fi
@@ -37,7 +34,7 @@ if [$DISTRIBUTION != "Darwin"]; then
 
     #DEBHELPER#
 
-  elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
+  elif [ -f /etc/redhat-release ] || [ -f /etc/system-release ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ]; then
     getent group dd-agent >/dev/null || groupadd -r dd-agent
     getent passwd dd-agent >/dev/null || \
       useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
@@ -72,7 +69,7 @@ if [$DISTRIBUTION != "Darwin"]; then
   # has stopped using dd-agent 5.3 (and older versions ofc)
   rm -f /opt/datadog-agent/agent/checks/utils.py
 
-elif [$DISTRIBUTION = "Darwin"]; then
+elif [ "$DISTRIBUTION" = "Darwin" ]; then
   DD_COMMAND="/opt/datadog-agent/bin/datadog-agent"
   CONF_DIR="$INSTALL_DIR/etc"
   APP_DIR="/Applications/Datadog Agent.app"
