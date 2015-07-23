@@ -28,12 +28,12 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # Since we now package our own supervisor config, we no longer want
   # the old config to be loaded. Since supervisor automatically loads
   # configs in conf.d, we have to delete the old config file.
-  if [ -f /etc/supervisor/conf.d/ddagent.conf ]; then
+  if [ -f "/etc/supervisor/conf.d/ddagent.conf" ]; then
       echo "Removing old configuration from system supervisord"
       rm /etc/supervisor/conf.d/ddagent.conf
   fi
 
-  if [ -f /etc/debian_version ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
+  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
       set -e
       case "$1" in
           configure)
@@ -174,7 +174,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
     exit 1
   fi
 
-  if [ ! -e $CONF_DIR/datadog.conf ]; then
+  if [ ! -e "$CONF_DIR/datadog.conf" ]; then
     exit 1
   fi
 
