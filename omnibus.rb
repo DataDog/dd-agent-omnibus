@@ -1,5 +1,7 @@
 bucket = ENV['S3_OMNIBUS_BUCKET']
 
+append_timestamp false
+
 if bucket.nil? || bucket.empty?
   use_s3_caching false
 else

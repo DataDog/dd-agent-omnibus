@@ -103,7 +103,6 @@ ENVSCRIPT
     DISTRO
     LOCAL_AGENT_REPO
     LOG_LEVEL
-    OMNIBUS_APPEND_TIMESTAMP
     S3_OMNIBUS_BUCKET
     S3_ACCESS_KEY
     S3_SECRET_KEY
@@ -120,6 +119,4 @@ ENVSCRIPT
     config.vm.provision "shell",
       inline: "echo Clearing Omnibus cache && rm -rf /var/cache/omnibus/*"
   end
-
-
 end
