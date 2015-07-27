@@ -178,6 +178,7 @@ dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
+dependency 'docker-py'
 dependency 'ntplib'
 dependency 'pycrypto'
 dependency 'pyopenssl'
