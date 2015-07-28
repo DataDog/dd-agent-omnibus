@@ -52,6 +52,11 @@ build do
       mkdir '/etc/dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/datadog-agent'
 
+      # Let's mark the example conf files as extra package files
+      Dir.glob('/etc/dd-agent/conf.d/*') do |path|
+        project.extra_package_file path
+      end
+
       # Create symlinks
       command 'ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent'
       command 'ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd'
