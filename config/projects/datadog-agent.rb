@@ -1,7 +1,7 @@
 require "./lib/ostools.rb"
 
 name 'datadog-agent'
-maintainer 'Etienne Omnitests <etienne.lafarge@datadoghq.com>'
+maintainer 'Datadog <package@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
 install_dir '/opt/datadog-agent'
 
@@ -36,7 +36,7 @@ end
 
 # .rpm specific flags
 package :rpm do
-  vendor 'Datadog <info@datadoghq.com>'
+  vendor 'Datadog <package@datadoghq.com>'
   license 'Simplified BSD License'
   category 'System Environment/Daemons'
   priority 'extra'
