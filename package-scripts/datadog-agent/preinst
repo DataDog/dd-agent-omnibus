@@ -13,7 +13,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     if [ -f "/etc/init.d/datadog-agent" ]; then
       if command -v invoke-rc.d >/dev/null 2>&1; then
         invoke-rc.d datadog-agent stop || true
-    else
+      else
         /etc/init.d/datadog-agent stop || true
       fi
     fi
@@ -40,7 +40,9 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
         -c "Datadog Agent" dd-agent
     # Stop the old agent before installing
-    /etc/init.d/datadog-agent stop || true
+    if [ -f "/etc/init.d/datadog-agent" ]; then
+      /etc/init.d/datadog-agent stop || true
+    fi
   else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";
     exit 1;
