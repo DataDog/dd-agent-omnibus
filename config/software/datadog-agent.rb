@@ -38,7 +38,7 @@ build do
     # Configuration files
     mkdir '/etc/dd-agent'
       if ohai['platform_family'] == 'rhel'
-        copy 'packaging/centos/datadog-agent.init', '/etc/init.d/datadog-agent'
+        copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
       elsif ohai['platform_family'] == 'debian'
         copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
         mkdir '/lib/systemd/system'

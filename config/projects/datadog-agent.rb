@@ -79,7 +79,11 @@ if linux?
   end
 
   # SysVInit service file
-  extra_package_file '/etc/init.d/datadog-agent'
+  if redhat?
+    extra_package_file '/etc/rc.d/init.d/datadog-agent'
+  else
+    extra_package_file '/etc/init.d/datadog-agent'
+  end
 
   # Supervisord config file for the agent
   extra_package_file "/etc/dd-agent/supervisor.conf"
