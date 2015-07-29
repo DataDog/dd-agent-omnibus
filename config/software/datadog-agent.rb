@@ -54,7 +54,7 @@ build do
 
       # Let's mark the example conf files as extra package files
       File.write('/var/cache/omnibus/logtiti', "Hi there, this is a dirty way of debugging")
-      File.write('/var/cache/omnibus/logtiti', project_dir + " " + Dir.pwd)
+      File.write('/var/cache/omnibus/logtiti', project_dir + " aaa " + Dir.pwd)
       Dir.glob('./conf.d/*').each do |path|
         File.write('/var/cache/omnibus/logtiti', path)
         project.extra_package_file "/etc/dd-agent/#{path}"
