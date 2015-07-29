@@ -53,7 +53,9 @@ build do
       command 'chmod 755 /etc/init.d/datadog-agent'
 
       # Let's mark the example conf files as extra package files
+      log.info(log_key){ "Hi there, this is a dirty way of debugging" }
       Dir.glob('conf.d/*').each do |path|
+        log.info(log_key){ path }
         project.extra_package_file "/etc/dd-agent/#{path}"
       end
 
