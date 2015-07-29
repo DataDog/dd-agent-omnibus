@@ -53,12 +53,13 @@ build do
       command 'chmod 755 /etc/init.d/datadog-agent'
 
       # Let's mark the example conf files as extra package files
-      File.write('/var/cache/omnibus/logtiti', "Hi there, this is a dirty way of debugging")
       File.write('/var/cache/omnibus/logtiti', project_dir + " aaa " + Dir.pwd)
+      flist = ""
       Dir.glob('./conf.d/*').each do |path|
-        File.write('/var/cache/omnibus/logtiti', path)
+        flist = flist + " " + path
         project.extra_package_file "/etc/dd-agent/#{path}"
       end
+      File.write('/var/cache/omnibus/logtitibis', flist)
 
       # Create symlinks
       command 'ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent'
