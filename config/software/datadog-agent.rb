@@ -55,7 +55,7 @@ build do
       # Let's mark the example conf files as extra package files
       File.write('/var/cache/omnibus/logtiti', project_dir + " aaa " + Dir.pwd)
       flist = ""
-      Dir.glob('./conf.d/*').each do |path|
+      Dir.glob("#{project_dir}/conf.d/*").each do |path|
         flist = flist + " " + path
         project.extra_package_file "/etc/dd-agent/#{path}"
       end
