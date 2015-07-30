@@ -92,6 +92,9 @@ if linux?
   extra_package_file "/etc/dd-agent/datadog.conf.example"
   extra_package_file "/etc/dd-agent/conf.d"
 
+  # Custom checks directory
+  extra_package_file "/etc/dd-agent/checks.d"
+
   # Symbolic links to the agent "binaries"
   extra_package_file '/usr/bin/dd-agent'
   extra_package_file '/usr/bin/dogstatsd'
