@@ -1,9 +1,18 @@
 require "./lib/ostools.rb"
 
 name 'datadog-agent'
-maintainer 'Datadog Packages <package@datadoghq.com>'
+if windows?
+  # Windows doesn't want our e-mail address :(
+  maintainer 'Datadog'
+else
+  maintainer 'Datadog Packages <package@datadoghq.com>'
+end
 homepage 'http://www.datadoghq.com'
-install_dir '/opt/datadog-agent'
+if ohai['platform'] == "windows"
+  install_dir "C:/Agent"
+else
+  install_dir '/opt/datadog-agent'
+end
 
 build_version do
   source :git, from_dependency: 'datadog-agent'
@@ -57,6 +66,19 @@ compress :dmg do
   pkg_position '10, 10'
 end
 
+# Windows .msi specific flags
+package :msi do
+  # For a consistent package management, please NEVER change this code
+  upgrade_code '9E1DEDC4-DE86-4714-8325-BEF9B08E34A8'
+  parameters({
+    'InstallDir' => install_dir,
+    'ExampleConfigsWixFile' => "#{Omnibus::Config.source_dir()}\\dd-agent\\example-config-files.wxs",
+    'InstallFiles' => "#{Omnibus::Config.source_dir()}\\dd-agent\\packaging\\datadog-agent\\win32\\install_files",
+    'FindReplaceDir' => "#{Omnibus::Config.source_dir()}\\dd-agent\\packaging\\datadog-agent\\win32\\wix",
+    'ExampleConfigSourceDir' => "#{Omnibus::Config.source_dir()}\\dd-agent\\conf.d",
+    'AgentSourceDir' => "#{Omnibus::Config.source_dir()}\\dd-agent",
+  })
+end
 # Note: this is to try to avoid issues when upgrading from an
 # old version of the agent which shipped also a datadog-agent-base
 # package.
@@ -108,9 +130,24 @@ if linux?
 
 end
 
+# Ship supervisor anywhere but on Windows
+if not windows?
+  dependency 'supervisor'
+else
+  # We use our own supervisor shipped as a py2exe-built executable on Windows...
+  # therefore we need py2exe
+  dependency 'pywin32'
+  dependency 'py2exe'
+end
+
 # Mac and Windows
 if osx? or windows?
   dependency 'gui'
+end
+
+# Docker only exists on Linux
+if linux?
+  dependency 'docker-py'
 end
 
 # ------------------------------------
@@ -122,13 +159,11 @@ dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
-dependency 'docker-py'
 dependency 'ntplib'
 dependency 'pycrypto'
 dependency 'pyopenssl'
 dependency 'pyyaml'
 dependency 'simplejson'
-dependency 'supervisor'
 dependency 'tornado'
 dependency 'uuid'
 dependency 'zlib'

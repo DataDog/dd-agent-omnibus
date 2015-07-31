@@ -21,18 +21,22 @@ relative_path 'dd-agent'
 
 build do
   ship_license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'
-  # Agent code
+
   mkdir  "#{install_dir}/agent/"
-  copy 'checks.d', "#{install_dir}/agent/"
-  copy 'checks', "#{install_dir}/agent/"
-  copy 'dogstream', "#{install_dir}/agent/"
-  copy 'resources', "#{install_dir}/agent/"
-  copy 'utils', "#{install_dir}/agent/"
+
+  # Note: the copy DSL isn't working as expected when syncing folders on windows...
+  if linux? or osx?
+    # Agent code
+    copy 'checks.d', "#{install_dir}/agent/"
+    copy 'checks', "#{install_dir}/agent/"
+    copy 'dogstream', "#{install_dir}/agent/"
+    copy 'resources', "#{install_dir}/agent/"
+    copy 'utils', "#{install_dir}/agent/"
+  end
   command "cp *.py #{install_dir}/agent/"
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
 
   mkdir "#{install_dir}/run/"
-
 
   if linux?
     # Configuration files
@@ -108,10 +112,10 @@ build do
 
     # Clean GUI related things
     %w(build dist images gui.py status.html packaging Datadog_Agent.egg-info).each do |file|
-        delete "#{install_dir}/agent/#{file}"
+      delete "#{install_dir}/agent/#{file}"
     end
     %w(py2app macholib modulegraph altgraph).each do |package|
-        command "yes | #{install_dir}/embedded/bin/pip uninstall #{package}"
+      command "yes | #{install_dir}/embedded/bin/pip uninstall #{package}"
     end
     %w(pyside guidata spyderlib).each do |dependency_name|
       # Installed with `python setup.py install`, needs to be uninstalled manually
@@ -125,6 +129,42 @@ build do
     copy 'datadog.conf.example', "#{install_dir}/etc/datadog.conf.example"
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
+  end
+
+  if windows?
+    # Let's ship the usual (the copy DSL doesn't work on Windows)
+    mkdir  "#{install_dir}/agent/"
+    %w(checks.d checks dogstream resources utils *.py datadog-cert.pem).each do |original_path|
+      command "XCOPY #{original_path} #{windows_safe_path(install_dir)}\\agent\\#{original_path} /YSHI"
+    end
+
+    # Let's ship images for our wonderful GUI too as well as an HTML template we can definitely
+    # show off with...
+    mkdir "dist/guidata"
+    command "cp -R packaging/datadog-agent/win32/install_files/guidata/* dist/guidata"
+    command "COPY packaging\\datadog-agent\\win32\\install_files\\ca-certificates.crt #{windows_safe_path(install_dir)}\\agent"
+    command "COPY packaging\\datadog-agent\\win32\\install_files\\datadog-cert.pem #{windows_safe_path(install_dir)}\\agent"
+    command "COPY packaging\\datadog-agent\\win32\\install_files\\license.rtf #{windows_safe_path(install_dir)}"
+    command "COPY win32\\status.html #{windows_safe_path(install_dir)}\\agent"
+
+    # Let's build an exe to launch as a service (TODO: make it lighter by a rewriting it in Go/C++)
+    command "SET PATH=%PATH%;#{windows_safe_path(install_dir)}\\embedded\\DLLs & "\
+            "#{windows_safe_path(install_dir)}\\embedded\\python setup.py py2exe"
+    command 'XCOPY dist ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST /YSHI'
+
+    # This uses part f our fork of Omnibus. We copy "extra_package_files" that we want here
+    # so that they can be harvested by heat, and shipped in the MSI by light
+    mkdir '..\\OMNIBUS_EXTRA_PACKAGE_FILES\\EXAMPLECONFSLOCATION'
+    mkdir '..\\OMNIBUS_EXTRA_PACKAGE_FILES\\APPLICATIONDATADIRECTORY'
+    command 'XCOPY conf.d ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\EXAMPLECONFSLOCATION /YSHI'
+    command 'COPY packaging\\datadog-agent\\win32\\install_files\\datadog_win32.conf '\
+            '..\\OMNIBUS_EXTRA_PACKAGE_FILES\\APPLICATIONDATADIRECTORY\\datadog.conf.example'
+
+    # Weight-loss surgery
+    command "cd #{windows_safe_path(install_dir)} & del /Q /S *.pyc"
+    command "#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe uninstall -y py2exe"
+    command "#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe uninstall -y PySide"
+
   end
 
   # The file below is touched by software builds that don't put anything in the installation
