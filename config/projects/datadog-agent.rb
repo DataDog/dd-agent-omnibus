@@ -29,6 +29,7 @@ description 'Datadog Monitoring Agent
 # .deb specific flags
 package :deb do
   vendor 'Datadog <info@datadoghq.com>'
+  epoch 1
   license 'Simplified BSD License'
   section 'utils'
   priority 'extra'
@@ -37,6 +38,7 @@ end
 # .rpm specific flags
 package :rpm do
   vendor 'Datadog <package@datadoghq.com>'
+  epoch 1
   license 'Simplified BSD License'
   category 'System Environment/Daemons'
   priority 'extra'
