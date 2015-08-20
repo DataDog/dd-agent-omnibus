@@ -1,7 +1,7 @@
 require "./lib/ostools.rb"
 
 name 'datadog-agent'
-maintainer 'Datadog <package@datadoghq.com>'
+maintainer 'Datadog Packages <package@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
 install_dir '/opt/datadog-agent'
 
