@@ -39,8 +39,14 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
           configure)
               update-rc.d datadog-agent defaults
               update-rc.d datadog-agent enable >/dev/null 2>&1
-              adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
-              usermod -d /opt/datadog-agent dd-agent
+              # Only add dd-agent user if it doesn't already exist
+              id -u dd-agent >/dev/null 2>&1
+              USER_EXISTS=$?
+              if [ ! $USER_EXISTS -eq 0 ]; then
+                  echo "Creating dd-agent user"
+                  adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
+                  usermod -d /opt/datadog-agent dd-agent
+              fi
               set +e
           ;;
           abort-upgrade|abort-remove|abort-deconfigure)
