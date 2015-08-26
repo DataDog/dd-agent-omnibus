@@ -29,11 +29,6 @@ git reset --hard origin/$OMNIBUS_BRANCH
 # If an RPM_SIGNING_PASSPHRASE has been passed, let's import the signing key
 if [ -n "$RPM_SIGNING_PASSPHRASE" ]; then
   gpg --import /keys/RPM-SIGNING-KEY.private
-
-  # Let's also import the public key used to yunencrypt our RPMs. It contains
-  # information to update the expiration date of our private key, which is
-  # necessary to sign our RPMs
-  gpg --keyserver keyserver.ubuntu.com --recv 0x226ae980c7a7da52
 fi
 
 # Last but not least, let's make sure that we rebuild the agent everytime because
