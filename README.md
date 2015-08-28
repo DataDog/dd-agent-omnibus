@@ -29,7 +29,7 @@ LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from.
 
 # The passphrase of the key you want to use to sign your .rpm package (if
 # building an RPM package). If you don't set this variable, the RPM won't be
-# sign but the build should succeed. Note that you must also mount a volume
+# signed but the build should succeed. Note that you must also mount a volume
 # under /keys and bind it to a folder containing an RPM-SIGNING-KEY.private
 # file containing your exported signing key. Finally, be aware that the
 # package_maintainer DSL defined in config/projects/datadog_agent.rb and the
