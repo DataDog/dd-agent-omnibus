@@ -1,0 +1,27 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aws-sdk (2.1.8)
+      aws-sdk-resources (= 2.1.8)
+    aws-sdk-core (2.1.8)
+      jmespath (~> 1.0)
+    aws-sdk-resources (2.1.8)
+      aws-sdk-core (= 2.1.8)
+    cloudfront-invalidator (0.2.1)
+      ruby-hmac
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
+    multi_json (1.11.2)
+    ruby-hmac (0.4.0)
+    trollop (2.1.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aws-sdk (~> 2)
+  cloudfront-invalidator (~> 0.2.1)
+  trollop
+
+BUNDLED WITH
+   1.10.5

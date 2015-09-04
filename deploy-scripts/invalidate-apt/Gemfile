@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+
+gem 'cloudfront-invalidator', '~> 0.2.1'
+gem 'aws-sdk', '~> 2'
+gem 'trollop'

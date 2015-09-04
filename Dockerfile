@@ -18,11 +18,17 @@ RUN wget http://downloads.sourceforge.net/project/s3tools/s3cmd/1.5.2/s3cmd-1.5.
 	ln -s `pwd`/s3cmd-1.5.2/s3cmd /usr/bin/s3cmd
 
 USER jenkins
+# Let's fetch and install the cache invalidation script
+RUN wget https://github.com/DataDog/dd-agent-omnibus/archive/master.tar.gz && \
+    tar -xzvf master.tar.gz && \
+    mv dd-agent-omnibus/deploy-scripts $HOME/ && \
+    rm -rf master.tar.gz dd-agent-omnibus
+
 RUN echo 'source $HOME/.rvm/scripts/rvm' >> $HOME/.bashrc
 RUN /bin/bash -l -c "rvm install 2.2.2"
 RUN /bin/bash -l -c "rvm use 2.2.2 && \
     rvm gemset create circleci && \
-    rvm gemset use circleci && \ 
+    rvm gemset use circleci && \
     gem install deb-s3 && \
     gem install httparty"
 USER root
