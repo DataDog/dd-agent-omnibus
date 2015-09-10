@@ -8,8 +8,11 @@ else
   maintainer 'Datadog Packages <package@datadoghq.com>'
 end
 homepage 'http://www.datadoghq.com'
+
 if ohai['platform'] == "windows"
-  install_dir "C:/Agent"
+  # Note: this is not the final install dir, not even the default one, just a convenient
+  # spaceless dir in which the agent will be built.
+  install_dir "C:\\Datadog-Agent"
 else
   install_dir '/opt/datadog-agent'
 end
@@ -69,7 +72,7 @@ end
 # Windows .msi specific flags
 package :msi do
   # For a consistent package management, please NEVER change this code
-  upgrade_code '9E1DEDC4-DE86-4714-8325-BEF9B08E34A8'
+  upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
   parameters({
     'InstallDir' => install_dir,
     'ExampleConfigsWixFile' => "#{Omnibus::Config.source_dir()}\\dd-agent\\example-config-files.wxs",
