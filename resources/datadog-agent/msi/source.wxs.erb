@@ -36,12 +36,7 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFiles64Folder">
         <Directory Id="APPLICATIONROOTDIRECTORY" Name="Datadog">
-<% hierarchy.each.with_index do |(name, id), index| -%>
-          <%= '  '*index %><Directory Id="<%= id %>" Name="<%= name %>">
-<% end -%>
-<% hierarchy.keys.each.with_index do |_, index| -%>
-          <%= '  '*(hierarchy.size - index-1) %></Directory>
-<% end -%>
+            <Directory Id="PROJECTLOCATION" Name="Datadog Agent"></Directory>
         </Directory>
       </Directory>
 
@@ -102,8 +97,8 @@
       <Directory Id="DIST" Name="dist">
         <!-- Windows service declaration for Datadog Agent -->
         <Component Id="DATADOGAGENTSERVICE" Guid="BCFAD885-5C69-49D3-99CB-494D14E87AAE">
-          <File Id="ddagent.exe" Name="ddagent.exe" Source="$(var.AgentSourceDir)\dist\ddagent.exe" Vital="yes"
-            KeyPath="yes" DiskId="1"/>
+          <File Id="ddagent.exe" Name="ddagent.exe" Source="$(var.AgentSourceDir)\dist\ddagent.exe"
+            Vital="yes" KeyPath="yes" DiskId="1"/>
           <ServiceInstall Id="ServiceInstaller" DisplayName="Datadog Agent"
             Description="Send metrics to Datadog" Name="DatadogAgent" ErrorControl="ignore"
             Start="auto" Type="ownProcess" Vital="yes" Interactive="no" Account="LocalSystem">
@@ -172,19 +167,20 @@
 
     <UIRef Id="ProjectUI_InstallDir"/>
     <UI Id="ProjectUI_InstallDir">
-      <UIRef Id="WixUI_FeatureTree"/>
+      <UIRef Id="WixUI_Minimal"/>
       <TextStyle Id="WixUI_Font_Normal_White" FaceName="Tahoma" Size="8" Red="255" Green="255" Blue="255" />
       <TextStyle Id="WixUI_Font_Bigger_White" FaceName="Tahoma" Size="12" Red="255" Green="255" Blue="255" />
       <TextStyle Id="WixUI_Font_Title_White" FaceName="Tahoma" Size="9" Bold="yes" Red="255" Green="255" Blue="255" />
+      <Publish Dialog="ExitDialog"
+        Control="Finish"
+        Event="DoAction"
+        Value="LaunchApplication">
+        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+      </Publish>
     </UI>
 
     <WixVariable Id="WixUILicenseRtf" Value="Resources\assets\LICENSE.rtf" />
     <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />
     <WixVariable Id="WixUIBannerBmp" Value="Resources\assets\banner_background.bmp" />
-
-    <WixVariable Id="WixUIExclamationIco" Value="Resources\assets\project_32x32.ico" />
-    <WixVariable Id="WixUIInfoIco" Value="Resources\assets\project_32x32.ico" />
-    <WixVariable Id="WixUINewIco" Value="Resources\assets\project_16x16.ico" />
-    <WixVariable Id="WixUIUpIco" Value="Resources\assets\project_16x16.ico" />
   </Product>
 </Wix>
