@@ -32,6 +32,9 @@ echo Our environment is all set, let's start building things !
 
 ruby bin\omnibus build -l=%LOG_LEVEL% %PROJECT_NAME%
 
+REM exist this script forwarding the error code if the build failed
+if %errorlevel% neq 0 exit /b %errorlevel%
+
 echo Build complete, have fun with your freshly baked .msi file...
 echo ... oh, and don't spend to much time on Windows ;-)
 
