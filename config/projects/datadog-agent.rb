@@ -142,7 +142,15 @@ end
 
 # Ship supervisor anywhere but on Windows
 if not windows?
+  dependency 'kafka-python'
+  dependency 'python-gearman'
+  dependency 'snakebite'
   dependency 'supervisor'
+
+  # Technically these ones should be shipped on Windows too at some point...
+  # if we ever happen to have a customer use Postgre/pg_boucer on that platform :)
+  dependency 'psycopg2'
+  dependency 'pg8000'
 else
   # We use our own supervisor shipped as a py2exe-built executable on Windows...
   # therefore we need py2exe
@@ -187,23 +195,18 @@ dependency 'adodbapi'
 dependency 'beautifulsoup4'
 dependency 'dnspython'
 dependency 'httplib2'
-dependency 'kafka-python'
 dependency 'kazoo'
 dependency 'paramiko'
-dependency 'pg8000'
 dependency 'psutil'
-dependency 'psycopg2'
 dependency 'pymongo'
 dependency 'pymysql'
 dependency 'pysnmp'
-dependency 'python-gearman'
 dependency 'python-memcached'
 dependency 'python-redis'
 dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'requests'
 dependency 'scandir'
-dependency 'snakebite'
 
 # Additional software
 dependency 'datadogpy'
