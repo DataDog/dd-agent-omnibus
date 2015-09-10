@@ -12,7 +12,9 @@ homepage 'http://www.datadoghq.com'
 if ohai['platform'] == "windows"
   # Note: this is not the final install dir, not even the default one, just a convenient
   # spaceless dir in which the agent will be built.
-  install_dir "C:\\Datadog-Agent"
+  # Omnibus doesn't quote the Git commands it launches unfortunately, which makes it impossible
+  # to put a space here...
+  install_dir "C:\\Program Files (x86)\\Datadog\\Datadog Agent"
 else
   install_dir '/opt/datadog-agent'
 end
@@ -177,7 +179,6 @@ dependency 'pyyaml'
 dependency 'simplejson'
 dependency 'tornado'
 dependency 'uuid'
-dependency 'zlib'
 
 # Check dependencies
 dependency 'adodbapi'

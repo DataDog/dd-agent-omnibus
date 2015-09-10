@@ -33,7 +33,8 @@ build do
     copy 'resources', "#{install_dir}/agent/"
     copy 'utils', "#{install_dir}/agent/"
   end
-  command "cp *.py #{install_dir}/agent/"
+
+  command "cp *.py \"#{install_dir}/agent/\""
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
 
   mkdir "#{install_dir}/run/"
@@ -133,23 +134,31 @@ build do
 
   if windows?
     # Let's ship the usual (the copy DSL doesn't work on Windows)
-    mkdir  "#{install_dir}/agent/"
-    %w(checks.d checks dogstream resources utils *.py datadog-cert.pem).each do |original_path|
-      command "XCOPY #{original_path} #{windows_safe_path(install_dir)}\\agent\\#{original_path} /YSHI"
+    %w(checks.d checks dogstream resources utils win32 datadog-cert.pem).each do |original_path|
+      command "XCOPY #{original_path} \"#{windows_safe_path(install_dir)}\\agent\\#{original_path}\" /YSHI"
     end
 
     # Let's ship images for our wonderful GUI too as well as an HTML template we can definitely
     # show off with...
     mkdir "dist/guidata"
     command "cp -R packaging/datadog-agent/win32/install_files/guidata/* dist/guidata"
-    command "COPY packaging\\datadog-agent\\win32\\install_files\\ca-certificates.crt #{windows_safe_path(install_dir)}\\agent"
-    command "COPY packaging\\datadog-agent\\win32\\install_files\\datadog-cert.pem #{windows_safe_path(install_dir)}\\agent"
-    command "COPY packaging\\datadog-agent\\win32\\install_files\\license.rtf #{windows_safe_path(install_dir)}"
-    command "COPY win32\\status.html #{windows_safe_path(install_dir)}\\agent"
+    command "COPY packaging\\datadog-agent\\win32\\install_files\\ca-certificates.crt \"#{windows_safe_path(install_dir)}\\agent\""
+    command "COPY packaging\\datadog-agent\\win32\\install_files\\license.rtf \"#{windows_safe_path(install_dir)}\""
+    command "COPY win32\\status.html \"#{windows_safe_path(install_dir)}\\agent\""
 
-    # Let's build an exe to launch as a service (TODO: make it lighter by a rewriting it in Go/C++)
-    command "SET PATH=%PATH%;#{windows_safe_path(install_dir)}\\embedded\\DLLs & "\
-            "#{windows_safe_path(install_dir)}\\embedded\\python setup.py py2exe"
+    # Let's build an exe to launch as a service (and the GUI at the same time)
+    # Note that it'd be really cool to build the service exe in Go because we wouldn't have to ship
+    # Python with it and it would save several megabytes
+    # Also if we could find a way to build GUIs (JS on Windows, Native on OSX ?) that don't require
+    # any deps, I'm pretty sure we could go under 35 Megs on Windows
+    command "COPY \"#{windows_safe_path(install_dir)}\\embedded\\Lib\\site-packages\\pywin32_system32\\pywintypes27.dll\" "\
+            "\"#{windows_safe_path(install_dir)}\\embedded\\Lib\\site-packages\\win32\\\""
+    command "COPY \"#{windows_safe_path(install_dir)}\\embedded\\Lib\\site-packages\\pywin32_system32\\pythoncom27.dll\" "\
+            "\"#{windows_safe_path(install_dir)}\\embedded\\Lib\\site-packages\\win32\\\""
+    command "COPY \"#{windows_safe_path(install_dir)}\\embedded\\Lib\\site-packages\\pywin32_system32\\pythoncomloader27.dll\" "\
+            "\"#{windows_safe_path(install_dir)}\\embedded\\Lib\\site-packages\\win32\\\""
+
+    command "\"#{windows_safe_path(install_dir)}\\embedded\\python\" setup.py py2exe"
     command 'XCOPY dist ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST /YSHI'
 
     # This uses part f our fork of Omnibus. We copy "extra_package_files" that we want here
@@ -161,14 +170,8 @@ build do
             '..\\OMNIBUS_EXTRA_PACKAGE_FILES\\APPLICATIONDATADIRECTORY\\datadog.conf.example'
 
     # Weight-loss surgery
-    command "cd #{windows_safe_path(install_dir)} & del /Q /S *.pyc"
-    command "#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe uninstall -y py2exe"
-    command "#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe uninstall -y PySide"
-
+    command "\"#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe\" uninstall -y PySide"
+    command "CHDIR \"#{windows_safe_path(install_dir)}\" & del /Q /S *.pyc"
+    command "CHDIR \"#{windows_safe_path(install_dir)}\" & del /Q /S *.chm"
   end
-
-  # The file below is touched by software builds that don't put anything in the installation
-  # directory (libgcc right now) so that the git_cache gets updated let's remove it from the
-  # final package
-  delete "#{install_dir}/uselessfile"
 end
