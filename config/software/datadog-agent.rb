@@ -144,7 +144,6 @@ build do
     command "cp -R packaging/datadog-agent/win32/install_files/guidata/* dist/guidata"
     command "COPY packaging\\datadog-agent\\win32\\install_files\\ca-certificates.crt \"#{windows_safe_path(install_dir)}\\agent\""
     command "COPY packaging\\datadog-agent\\win32\\install_files\\license.rtf \"#{windows_safe_path(install_dir)}\""
-    command "COPY win32\\status.html \"#{windows_safe_path(install_dir)}\\dist\""
 
     # Let's build an exe to launch as a service (and the GUI at the same time)
     # Note that it'd be really cool to build the service exe in Go because we wouldn't have to ship
@@ -160,6 +159,11 @@ build do
 
     command "\"#{windows_safe_path(install_dir)}\\embedded\\python\" setup.py py2exe"
     command 'XCOPY dist ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST /YSHI'
+    command "COPY win32\\status.html ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST\\status.html"
+
+    # Let's move the service file out of that directory so that it's not processed by heat and we
+    # can add it manually, as a service executable, in our source.wxs file as if nothing happened
+    command 'MOVE ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST\\ddagent.exe .\\ddagent.exe'
 
     # This uses part f our fork of Omnibus. We copy "extra_package_files" that we want here
     # so that they can be harvested by heat, and shipped in the MSI by light

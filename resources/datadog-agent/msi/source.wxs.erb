@@ -97,11 +97,12 @@
       <Directory Id="DIST" Name="dist">
         <!-- Windows service declaration for Datadog Agent -->
         <Component Id="DATADOGAGENTSERVICE" Guid="BCFAD885-5C69-49D3-99CB-494D14E87AAE">
-          <File Id="ddagent.exe" Name="ddagent.exe" Source="$(var.AgentSourceDir)\dist\ddagent.exe"
+          <File Id="ddagent.exe" Name="ddagent.exe" Source="$(var.AgentSourceDir)\ddagent.exe"
             Vital="yes" KeyPath="yes" DiskId="1"/>
           <ServiceInstall Id="ServiceInstaller" DisplayName="Datadog Agent"
             Description="Send metrics to Datadog" Name="DatadogAgent" ErrorControl="ignore"
             Start="auto" Type="ownProcess" Vital="yes" Interactive="no" Account="LocalSystem">
+              <ServiceDependency Id="winmgmt" />
           </ServiceInstall>
           <ServiceControl Id="StartService" Name="DatadogAgent" Start="install" Stop="both"
             Remove="uninstall" Wait="no" />
@@ -154,6 +155,7 @@
       <ComponentRef Id="conf.d" />
       <ComponentRef Id="checks.d" />
       <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="DATADOGAGENTSERVICE" />
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentGroupRef Id="ExtraEXAMPLECONFSLOCATION" />
       <ComponentGroupRef Id="ExtraDIST" />
