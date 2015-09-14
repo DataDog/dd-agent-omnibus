@@ -67,6 +67,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   chown -R dd-agent:root ${LOG_DIR}
   chown root:root /etc/init.d/datadog-agent
   chown -R root:root /opt/datadog-agent
+  chown -R dd-agent:root ${RUN_DIR}
 
   if command -v chkconfig >/dev/null 2>&1; then
       chkconfig --add datadog-agent
