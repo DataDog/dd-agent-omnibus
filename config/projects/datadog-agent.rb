@@ -155,9 +155,10 @@ if not windows?
   dependency 'pg8000'
 else
   # We use our own supervisor shipped as a py2exe-built executable on Windows...
-  # therefore we need py2exe
+  # therefore we need py2exe. We also need psutil for our home-made supervisor.
   dependency 'pywin32'
   dependency 'py2exe'
+  dependency 'psutil'
 end
 
 # Mac and Windows
