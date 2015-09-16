@@ -37,7 +37,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ]; then
     getent group dd-agent >/dev/null || groupadd -r dd-agent
     getent passwd dd-agent >/dev/null || \
-      useradd -r -M -g dd-agent -d /opt/datadog-agent -s /bin/sh \
+      useradd -r -M -g dd-agent -d $INSTALL_DIR -s /bin/sh \
         -c "Datadog Agent" dd-agent
     # Stop the old agent before installing
     if [ -f "/etc/init.d/datadog-agent" ]; then
@@ -53,14 +53,14 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
   # It is also here because version < 5.4 didn't delete .pyc,
   # so we need to be sure to clean them here (if a file is deleted for instance)
-  find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || true
+  find $INSTALL_DIR/agent -name '*.py[co]' -type f -delete || true
 
   # FIXME: remove when CentOS5 support is dropped (03/31/2017) or when everybody
   # has stopped using dd-agent 5.3 (and older versions ofc)
-  rm -f /opt/datadog-agent/agent/checks/utils.py
+  rm -f $INSTALL_DIR/agent/checks/utils.py
 
 elif [ "$DISTRIBUTION" = "Darwin" ]; then
-  DD_COMMAND="/opt/datadog-agent/bin/datadog-agent"
+  DD_COMMAND="$INSTALL_DIR/bin/datadog-agent"
   CONF_DIR="$INSTALL_DIR/etc"
   APP_DIR="/Applications/Datadog Agent.app"
 
@@ -93,8 +93,8 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   echo '# Deleting old datadog-agent link'
   rm -vf /usr/local/bin/datadog-agent
 
-  echo '# Deleting .pyc files'
-  find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || true
+  echo '# Deleting old datadog-agent files'
+  rm -rf $INSTALL_DIR/agent || true
 
   # Debriefing time
   echo "# State at the end"
