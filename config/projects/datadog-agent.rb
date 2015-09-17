@@ -97,15 +97,9 @@ if linux?
   # Custom checks directory
   extra_package_file "/etc/dd-agent/checks.d"
 
-  # Symbolic links to the agent "binaries"
-  extra_package_file '/usr/bin/dd-agent'
-  extra_package_file '/usr/bin/dogstatsd'
-  extra_package_file '/usr/bin/dd-forwarder'
-
   # Linux-specific dependencies
   dependency 'procps-ng'
   dependency 'sysstat'
-
 end
 
 # Mac and Windows

@@ -73,6 +73,11 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       chkconfig --add datadog-agent
   fi
 
+  # Create symlinks to the various agent's components
+  ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/dd-agent
+  chown -R dd-agent:root /usr/bin/dd-agent
+  chmod 755 /usr/bin/dd-agent
+
   # The configcheck call will return zero if the config is valid, which means we
   # can restart the agent without taking the risk to trigger an error in the
   # postinst script . If the config file doesn't exist (RETVAL=3), the user is
