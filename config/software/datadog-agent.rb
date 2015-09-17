@@ -51,14 +51,6 @@ build do
       copy 'conf.d', '/etc/dd-agent/'
       mkdir '/etc/dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/datadog-agent'
-
-      # Create symlinks
-      command 'ln -sf /opt/datadog-agent/agent/agent.py /usr/bin/dd-agent'
-      command 'ln -sf /opt/datadog-agent/agent/dogstatsd.py /usr/bin/dogstatsd'
-      command 'ln -sf /opt/datadog-agent/agent/ddagent.py /usr/bin/dd-forwarder'
-      command 'chmod 755 /usr/bin/dd-agent'
-      command 'chmod 755 /usr/bin/dogstatsd'
-      command 'chmod 755 /usr/bin/dd-forwarder'
   end
 
   if osx?
