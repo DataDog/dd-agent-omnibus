@@ -7,7 +7,7 @@ install_dir '/opt/datadog-agent'
 
 build_version do
   source :git, from_dependency: 'datadog-agent'
-  output_format :dd_agent_format
+  output_format :s3_compliant_semver
 end
 
 build_iteration 1
