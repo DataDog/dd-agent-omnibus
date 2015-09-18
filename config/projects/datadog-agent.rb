@@ -88,14 +88,20 @@ if linux?
   end
 
   # Supervisord config file for the agent
-  extra_package_file "/etc/dd-agent/supervisor.conf"
+  extra_package_file '/etc/dd-agent/supervisor.conf'
 
   # Example configuration files for the agent and the checks
-  extra_package_file "/etc/dd-agent/datadog.conf.example"
-  extra_package_file "/etc/dd-agent/conf.d"
+  extra_package_file '/etc/dd-agent/datadog.conf.example'
+  extra_package_file '/etc/dd-agent/conf.d'
 
   # Custom checks directory
-  extra_package_file "/etc/dd-agent/checks.d"
+  extra_package_file '/etc/dd-agent/checks.d'
+
+  # dd-agent CLI (it's just an empty file at this point but it needs to exist,
+  # otherwise, since Yum installs the new package and then removes files from the old
+  # package, this has to be there to ensure `/usr/bin/dd-agent` is actually in the
+  # RPM package file list)
+  extra_package_file '/usr/bin/dd-agent'
 
   # Linux-specific dependencies
   dependency 'procps-ng'
