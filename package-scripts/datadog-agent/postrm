@@ -10,7 +10,6 @@ if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$
         rm -rf /var/log/datadog
         rm -rf /etc/dd-agent
         rm -rf /var/log/datadog
-        rm -f /usr/bin/dd-agent
     fi
 elif [ -f "/etc/redhat-release" ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
     case "$*" in
