@@ -3,7 +3,7 @@ require "./lib/ostools.rb"
 name 'datadog-agent'
 if windows?
   # Windows doesn't want our e-mail address :(
-  maintainer 'Datadog'
+  maintainer 'Datadog Inc.'
 else
   maintainer 'Datadog Packages <package@datadoghq.com>'
 end

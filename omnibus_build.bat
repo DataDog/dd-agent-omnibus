@@ -15,8 +15,8 @@ git reset --hard origin/%OMNIBUS_BRANCH%
 REM Take care of passing necessary information to sign the MSI over there
 
 REM Same dirty git cache trick as on Unix to always rebuild gohai and datadog-agent
-bash -c "git --git-dir=C:/omnibus-ruby/cache/git_cache/datadog-agent tag -d `git --git-dir=C:/omnibus-ruby/cache/git_cache/datadog-agent tag -l | grep datadog-gohai`"
-bash -c "git --git-dir=C:/omnibus-ruby/cache/git_cache/datadog-agent tag -d `git --git-dir=C:/omnibus-ruby/cache/git_cache/datadog-agent tag -l | grep datadog-agent`"
+bash -c "git --git-dir=""C:/omnibus-ruby/cache/git_cache/Program Files (x86)/Datadog/Datadog Agent"" tag -d `git --git-dir=""C:/omnibus-ruby/cache/git_cache/Program Files (x86)/Datadog/Datadog Agent"" tag -l | grep datadog-gohai`"
+bash -c "git --git-dir=""C:/omnibus-ruby/cache/git_cache/Program Files (x86)/Datadog/Datadog Agent"" tag -d `git --git-dir=""C:/omnibus-ruby/cache/git_cache/Program Files (x86)/Datadog/Datadog Agent"" tag -l | grep datadog-agent`"
 
 REM Ok kids, let grandpa tell you a story... there's this guy named Bill, who thought
 REM it would be relevant that, when you call a script, let's call him B, from another
