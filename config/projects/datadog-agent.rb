@@ -88,14 +88,19 @@ if linux?
   end
 
   # Supervisord config file for the agent
-  extra_package_file "/etc/dd-agent/supervisor.conf"
+  extra_package_file '/etc/dd-agent/supervisor.conf'
 
   # Example configuration files for the agent and the checks
-  extra_package_file "/etc/dd-agent/datadog.conf.example"
-  extra_package_file "/etc/dd-agent/conf.d"
+  extra_package_file '/etc/dd-agent/datadog.conf.example'
+  extra_package_file '/etc/dd-agent/conf.d'
 
   # Custom checks directory
-  extra_package_file "/etc/dd-agent/checks.d"
+  extra_package_file '/etc/dd-agent/checks.d'
+
+  # Just a dummy file that needs to be in the RPM package list if we don't want it to be removed
+  # during RPM upgrades. (the old files from the RPM file listthat are not in the new RPM file
+  # list will get removed, that's why we need this one here)
+  extra_package_file '/usr/bin/dd-agent'
 
   # Linux-specific dependencies
   dependency 'procps-ng'
