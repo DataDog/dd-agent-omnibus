@@ -20,6 +20,9 @@
       Description="Datadog Agent v$(var.DisplayVersionNumber)" Manufacturer="!(loc.ManufacturerName)"
       InstallerVersion="100" Languages="1033" InstallPrivileges="elevated" Compressed="yes" />
 
+    <!-- No need to restart Windows after the installation -->
+    <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
+
     <!-- Make sure that we get rid of any older installation of the Agent -->
     <MajorUpgrade
       DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
