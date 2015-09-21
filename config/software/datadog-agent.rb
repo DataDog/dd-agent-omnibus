@@ -51,6 +51,7 @@ build do
       copy 'conf.d', '/etc/dd-agent/'
       mkdir '/etc/dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/datadog-agent'
+      touch '/usr/bin/dd-agent'
   end
 
   if osx?
