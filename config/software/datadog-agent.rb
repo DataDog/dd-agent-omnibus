@@ -173,6 +173,8 @@ build do
     command "\"#{windows_safe_path(install_dir)}\\embedded\\python\" setup.py py2exe"
     command 'XCOPY dist ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST /YSHI'
     command "COPY win32\\status.html ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST\\status.html"
+    # The GUI also needs to have the certificate in its folder to send e-mails via Flare
+    command "COPY datadog-cert.pem ..\\OMNIBUS_EXTRA_PACKAGE_FILES\\DIST\\datadog-cert.pem"
 
     # Let's move the service file out of that directory so that it's not processed by heat and we
     # can add it manually, as a service executable, in our source.wxs file as if nothing happened
