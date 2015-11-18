@@ -44,9 +44,11 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -e AGENT_BRANCH=$AGENT_BRANCH \
   -e AGENT_VERSION=$AGENT_VERSION \
   -e RPM_SIGNING_PASSPHRASE=$RPM_SIGNING_PASSPHRASE \
+  -e $LOCAL_AGENT_REPO=/dd-agent-repo # Only to use if you want to build from a local repo \
   -v `pwd`/pkg:/dd-agent-omnibus/pkg \
   -v `pwd`/keys:/keys \
   -v "`pwd`/cache/$PLATFORM:/var/cache/omnibus" \
+  -v $LOCAL_AGENT_REPO:/dd-agent-repo # Only to use if you want to build from a local repo \
   "datadog/docker-dd-agent-build-$PLATFORM"
 
 # Cleanup (necessary to launch another build)
