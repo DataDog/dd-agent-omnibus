@@ -129,6 +129,7 @@ dependency 'pyyaml'
 dependency 'simplejson'
 dependency 'supervisor'
 dependency 'tornado'
+dependency 'uptime'
 dependency 'uuid'
 dependency 'zlib'
 
