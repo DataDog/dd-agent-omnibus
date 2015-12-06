@@ -55,12 +55,14 @@ GEM
     thor (0.19.1)
     uber-s3 (0.2.4)
       mime-types (~> 1.17)
+    win32-process (0.8.2)
+      ffi (>= 1.0.0)
     wmi-lite (1.0.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  httparty
   omnibus!
   omnibus-software!
+  win32-process
