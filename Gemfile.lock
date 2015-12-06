@@ -1,0 +1,66 @@
+GIT
+  remote: git://github.com/datadog/omnibus-ruby.git
+  revision: 94adccffc40f78cae950c6dc907d18c29b1d36c5
+  branch: etienne/windows
+  specs:
+    omnibus (4.0.0)
+      chef-sugar (~> 2.2)
+      cleanroom (~> 1.0)
+      httparty
+      mixlib-shellout (~> 1.4)
+      ohai (~> 7.2)
+      thor (~> 0.18)
+      uber-s3
+
+GIT
+  remote: git://github.com/datadog/omnibus-software.git
+  revision: 53adcf18616560874b4a1d8d531d2b7576d8a31c
+  branch: etienne/windows
+  specs:
+    omnibus-software (3.0.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    chef-sugar (2.5.0)
+    cleanroom (1.0.0)
+    ffi (1.9.10)
+    ffi-yajl (1.4.0)
+      ffi (~> 1.5)
+      libyajl2 (~> 1.2)
+    httparty (0.13.7)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    ipaddress (0.8.0)
+    json (1.8.3)
+    libyajl2 (1.2.0)
+    mime-types (1.25.1)
+    mixlib-cli (1.5.0)
+    mixlib-config (2.2.1)
+    mixlib-log (1.6.0)
+    mixlib-shellout (1.6.1)
+    multi_xml (0.5.5)
+    ohai (7.4.1)
+      ffi (~> 1.9)
+      ffi-yajl (~> 1.1)
+      ipaddress
+      mime-types (~> 1.16)
+      mixlib-cli
+      mixlib-config (~> 2.0)
+      mixlib-log
+      mixlib-shellout (~> 1.2)
+      systemu (~> 2.6.4)
+      wmi-lite (~> 1.0)
+    systemu (2.6.5)
+    thor (0.19.1)
+    uber-s3 (0.2.4)
+      mime-types (~> 1.17)
+    wmi-lite (1.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  httparty
+  omnibus!
+  omnibus-software!
