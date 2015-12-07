@@ -77,5 +77,8 @@ DEPENDENCIES
   omnibus!
   omnibus-software!
   win32-api
-  win32-process (~> 0.7.1)
-  windows-pr (~> 1.2.2)
+  win32-process
+  windows-pr
+
+BUNDLED WITH
+   1.10.6
