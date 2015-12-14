@@ -159,6 +159,7 @@ else
   dependency 'pywin32'
   dependency 'py2exe'
   dependency 'psutil'
+  dependency 'wmi'
 end
 
 # Mac and Windows
