@@ -52,6 +52,9 @@ build do
       mkdir '/etc/dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/datadog-agent'
       touch '/usr/bin/dd-agent'
+
+      # Python-compile python's .py files so that the .pyc files have up-to-date timestamps with their .py counterparts
+      command "find #{install_dir}/embedded -name '*.pyc' | sed s/\\.pyc$/\\.py/ | #{install_dir}/embedded/bin/python -m compileall -q -i -"
   end
 
   if osx?
