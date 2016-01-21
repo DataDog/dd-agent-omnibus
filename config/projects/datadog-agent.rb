@@ -153,6 +153,9 @@ dependency 'pyvmomi'
 dependency 'requests'
 dependency 'snakebite'
 
+# Additional software
+dependency 'datadogpy'
+
 # Datadog gohai is built last before dataadog agent since it should always
 # be rebuilt (if put above, it would dirty the cache of the dependencies below
 # and trigger a useless rebuild of many packages)
