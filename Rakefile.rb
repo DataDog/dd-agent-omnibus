@@ -25,7 +25,7 @@ namespace :agent do
     sh "cd #{PROJECT_DIR} && bundle update"
     puts "building integration #{ENV['INTEGRATION']}"
 
-    header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% version=\"#{ENV['VERSION']}\" %>"
+    header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% version=\"#{ENV['VERSION']}\" %> \n <% build_iteration=\"#{ENV['BUILD_ITERATION']}\" %>"
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
 
     header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% core_integrations=\"#{CORE_INTEGRATIONS_DIR}\" %>"
