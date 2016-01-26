@@ -1,9 +1,24 @@
 name "dd-check-<%= name %>-software"
 default_version "0.0.1"
 
+require 'json'
+require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
+integration_source_folder = '<%= core_integrations %>/<%= name %>/'
+
+
 build do
+  # validate manifest.json
+  manifest = JSON.parse(File.read("#{integration_source_folder}/manifest.json"))
+  validate_manifest(manifest)
+
+  # copy files
   mkdir "#{install_dir}/3rd-party/<%= name %>"
-  copy "<%= core_integrations %>/<%= name %>/check.py", "#{install_dir}/agent/checks.d/<%= name %>.py"
-  copy "<%= core_integrations %>/<%= name %>/conf.yaml.example", "/etc/dd-agent/conf.d/<%= name %>.yaml.example"
-  command "#{install_dir}/embedded/bin/pip install -I --target=#{install_dir}/3rd-party/<%= name %> -r <%= core_integrations %>/<%= name %>/requirements.txt"
+  copy "#{integration_source_folder}/check.py", "#{install_dir}/agent/checks.d/<%= name %>.py"
+  copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/<%= name %>.yaml.example"
+  for file in ["manifest.json"]
+    copy "#{integration_source_folder}/#{file}", "#{install_dir}/3rd-party/<%= name %>/#{file}"
+  end
+
+  # install requirements
+  command "#{install_dir}/embedded/bin/pip install -I --target=#{install_dir}/3rd-party/<%= name %> -r #{integration_source_folder}/requirements.txt"
 end

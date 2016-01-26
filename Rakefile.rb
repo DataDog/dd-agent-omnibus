@@ -28,7 +28,7 @@ namespace :agent do
     header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% version=\"#{ENV['VERSION']}\" %> \n <% build_iteration=\"#{ENV['BUILD_ITERATION']}\" %>"
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
 
-    header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% core_integrations=\"#{CORE_INTEGRATIONS_DIR}\" %>"
+    header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% core_integrations=\"#{CORE_INTEGRATIONS_DIR}\" %> \n <% PROJECT_DIR=\"#{PROJECT_DIR}\" %>"
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
 
     sh "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{ENV['INTEGRATION']}"
