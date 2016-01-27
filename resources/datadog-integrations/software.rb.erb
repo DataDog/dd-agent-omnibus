@@ -15,11 +15,11 @@ build do
   mkdir "#{integration_agent_folder}"
   copy "#{integration_source_folder}/check.py", "#{install_dir}/agent/checks.d/<%= name %>.py"
   copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/<%= name %>.yaml.example"
-  command "echo \"#{integration_agent_folder}\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
+  command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
   for file in ["manifest.json"]
     copy "#{integration_source_folder}/#{file}", "#{install_dir}/3rd-party/<%= name %>/#{file}"
   end
 
   # install requirements
-  command "#{install_dir}/embedded/bin/pip install -I --target=#{install_dir}/3rd-party/<%= name %> -r #{integration_source_folder}/requirements.txt"
+  command "#{install_dir}/embedded/bin/pip install -I --target=#{install_dir}/3rd-party/<%= name %>/lib -r #{integration_source_folder}/requirements.txt"
 end
