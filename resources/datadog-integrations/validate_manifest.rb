@@ -7,7 +7,7 @@ def validate_manifest(manifest_hash)
 end
 
 def validate_manifest_0_1_0(manifest_hash)
-  mandatory_fields = ['version', 'name', 'min_agent_version']
+  mandatory_fields = ['version', 'name', 'min_agent_version', 'support']
   mandatory_fields.each do |field|
     raise "manifest.json needs proper fields, currently missing #{field}. Please refer to documentation" unless manifest_hash.key?(field)
   end
