@@ -25,10 +25,18 @@ namespace :agent do
     sh "cd #{PROJECT_DIR} && bundle update"
     puts "building integration #{ENV['INTEGRATION']}"
 
-    header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% version=\"#{ENV['VERSION']}\" %> \n <% build_iteration=\"#{ENV['BUILD_ITERATION']}\" %>"
+    header = erb_header({
+      'name' => "#{ENV['INTEGRATION']}",
+      'version' => "#{ENV['VERSION']}",
+      'build_iteration' => "#{ENV['BUILD_ITERATION']}"
+    })
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
 
-    header="<% name=\"#{ENV['INTEGRATION']}\" %> \n <% core_integrations=\"#{CORE_INTEGRATIONS_DIR}\" %> \n <% PROJECT_DIR=\"#{PROJECT_DIR}\" %>"
+    header = erb_header({
+      'name' => "#{ENV['INTEGRATION']}",
+      'PROJECT_DIR' => "#{PROJECT_DIR}",
+      'core_integrations' => "#{CORE_INTEGRATIONS_DIR}"
+    })
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
 
     sh "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{ENV['INTEGRATION']}"
@@ -50,4 +58,14 @@ namespace :env do
     # If an RPM_SIGNING_PASSPHRASE has been passed, let's import the signing key
     sh "if [ \"$RPM_SIGNING_PASSPHRASE\" ]; then gpg --import /keys/RPM-SIGNING-KEY.private; fi"
   end
+end
+
+def erb_header(variables)
+  # ERB does not support setting template variables on the command line
+  # this method generates a header usable by a ERB file
+  out = ""
+  variables.each do |key, value|
+    out += "<% #{key}=\"#{value}\" %>"
+  end
+  out
 end
