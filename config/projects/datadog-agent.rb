@@ -151,6 +151,7 @@ dependency 'python-redis'
 dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'requests'
+dependency 'scandir'
 dependency 'snakebite'
 
 # Additional software
