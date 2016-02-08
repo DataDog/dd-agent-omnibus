@@ -28,8 +28,14 @@ else
     exit 1;
 fi
 
-# Delete all.pyc files
+# Delete all.pyc files in the agent's dir
 find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
 
-exit 0
+# Delete all the .pyc files in the embedded dir that are part of the agent's package
+# (i.e. not from packages installed manually by the user)
+if [ -f "/opt/datadog-agent/embedded/.py_compiled_files.txt" ]; then
+    # (commented lines are filtered out)
+    cat /opt/datadog-agent/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
+fi
 
+exit 0

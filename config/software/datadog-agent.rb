@@ -53,8 +53,10 @@ build do
       command 'chmod 755 /etc/init.d/datadog-agent'
       touch '/usr/bin/dd-agent'
 
-      # Python-compile python's .py files so that the .pyc files have up-to-date timestamps with their .py counterparts
-      command "find #{install_dir}/embedded -name '*.pyc' | sed s/\\.pyc$/\\.py/ | #{install_dir}/embedded/bin/python -m compileall -q -i -"
+      # Remove the .pyc and .pyo files from the package and list them in a file
+      # so that the prerm script knows which compiled files to remove
+      command "echo '# DO NOT REMOVE/MODIFY - used by package removal tasks' > #{install_dir}/embedded/.py_compiled_files.txt"
+      command "find #{install_dir}/embedded '(' -name '*.pyc' -o -name '*.pyo' ')' -type f -delete -print >> #{install_dir}/embedded/.py_compiled_files.txt"
   end
 
   if osx?
