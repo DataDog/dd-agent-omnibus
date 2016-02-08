@@ -1,0 +1,9 @@
+name "dd-check-<%= name %>-software"
+default_version "0.0.1"
+
+build do
+  mkdir "#{install_dir}/3rd-party/<%= name %>"
+  copy "<%= core_integrations %>/<%= name %>/check.py", "#{install_dir}/agent/checks.d/<%= name %>.py"
+  copy "<%= core_integrations %>/<%= name %>/conf.yaml.example", "/etc/dd-agent/conf.d/<%= name %>.yaml.example"
+  command "#{install_dir}/embedded/bin/pip install -I --target=#{install_dir}/3rd-party/<%= name %> -r <%= core_integrations %>/<%= name %>/requirements.txt"
+end
