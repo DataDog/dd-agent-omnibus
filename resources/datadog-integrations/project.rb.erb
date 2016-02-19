@@ -5,6 +5,7 @@ install_dir '/opt/datadog-agent'
 
 build_version '<%= version %>'
 build_iteration <%= build_iteration %>
+json_manifest_path "#{install_dir}/3rd-party/<%= name %>/version-manifest.json"
 
 description '<%= name %> Integration for Datadog Monitoring Agent
  The Datadog Monitoring Agent is a lightweight process that monitors system
