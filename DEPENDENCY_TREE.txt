@@ -7,6 +7,7 @@ boto
 *** cmake
 ** curl
 datadog-gohai
+datadog-metro L
 * futures
 ** gdbm
 gui M W
