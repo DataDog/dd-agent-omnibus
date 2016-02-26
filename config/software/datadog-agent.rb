@@ -119,7 +119,7 @@ build do
 
     # conf
     mkdir "#{install_dir}/etc"
-    command "grep -v 'user=dd-agent' packaging/supervisor.conf > #{install_dir}/etc/supervisor.conf"
+    copy "packaging/osx/supervisor.conf", "#{install_dir}/etc/supervisor.conf"
     copy 'datadog.conf.example', "#{install_dir}/etc/datadog.conf.example"
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
