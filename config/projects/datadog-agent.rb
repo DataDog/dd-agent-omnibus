@@ -157,11 +157,13 @@ dependency 'snakebite'
 # Additional software
 dependency 'datadogpy'
 
-# Datadog gohai is built last before dataadog agent since it should always
-# be rebuilt (if put above, it would dirty the cache of the dependencies below
+# datadog-gohai and datadog-metro are built last before datadog-agent since they should always
+# be rebuilt (if put above, they would dirty the cache of the dependencies below
 # and trigger a useless rebuild of many packages)
 dependency 'datadog-gohai'
-dependency 'datadog-metro'
+if linux?
+  dependency 'datadog-metro'
+end
 
 # Datadog agent
 dependency 'datadog-agent'
