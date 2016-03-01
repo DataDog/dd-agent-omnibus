@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: git://github.com/datadog/omnibus-software.git
-  revision: 325cbbacbc9e727b2bac08e6ffbf69ef4e597ea3
+  revision: 8dd1a131886fca5846da717b9041ffc732b3ac75
   branch: quentin/omnibus-5.0
   specs:
     omnibus-software (3.0.0)
@@ -24,12 +24,12 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aws-sdk (2.2.19)
-      aws-sdk-resources (= 2.2.19)
-    aws-sdk-core (2.2.19)
+    aws-sdk (2.2.20)
+      aws-sdk-resources (= 2.2.20)
+    aws-sdk-core (2.2.20)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.2.19)
-      aws-sdk-core (= 2.2.19)
+    aws-sdk-resources (2.2.20)
+      aws-sdk-core (= 2.2.20)
     chef-config (12.7.2)
       mixlib-config (~> 2.0)
       mixlib-shellout (~> 2.0)
