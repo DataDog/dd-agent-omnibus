@@ -1,6 +1,16 @@
 #! /bin/sh
 LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue)
 
+remove_py_compiled_files()
+{
+    # Delete all the .pyc files in the embedded dir that are part of the agent's package
+    if [ -f "/opt/datadog-agent/embedded/.py_compiled_files.txt" ]; then
+        # (commented lines are filtered out)
+        cat /opt/datadog-agent/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
+    fi
+}
+
+
 if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$LINUX_DISTRIBUTION" == "Ubuntu" ]; then
     if command -v invoke-rc.d >/dev/null 2>&1; then
         invoke-rc.d datadog-agent stop || true
@@ -11,14 +21,19 @@ if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$
     else
         /etc/init.d/datadog-agent stop || true
     fi
+
+    remove_py_compiled_files
 elif [ -f "/etc/redhat-release" ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
     case "$*" in
           0)
             # We're uninstalling.
             /etc/init.d/datadog-agent stop
+
+            remove_py_compiled_files
             ;;
           1)
             # We're upgrading. Do nothing.
+            # The preinst script has taken care of removing the .pyc/.pyo files
             ;;
           *)
             ;;
@@ -30,12 +45,5 @@ fi
 
 # Delete all.pyc files in the agent's dir
 find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
-
-# Delete all the .pyc files in the embedded dir that are part of the agent's package
-# (i.e. not from packages installed manually by the user)
-if [ -f "/opt/datadog-agent/embedded/.py_compiled_files.txt" ]; then
-    # (commented lines are filtered out)
-    cat /opt/datadog-agent/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
-fi
 
 exit 0
