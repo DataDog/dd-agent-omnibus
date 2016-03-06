@@ -97,8 +97,7 @@
             Start="auto" Type="ownProcess" Vital="yes" Interactive="no" Account="LocalSystem">
               <ServiceDependency Id="winmgmt" />
           </ServiceInstall>
-          <ServiceControl Id="StartService" Name="DatadogAgent" Start="install" Stop="both"
-            Remove="uninstall" Wait="no" />
+          <ServiceControl Id="StartService" Name="DatadogAgent" Start="install" Stop="both" Remove="uninstall" Wait="no" />
         </Component>
       </Directory>
     </DirectoryRef>
