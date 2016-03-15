@@ -77,6 +77,10 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/dd-agent
   chown -R dd-agent:root /usr/bin/dd-agent
   chmod 755 /usr/bin/dd-agent
+  
+  ln -sf $INSTALL_DIR/agent/bernard.py /usr/bin/bernard
+  chown -R dd-agent:root /usr/bin/bernard
+  chmod 755 /usr/bin/bernard
 
   # The configcheck call will return zero if the config is valid, which means we
   # can restart the agent without taking the risk to trigger an error in the
