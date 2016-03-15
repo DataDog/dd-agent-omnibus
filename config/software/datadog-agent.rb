@@ -57,6 +57,10 @@ build do
       mkdir '/etc/dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/datadog-agent'
       touch '/usr/bin/dd-agent'
+      
+      # For bernard
+      command "sudo ln -sf /opt/datadog-agent/agent/bernard.py /usr/bin/bernard"
+      command "sudo chmod 755 /usr/bin/bernard"
 
       # Remove the .pyc and .pyo files from the package and list them in a file
       # so that the prerm script knows which compiled files to remove
