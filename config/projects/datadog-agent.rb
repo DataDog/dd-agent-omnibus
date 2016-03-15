@@ -78,9 +78,7 @@ if linux?
   # Debian
   if debian?
     extra_package_file '/lib/systemd/system/datadog-agent.service'
-    
-    # Make sure bernard symlink is in there
-    extra_package_file '/usr/bin/bernard'
+
   end
 
   # SysVInit service file
