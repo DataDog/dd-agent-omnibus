@@ -135,6 +135,7 @@ dependency 'zlib'
 
 # Check dependencies
 dependency 'adodbapi'
+dependency 'dnspython'
 dependency 'httplib2'
 dependency 'kafka-python'
 dependency 'kazoo'
@@ -153,10 +154,16 @@ dependency 'pyvmomi'
 dependency 'requests'
 dependency 'snakebite'
 
-# Datadog gohai is built last before dataadog agent since it should always
-# be rebuilt (if put above, it would dirty the cache of the dependencies below
+# Additional software
+dependency 'datadogpy'
+
+# datadog-gohai and datadog-metro are built last before datadog-agent since they should always
+# be rebuilt (if put above, they would dirty the cache of the dependencies below
 # and trigger a useless rebuild of many packages)
 dependency 'datadog-gohai'
+if linux? and ohai['kernel']['machine'] == 'x86_64'
+  dependency 'datadog-metro'
+end
 
 # Datadog agent
 dependency 'datadog-agent'

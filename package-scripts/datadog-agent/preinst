@@ -43,6 +43,12 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     if [ -f "/etc/init.d/datadog-agent" ]; then
       /etc/init.d/datadog-agent stop || true
     fi
+
+    # Delete all the .pyc/.pyo files in the embedded dir that are part of the old agent's package
+    if [ -f "/opt/datadog-agent/embedded/.py_compiled_files.txt" ]; then
+        # (commented lines are filtered out)
+        cat /opt/datadog-agent/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
+    fi
   else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";
     exit 1;

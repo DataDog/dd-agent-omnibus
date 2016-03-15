@@ -1,3 +1,9 @@
+#! /bin/sh
+
+# This script is RPM-specific
+# It is run at the very end of an install/upgrade of the package
+# It is NOT run on removal of the package
+
 getent group dd-agent >/dev/null || groupadd -r dd-agent
 getent passwd dd-agent >/dev/null || \
     useradd -r -M -g dd-agent -d /usr/share/datadog/agent -s /bin/sh \
