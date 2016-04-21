@@ -19,10 +19,10 @@ name "traffic-collector"
 # A software can specify more than one version that is available for install
 # version("#{version}") { source url: "https://github.com/DataDog/dd-agent/archive/#{version}.tar.gz" }
 source url: "https://s3.amazonaws.com/bin.netsil.io/rpcapd/traffic-collector.tar.gz",
-       md5: "d31852ee6a16135514fc374390213e98"
+       md5: "6f995d41797206265b443828fcb055ae"
 
 # This is the path, inside the tarball, where the source resides
-relative_path "."
+relative_path "traffic-collector"
 
 puts "#{project_dir}"
 
