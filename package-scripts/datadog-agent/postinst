@@ -23,7 +23,7 @@ fi
 # Linux installation
 if [ "$DISTRIBUTION" != "Darwin" ]; then
   # Linus specific variables
-  CONFIG_DIR=/etc/dd-agent
+  CONFIG_DIR=/etc/netsil-dd-agent
 
   # Since we now package our own supervisor config, we no longer want
   # the old config to be loaded. Since supervisor automatically loads

@@ -28,8 +28,8 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
 
     # Previous versions of dd-agent created this file but didn't do
     # anything with it.
-    if [ -f "/etc/dd-agent/supervisor_ddagent.conf" ]; then
-        rm /etc/dd-agent/supervisor_ddagent.conf
+    if [ -f "/etc/netsil-dd-agent/supervisor_ddagent.conf" ]; then
+        rm /etc/netsil-dd-agent/supervisor_ddagent.conf
     fi
 
     #DEBHELPER#

@@ -36,7 +36,7 @@ build do
 
   if linux?
     # Configuration files
-    mkdir '/etc/dd-agent'
+    mkdir '/etc/netsil-dd-agent'
       if ohai['platform_family'] == 'rhel'
         copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
       elsif ohai['platform_family'] == 'debian'
@@ -48,13 +48,13 @@ build do
       end
       # Use a supervisor conf with go-metro on 64-bit platforms only
       if ohai['kernel']['machine'] == 'x86_64'
-        copy 'packaging/supervisor.conf', '/etc/dd-agent/supervisor.conf'
+        copy 'packaging/supervisor.conf', '/etc/netsil-dd-agent/supervisor.conf'
       else
-        copy 'packaging/supervisor_32.conf', '/etc/dd-agent/supervisor.conf'
+        copy 'packaging/supervisor_32.conf', '/etc/netsil-dd-agent/supervisor.conf'
       end
-      copy 'datadog.conf.example', '/etc/dd-agent/datadog.conf.example'
-      copy 'conf.d', '/etc/dd-agent/'
-      mkdir '/etc/dd-agent/checks.d/'
+      copy 'datadog.conf.example', '/etc/netsil-dd-agent/datadog.conf.example'
+      copy 'conf.d', '/etc/netsil-dd-agent/'
+      mkdir '/etc/netsil-dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/datadog-agent'
       touch '/usr/bin/dd-agent'
 
