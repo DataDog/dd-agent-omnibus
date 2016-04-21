@@ -43,13 +43,13 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
               update-rc.d datadog-agent enable >/dev/null 2>&1
               # Only add dd-agent user if it doesn't already exist
               set +e
-              id -u dd-agent >/dev/null 2>&1
+              id -u netsil-dd-agent >/dev/null 2>&1
               USER_EXISTS=$?
               set -e
               if [ ! $USER_EXISTS -eq 0 ]; then
-                  echo "Creating dd-agent user"
-                  adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
-                  usermod -d /opt/netsil/collectors dd-agent
+                  echo "Creating netsil-dd-agent user"
+                  adduser --system netsil-dd-agent --disabled-login --shell /bin/sh --no-create-home --quiet
+                  usermod -d /opt/netsil/collectors netsil-dd-agent
               fi
               set +e
           ;;
@@ -62,21 +62,21 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       #DEBHELPER#
   fi
 
-  # Set proper rights to the dd-agent user
-  chown -R dd-agent:root ${CONFIG_DIR}
-  chown -R dd-agent:root ${LOG_DIR}
+  # Set proper rights to the netsil-dd-agent user
+  chown -R netsil-dd-agent:root ${CONFIG_DIR}
+  chown -R netsil-dd-agent:root ${LOG_DIR}
   chown root:root /etc/init.d/netsil-datadog-agent
   chown -R root:root /opt/netsil/collectors
-  chown -R dd-agent:root ${RUN_DIR}
+  chown -R netsil-dd-agent:root ${RUN_DIR}
 
   if command -v chkconfig >/dev/null 2>&1; then
       chkconfig --add datadog-agent
   fi
 
   # Create symlinks to the various agent's components
-  ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/dd-agent
-  chown -R dd-agent:root /usr/bin/dd-agent
-  chmod 755 /usr/bin/dd-agent
+  ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/netsil-dd-agent
+  chown -R netsil-dd-agent:root /usr/bin/netsil-dd-agent
+  chmod 755 /usr/bin/netsil-dd-agent
 
   # The configcheck call will return zero if the config is valid, which means we
   # can restart the agent without taking the risk to trigger an error in the
@@ -173,7 +173,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
 
   # `datadog-agent` command line
   mkdir -vp /usr/local/bin
-  ln -vs $INSTALL_DIR/bin/datadog-agent /usr/local/bin/datadog-agent
+  ln -vs $INSTALL_DIR/bin/datadog-agent /usr/local/bin/netsil-datadog-agent
 
   # Link for conf files (let's ease the user's life)
   USER_HOME=`sudo -Hu $INSTALL_USER sh -c 'echo $HOME'`

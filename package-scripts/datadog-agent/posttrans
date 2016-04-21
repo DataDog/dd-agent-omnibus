@@ -4,9 +4,9 @@
 # It is run at the very end of an install/upgrade of the package
 # It is NOT run on removal of the package
 
-getent group dd-agent >/dev/null || groupadd -r dd-agent
-getent passwd dd-agent >/dev/null || \
-    useradd -r -M -g dd-agent -d /usr/share/datadog/agent -s /bin/sh \
-    -c "Datadog Agent" dd-agent
+getent group netsil-dd-agent >/dev/null || groupadd -r netsil-dd-agent
+getent passwd netsil-dd-agent >/dev/null || \
+    useradd -r -M -g netsil-dd-agent -d /usr/share/netsil-datadog/agent -s /bin/sh \
+    -c "Datadog Agent" netsil-dd-agent
 /etc/init.d/netsil-datadog-agent restart
 exit 0

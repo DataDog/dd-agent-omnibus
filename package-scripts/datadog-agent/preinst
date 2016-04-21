@@ -12,7 +12,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     set -e
     if [ -f "/etc/init.d/netsil-datadog-agent" ]; then
       if command -v invoke-rc.d >/dev/null 2>&1; then
-        invoke-rc.d datadog-agent stop || true
+        invoke-rc.d netsil-datadog-agent stop || true
       else
         /etc/init.d/netsil-datadog-agent stop || true
       fi
@@ -35,10 +35,10 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     #DEBHELPER#
 
   elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ]; then
-    getent group dd-agent >/dev/null || groupadd -r dd-agent
-    getent passwd dd-agent >/dev/null || \
-      useradd -r -M -g dd-agent -d $INSTALL_DIR -s /bin/sh \
-        -c "Datadog Agent" dd-agent
+    getent group netsil-dd-agent >/dev/null || groupadd -r netsil-dd-agent
+    getent passwd netsil-dd-agent >/dev/null || \
+      useradd -r -M -g netsil-dd-agent -d $INSTALL_DIR -s /bin/sh \
+        -c "Datadog Agent" netsil-dd-agent
     # Stop the old agent before installing
     if [ -f "/etc/init.d/netsil-datadog-agent" ]; then
       /etc/init.d/netsil-datadog-agent stop || true
@@ -66,7 +66,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   rm -f $INSTALL_DIR/agent/checks/utils.py
 
 elif [ "$DISTRIBUTION" = "Darwin" ]; then
-  DD_COMMAND="$INSTALL_DIR/bin/datadog-agent"
+  DD_COMMAND="$INSTALL_DIR/bin/netsil-datadog-agent"
   CONF_DIR="$INSTALL_DIR/etc"
   APP_DIR="/Applications/Datadog Agent.app"
 
@@ -97,7 +97,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   fi
 
   echo '# Deleting old datadog-agent link'
-  rm -vf /usr/local/bin/datadog-agent
+  rm -vf /usr/local/bin/netsil-datadog-agent
 
   echo '# Deleting old datadog-agent files'
   rm -rf $INSTALL_DIR/agent || true
