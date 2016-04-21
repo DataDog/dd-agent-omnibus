@@ -56,7 +56,7 @@ build do
       copy 'conf.d', '/etc/netsil-dd-agent/'
       mkdir '/etc/netsil-dd-agent/checks.d/'
       command 'chmod 755 /etc/init.d/netsil-datadog-agent'
-      touch '/usr/bin/dd-agent'
+      touch '/usr/bin/netsil-dd-agent'
 
       # Remove the .pyc and .pyo files from the package and list them in a file
       # so that the prerm script knows which compiled files to remove
