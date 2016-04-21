@@ -3,7 +3,7 @@ require "./lib/ostools.rb"
 name 'netsil-collectors'
 maintainer 'Netsil collectors <kevin@netsil.com>'
 homepage 'http://www.netsil.com'
-install_dir '/opt/datadog-agent'
+install_dir '/opt/netsil/collectors'
 
 build_version do
   source :git, from_dependency: 'datadog-agent'

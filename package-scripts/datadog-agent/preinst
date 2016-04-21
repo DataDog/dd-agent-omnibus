@@ -1,6 +1,6 @@
 #! /bin/sh
 
-INSTALL_DIR=/opt/datadog-agent
+INSTALL_DIR=/opt/netsil/collectors
 LOG_DIR=/var/log/datadog
 mkdir -p $LOG_DIR
 
@@ -45,9 +45,9 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     fi
 
     # Delete all the .pyc/.pyo files in the embedded dir that are part of the old agent's package
-    if [ -f "/opt/datadog-agent/embedded/.py_compiled_files.txt" ]; then
+    if [ -f "/opt/netsil/collectors/embedded/.py_compiled_files.txt" ]; then
         # (commented lines are filtered out)
-        cat /opt/datadog-agent/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
+        cat /opt/netsil/collectors/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
     fi
   else
     echo "[ ${Red}FAILED ${RCol}]\tYour system is currently not supported by this script.";

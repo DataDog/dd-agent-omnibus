@@ -43,8 +43,8 @@ build do
         copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
         mkdir '/lib/systemd/system'
         copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
-        copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
-        command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+        copy 'packaging/debian/start_agent.sh', "#{install_dir}/bin/start_agent.sh"
+        command "chmod 755 #{install_dir}/bin/start_agent.sh"
       end
       # Use a supervisor conf with go-metro on 64-bit platforms only
       if ohai['kernel']['machine'] == 'x86_64'

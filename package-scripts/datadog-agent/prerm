@@ -4,9 +4,9 @@ LINUX_DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /e
 remove_py_compiled_files()
 {
     # Delete all the .pyc files in the embedded dir that are part of the agent's package
-    if [ -f "/opt/datadog-agent/embedded/.py_compiled_files.txt" ]; then
+    if [ -f "/opt/netsil/collectors/embedded/.py_compiled_files.txt" ]; then
         # (commented lines are filtered out)
-        cat /opt/datadog-agent/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
+        cat /opt/netsil/collectors/embedded/.py_compiled_files.txt | grep -v '^#' | xargs rm -f
     fi
 }
 
@@ -44,6 +44,6 @@ else
 fi
 
 # Delete all.pyc files in the agent's dir
-find /opt/datadog-agent/agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
+find /opt/netsil/collectors/agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
 
 exit 0
