@@ -65,7 +65,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # Set proper rights to the dd-agent user
   chown -R dd-agent:root ${CONFIG_DIR}
   chown -R dd-agent:root ${LOG_DIR}
-  chown root:root /etc/init.d/datadog-agent
+  chown root:root /etc/init.d/netsil-datadog-agent
   chown -R root:root /opt/netsil/collectors
   chown -R dd-agent:root ${RUN_DIR}
 
@@ -85,14 +85,14 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # did its job and exist zero, otherwise, if the file exists but it's wrong we
   # have to return a non zero exit status so that the system (and the user) are
   # notified the installation went wrong.
-  /etc/init.d/datadog-agent configcheck
+  /etc/init.d/netsil-datadog-agent configcheck
   RETVAL=$?
   if [ $RETVAL -eq 0 ]; then
       echo "(Re)starting datadog-agent now..."
       if command -v invoke-rc.d >/dev/null 2>&1; then
           invoke-rc.d datadog-agent restart
       else
-          /etc/init.d/datadog-agent restart
+          /etc/init.d/netsil-datadog-agent restart
       fi
   fi
 

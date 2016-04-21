@@ -86,14 +86,14 @@ end
 if linux?
   # Debian
   if debian?
-    extra_package_file '/lib/systemd/system/datadog-agent.service'
+    extra_package_file '/lib/systemd/system/netsil-datadog-agent.service'
   end
 
   # SysVInit service file
   if redhat?
-    extra_package_file '/etc/rc.d/init.d/datadog-agent'
+    extra_package_file '/etc/rc.d/init.d/netsil-datadog-agent'
   else
-    extra_package_file '/etc/init.d/datadog-agent'
+    extra_package_file '/etc/init.d/netsil-datadog-agent'
   end
 
   # Supervisord config file for the agent
@@ -109,7 +109,7 @@ if linux?
   # Just a dummy file that needs to be in the RPM package list if we don't want it to be removed
   # during RPM upgrades. (the old files from the RPM file listthat are not in the new RPM file
   # list will get removed, that's why we need this one here)
-  extra_package_file '/usr/bin/dd-agent'
+  extra_package_file '/usr/bin/netsil-dd-agent'
 
   # Linux-specific dependencies
   dependency 'procps-ng'

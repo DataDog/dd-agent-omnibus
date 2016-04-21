@@ -38,9 +38,9 @@ build do
     # Configuration files
     mkdir '/etc/netsil-dd-agent'
       if ohai['platform_family'] == 'rhel'
-        copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
+        copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/netsil-datadog-agent'
       elsif ohai['platform_family'] == 'debian'
-        copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
+        copy 'packaging/debian/datadog-agent.init', '/etc/init.d/netsil-datadog-agent'
         mkdir '/lib/systemd/system'
         copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
         copy 'packaging/debian/start_agent.sh', "#{install_dir}/bin/start_agent.sh"
@@ -55,7 +55,7 @@ build do
       copy 'datadog.conf.example', '/etc/netsil-dd-agent/datadog.conf.example'
       copy 'conf.d', '/etc/netsil-dd-agent/'
       mkdir '/etc/netsil-dd-agent/checks.d/'
-      command 'chmod 755 /etc/init.d/datadog-agent'
+      command 'chmod 755 /etc/init.d/netsil-datadog-agent'
       touch '/usr/bin/dd-agent'
 
       # Remove the .pyc and .pyo files from the package and list them in a file

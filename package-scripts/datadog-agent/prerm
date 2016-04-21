@@ -19,7 +19,7 @@ if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$
         update-rc.d -f datadog-agent disable >/dev/null 2>&1
         update-rc.d -f datadog-agent remove
     else
-        /etc/init.d/datadog-agent stop || true
+        /etc/init.d/netsil-datadog-agent stop || true
     fi
 
     remove_py_compiled_files
@@ -27,7 +27,7 @@ elif [ -f "/etc/redhat-release" ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ 
     case "$*" in
           0)
             # We're uninstalling.
-            /etc/init.d/datadog-agent stop
+            /etc/init.d/netsil-datadog-agent stop
 
             remove_py_compiled_files
             ;;
