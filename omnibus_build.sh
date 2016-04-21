@@ -6,8 +6,8 @@
 #
 ############################
 
-PROJECT_DIR=dd-agent-omnibus
-PROJECT_NAME=datadog-agent
+PROJECT_DIR=netsil-omnibus
+PROJECT_NAME=netsil-collectors
 LOG_LEVEL=${LOG_LEVEL:-"info"}
 OMNIBUS_BRANCH=${OMNIBUS_BRANCH:-"master"}
 OMNIBUS_SOFTWARE_BRANCH=${OMNIBUS_SOFTWARE_BRANCH:-"master"}
