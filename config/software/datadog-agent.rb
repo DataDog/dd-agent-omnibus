@@ -42,7 +42,7 @@ build do
       elsif ohai['platform_family'] == 'debian'
         copy 'packaging/debian/datadog-agent.init', '/etc/init.d/netsil-datadog-agent'
         mkdir '/lib/systemd/system'
-        copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
+        copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/netsil-datadog-agent.service'
         copy 'packaging/debian/start_agent.sh', "#{install_dir}/bin/start_agent.sh"
         command "chmod 755 #{install_dir}/bin/start_agent.sh"
       end
