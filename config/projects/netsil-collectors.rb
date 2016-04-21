@@ -1,8 +1,8 @@
 require "./lib/ostools.rb"
 
-name 'datadog-agent'
-maintainer 'Datadog Packages <package@datadoghq.com>'
-homepage 'http://www.datadoghq.com'
+name 'netsil-collectors'
+maintainer 'Netsil collectors <kevin@netsil.com>'
+homepage 'http://www.netsil.com'
 install_dir '/opt/datadog-agent'
 
 build_version do
@@ -12,15 +12,24 @@ end
 
 build_iteration 1
 
-description 'Datadog Monitoring Agent
- The Datadog Monitoring Agent is a lightweight process that monitors system
- processes and services, and sends information back to your Datadog account.
- .
- This package installs and runs the advanced Agent daemon, which queues and
- forwards metrics from your applications as well as system services.
- .
- See http://www.datadoghq.com/ for more information
+description 'Netsil Collector Suite
+The Netsil Collector Suite bundles a traffic-collector, metadata-collector, 
+and a datadog-agent
 '
+#description 'Datadog Monitoring Agent
+# The Datadog Monitoring Agent is a lightweight process that monitors system
+# processes and services, and sends information back to your Datadog account.
+# .
+# This package installs and runs the advanced Agent daemon, which queues and
+# forwards metrics from your applications as well as system services.
+# .
+# See http://www.datadoghq.com/ for more information
+#'
+
+#################################
+##### Install datadog-agent #####
+#################################
+# This file is "datadog-agent.rb" in the original dd-agent-omnibus repo
 
 # ------------------------------------
 # Generic package information
@@ -169,6 +178,14 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
+
+
+#####################################
+##### Install netsil-collectors #####
+#####################################
+dependency 'netsil-meta'
+dependency 'traffic-collector' 
+dependency 'metadata-collector' 
 
 # version manifest file
 dependency 'version-manifest'
