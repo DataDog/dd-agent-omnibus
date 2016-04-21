@@ -4,7 +4,7 @@ name 'datadog-agent'
 
 local_agent_repo = ENV['LOCAL_AGENT_REPO']
 if local_agent_repo.nil? || local_agent_repo.empty?
-  source git: 'https://github.com/DataDog/dd-agent.git'
+  source git: 'https://github.com/netsil/dd-agent.git'
 else
   # For local development
   source path: ENV['LOCAL_AGENT_REPO']

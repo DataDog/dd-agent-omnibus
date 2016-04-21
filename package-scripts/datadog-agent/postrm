@@ -7,9 +7,9 @@ if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$
     if [ "$1" = purge ]; then
         deluser dd-agent
         rm -rf /opt/netsil/collectors
-        rm -rf /var/log/datadog
+        rm -rf /var/log/netsil-datadog
         rm -rf /etc/netsil-dd-agent
-        rm -rf /var/log/datadog
+        rm -rf /var/log/netsil-datadog
     fi
 elif [ -f "/etc/redhat-release" ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
     case "$*" in
