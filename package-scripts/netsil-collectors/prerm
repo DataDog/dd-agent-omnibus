@@ -46,4 +46,13 @@ fi
 # Delete all.pyc files in the agent's dir
 find /opt/netsil/collectors/agent -name '*.py[co]' -type f -delete || echo 'Unable to delete .pyc files'
 
+##########################
+### Netsil pre-rm code ###
+##########################
+if [ -x "/opt/netsil/collectors/stop.sh" ] ; then
+   /opt/netsil/collectors/stop.sh
+else
+   echo "Stop script for netsil collectors does not exist or is not executable"
+fi
+
 exit 0
