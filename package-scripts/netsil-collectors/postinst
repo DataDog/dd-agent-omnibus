@@ -37,9 +37,9 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       set -e
       case "$1" in
           configure)
-              echo "Registering service datadog-agent"
+              echo "Registering service netsil-datadog-agent"
               update-rc.d netsil-datadog-agent defaults
-              echo "Enabling service datadog-agent"
+              echo "Enabling service netsil-datadog-agent"
               update-rc.d netsil-datadog-agent enable >/dev/null 2>&1
               # Only add dd-agent user if it doesn't already exist
               set +e
@@ -70,7 +70,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   chown -R netsil-dd-agent:root ${RUN_DIR}
 
   if command -v chkconfig >/dev/null 2>&1; then
-      chkconfig --add datadog-agent
+      chkconfig --add netsil-datadog-agent
   fi
 
   # Create symlinks to the various agent's components
