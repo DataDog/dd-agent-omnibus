@@ -20,7 +20,7 @@ name "netsil-meta"
 # Sources may be URLs, git locations, or path locations
 #source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors-meta.tar.gz",
 source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors.tar.gz",
-       md5: "9f13e7e30001ed22fa0eba405d6d7086"
+       md5: "66342a68553c2673f6edc7bd320d6301"
 
 # A software can specify more than one version that is available for install
 # version("1.2.6") { source md5: "618e944d7c7cd6521551e30b32322f4a" }

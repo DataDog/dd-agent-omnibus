@@ -88,9 +88,9 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   /etc/init.d/netsil-datadog-agent configcheck
   RETVAL=$?
   if [ $RETVAL -eq 0 ]; then
-      echo "(Re)starting datadog-agent now..."
+      echo "(Re)starting netsil datadog-agent now..."
       if command -v invoke-rc.d >/dev/null 2>&1; then
-          invoke-rc.d datadog-agent restart
+          invoke-rc.d netsil-datadog-agent restart
       else
           /etc/init.d/netsil-datadog-agent restart
       fi
