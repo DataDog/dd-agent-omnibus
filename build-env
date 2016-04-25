@@ -1,0 +1,7 @@
+export PLATFORM="deb-x64" 
+export AGENT_BRANCH="master" 
+export OMNIBUS_BRANCH="master" 
+export AGENT_VERSION="5.4.0" 
+export LOG_LEVEL="debug" 
+export LOCAL_AGENT_REPO="~/dd-agent" 
+#export RPM_SIGNING_PASSPHRASE="my_super_secret_passphrase"

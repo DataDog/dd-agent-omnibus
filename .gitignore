@@ -1,4 +1,4 @@
-
+build-env
 .bundle/*
 .vagrant/*
 bin/*
