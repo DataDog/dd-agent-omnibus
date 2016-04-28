@@ -26,24 +26,14 @@ relative_path "traffic-collector"
 
 puts "#{project_dir}"
 
-endpoint_env = 'NETSIL_SP_ENDPOINT'
-default_endpoint = 'localhost, 2003'
-
 build do
   # Setup a default environment from Omnibus - you should use this Omnibus
   # helper everywhere. It will become the default in the future.
   env = with_standard_compiler_flags(with_embedded_path)
 
-  # make sure env has a default netsil dd endpoint
-  if not env.key?(endpoint_env)
-    env[endpoint_env] = default_endpoint
-  end
-
   if linux?
     mkdir "#{install_dir}/traffic-collector/"
     copy 'rpcapd', "#{install_dir}/traffic-collector/"
-    # rpcapd.ini will be re-generated when fetching the package
-    copy 'rpcapd.ini', "#{install_dir}/traffic-collector/"
 
     # Install supervisor conf files
     mkdir "#{install_dir}/conf.d"
