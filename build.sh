@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ./build-env
+#source ./build-env
 
 mkdir -p pkg
 
