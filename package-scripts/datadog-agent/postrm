@@ -5,7 +5,10 @@ if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$
     set -e
 
     if [ "$1" = purge ]; then
-        deluser dd-agent
+        echo "Deleting dd-agent user"
+        deluser dd-agent --quiet
+        echo "Deleting dd-agent group"
+        getent group dd-agent >/dev/null && delgroup dd-agent --quiet || true
         rm -rf /opt/datadog-agent
         rm -rf /var/log/datadog
         rm -rf /etc/dd-agent
