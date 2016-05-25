@@ -1,12 +1,13 @@
 GIT
   remote: git://github.com/datadog/omnibus-ruby.git
-  revision: 264d45fe2cd04760534cfc8c355f1ba7f387aeca
-  branch: quentin/omnibus-5.0.0-datadog-patches
+  revision: 88de25b89ae9ed0291125e22e4111b8c5f512174
+  branch: quentin/omnibus-5.4.0-datadog-patches
   specs:
-    omnibus (5.0.0)
+    omnibus (5.4.0)
       aws-sdk (~> 2)
-      chef-sugar (~> 3.0)
+      chef-sugar (~> 3.3)
       cleanroom (~> 1.0)
+      ffi-yajl (~> 2.2)
       httparty
       mixlib-shellout (~> 2.0)
       mixlib-versioning
