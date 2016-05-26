@@ -30,7 +30,6 @@ build do
     copy 'checks.d', "#{install_dir}/agent/"
     copy 'checks', "#{install_dir}/agent/"
     copy 'dogstream', "#{install_dir}/agent/"
-    copy 'resources', "#{install_dir}/agent/"
     copy 'utils', "#{install_dir}/agent/"
   end
 
@@ -147,7 +146,7 @@ build do
 
   if windows?
     # Let's ship the usual (the copy DSL doesn't work on Windows)
-    %w(checks.d checks dogstream resources utils win32 datadog-cert.pem).each do |original_path|
+    %w(checks.d checks dogstream utils win32 datadog-cert.pem).each do |original_path|
       command "XCOPY #{original_path} \"#{windows_safe_path(install_dir)}\\agent\\#{original_path}\" /YSHI"
     end
 
