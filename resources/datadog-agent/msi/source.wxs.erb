@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
-
   <!-- This is how we include wxi files -->
   <?include "parameters.wxi" ?>
 
@@ -19,6 +18,13 @@
     <Package Id="*" Keywords="Installer" Comments="Copyright 2015 Datadog, Inc."
       Description="Datadog Agent v$(var.DisplayVersionNumber)" Manufacturer="!(loc.ManufacturerName)"
       InstallerVersion="100" Languages="1033" InstallPrivileges="elevated" Compressed="yes" />
+
+    <!-- This removes entirely the previous version -->
+    <Upgrade Id="$(var.UpgradeCode)">
+        <UpgradeVersion OnlyDetect='no' Property='PREVIOUSFOUND'
+            Minimum='1.0.0' IncludeMinimum='yes'
+            Maximum="$(var.DisplayVersionNumber)" IncludeMaximum='no'/>
+    </Upgrade>
 
     <!-- No need to restart Windows after the installation -->
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
@@ -98,6 +104,7 @@
               <ServiceDependency Id="winmgmt" />
           </ServiceInstall>
           <ServiceControl Id="StartService" Name="DatadogAgent" Start="install" Stop="both" Remove="uninstall" Wait="no" />
+          <RemoveFolder Id="APPLICATIONROOTDIRECTORY" On="uninstall" />
         </Component>
       </Directory>
     </DirectoryRef>
@@ -156,7 +163,7 @@
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
-    <Property Id="ARPHELPLINK" Value="http://www.getchef.com/" />
+    <Property Id="ARPHELPLINK" Value="https://datadoghq.com/" />
     <Property Id="WIXUI_INSTALLDIR" Value="<%= wix_install_dir %>" />
 
     <UIRef Id="ProjectUI_InstallDir"/>
