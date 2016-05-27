@@ -79,13 +79,11 @@ end
 package :msi do
   # For a consistent package management, please NEVER change this code
   upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
+  wix_light_extension 'WixUtilExtension'
   parameters({
     'InstallDir' => install_dir,
-    'ExampleConfigsWixFile' => "#{Omnibus::Config.source_dir()}\\dd-agent\\example-config-files.wxs",
-    'InstallFiles' => "#{Omnibus::Config.source_dir()}\\dd-agent\\packaging\\datadog-agent\\win32\\install_files",
-    'FindReplaceDir' => "#{Omnibus::Config.source_dir()}\\dd-agent\\packaging\\datadog-agent\\win32\\wix",
-    'ExampleConfigSourceDir' => "#{Omnibus::Config.source_dir()}\\dd-agent\\conf.d",
-    'AgentSourceDir' => "#{Omnibus::Config.source_dir()}\\dd-agent",
+    'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
+    'FindReplaceDir' => "#{Omnibus::Config.source_dir()}/dd-agent/packaging/datadog-agent/win32/wix",
   })
 end
 # Note: this is to try to avoid issues when upgrading from an
