@@ -89,13 +89,15 @@
     <CustomAction
         Id="LaunchApp"
         Directory="DIST"
+        Execute="immediate"
+        Return="check"
         ExeCommand="[SystemFolder]cmd.exe /C start agent-manager.exe" />
 
     <InstallExecuteSequence>
       <Custom Action="ReplaceAPIKey" Before="StartServices" />
       <Custom Action="ReplaceTags" Before="StartServices" />
       <Custom Action="ReplaceHostname" Before="StartServices" />
-      <Custom Action="LaunchApp" After="StartServices" />
+      <Custom Action="LaunchApp" After="InstallFinalize" />
     </InstallExecuteSequence>
 
     <!-- Let's ship our dist folder with the service and gui executables -->
@@ -133,14 +135,14 @@
     </DirectoryRef>
 
     <!-- Datadog Agent specific directory definitions -->
-    <DirectoryRef Id="APPLICATIONSPROGRAMSFOLDER">
+    <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="05206095-f4a0-4bb7-9ebd-80c7488dd7f9">
         <Shortcut Id="ApplicationStartMenuShortcut"
                   Name="Datadog Agent Manager"
                   Description="Manage your Datadog Agent"
                   Target="[DIST]agent-manager.exe"
                   WorkingDirectory="DIST"/>
-        <RemoveFolder Id="APPLICATIONSPROGRAMSFOLDER" On="uninstall"/>
+        <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
         <RegistryValue Root="HKCU"
                        Key="Software\Microsoft\Datadog"
                        Name="installed"
@@ -171,7 +173,7 @@
         </Component>
       </Directory>
 
-      <Directory Id="conf.d" Name= "conf.d">
+      <Directory Id="EXAMPLECONFSLOCATION" Name= "conf.d">
         <Component Id="conf.d"
                    Guid="54fcfacb-726b-46e3-a699-ec19258a24be"
                    Permanent="yes"

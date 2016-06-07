@@ -171,14 +171,12 @@ build do
     copy "datadog-cert.pem", "#{install_dir}/dist/datadog-cert.pem"
 
     # Special directories, which won't be installed at the same place than others (ProgramData)
-    mkdir "#{install_dir}/../extra_package_files"
-    mkdir "#{install_dir}/../extra_package_files/EXAMPLECONFSLOCATION"
+    mkdir "../../extra_package_files"
+    mkdir "../../extra_package_files/EXAMPLECONFSLOCATION"
 
     # This uses part of our fork of Omnibus. We copy "extra_package_files" that we want here
     # so that they can be harvested by heat, and shipped in the MSI by light
-    move "conf.d", "#{install_dir}/../extra_package_files/EXAMPLECONFSLOCATION"
-    copy 'packaging/datadog-agent/win32/install_files/datadog_win32.conf',
-         "#{install_dir}/datadog.conf.example"
+    copy "conf.d/*", "../../extra_package_files/EXAMPLECONFSLOCATION"
 
     # Weight-loss surgery
     command "#{install_dir}/embedded/Scripts/pip.exe uninstall -y PySide"

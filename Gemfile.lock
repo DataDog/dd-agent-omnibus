@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/datadog/omnibus-ruby.git
-  revision: e083e0c2225440cba4db1d6c65c2f5ec62381930
+  revision: c94190da99b25fd12da9409d281be8dd9d44dd83
   branch: quentin/omnibus-5.4.0-datadog-patches
   specs:
     omnibus (5.4.0)
@@ -25,12 +25,12 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aws-sdk (2.3.9)
-      aws-sdk-resources (= 2.3.9)
-    aws-sdk-core (2.3.9)
+    aws-sdk (2.3.11)
+      aws-sdk-resources (= 2.3.11)
+    aws-sdk-core (2.3.11)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.3.9)
-      aws-sdk-core (= 2.3.9)
+    aws-sdk-resources (2.3.11)
+      aws-sdk-core (= 2.3.11)
     chef-config (12.10.24)
       fuzzyurl (~> 0.8.0)
       mixlib-config (~> 2.0)
