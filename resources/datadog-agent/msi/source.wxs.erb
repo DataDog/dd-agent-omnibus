@@ -97,7 +97,6 @@
       <Custom Action="ReplaceAPIKey" Before="StartServices" />
       <Custom Action="ReplaceTags" Before="StartServices" />
       <Custom Action="ReplaceHostname" Before="StartServices" />
-      <Custom Action="LaunchApp" After="InstallFinalize" />
     </InstallExecuteSequence>
 
     <!-- Let's ship our dist folder with the service and gui executables -->
@@ -111,7 +110,7 @@
                 KeyPath="yes"
                 DiskId="1"
                 Source="$(var.ProjectSourceDir)/dist/ddagent.exe"/>
-          <ServiceInstall Id="ServiceInstaller"
+          <ServiceInstall Id="DatadogServiceInstaller"
                           DisplayName="Datadog Agent"
                           Description="Send metrics to Datadog"
                           Name="DatadogAgent"
@@ -123,7 +122,7 @@
                           Account="LocalSystem">
               <ServiceDependency Id="winmgmt" />
           </ServiceInstall>
-          <ServiceControl Id="StartService"
+          <ServiceControl Id="DatadogStartService"
                           Name="DatadogAgent"
                           Start="install"
                           Stop="both"
@@ -229,7 +228,7 @@
         Control="Finish"
         Event="DoAction"
         Value="LaunchApp">
-        WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
+        NOT Installed
       </Publish>
     </UI>
 
