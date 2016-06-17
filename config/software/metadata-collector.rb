@@ -19,7 +19,7 @@ name "metadata-collector"
 # A software can specify more than one version that is available for install
 # version("#{version}") { source url: "https://github.com/DataDog/dd-agent/archive/#{version}.tar.gz" }
 source url: "https://s3.amazonaws.com/bin.netsil.io/metadata-collector/metadata-collector.tar.gz",
-       md5: "5970be4fbcd7f66e29c04998151cec71"
+       md5: "595f6b4bd0b10c51f682ef4ecd05294b"
 
 # This is the path, inside the tarball, where the source resides
 relative_path "metadata-collector"
