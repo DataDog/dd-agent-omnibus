@@ -79,6 +79,8 @@ end
 package :msi do
   # For a consistent package management, please NEVER change this code
   upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
+  wix_candle_extension 'WixUtilExtension'
+  wix_light_extension 'WixUtilExtension'
   parameters({
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",

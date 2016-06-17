@@ -37,6 +37,15 @@
                         Maximum="$(var.DisplayVersionNumber)" IncludeMaximum='no'/>
     </Upgrade>
 
+    <!-- Close application when uninstalling -->
+    <util:CloseApplication Id="CloseAgentManager"
+                           Target="agent-manager.exe"
+                           PromptToContinue="no"
+                           CloseMessage="yes"
+                           TerminateProcess="1"
+                           Description="Please close the Agent Manager"
+                           RebootPrompt="no" />
+
     <!-- No need to restart Windows after the installation -->
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
 
