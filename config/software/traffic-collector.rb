@@ -34,9 +34,5 @@ build do
   if linux?
     mkdir "#{install_dir}/traffic-collector/"
     copy 'rpcapd', "#{install_dir}/traffic-collector/"
-
-    # Install supervisor conf files
-    mkdir "#{install_dir}/conf.d"
-    copy 'netsil-traffic-collector.conf', "#{install_dir}/conf.d/"
   end
 end

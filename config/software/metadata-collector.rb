@@ -42,9 +42,5 @@ build do
     copy 'requirements.txt', "#{install_dir}/metadata-collector/"
 
     command "#{install_dir}/embedded/bin/pip install -I --build #{project_dir} -r #{install_dir}/metadata-collector/requirements.txt"
-
-    # Install supervisor conf files
-    mkdir "#{install_dir}/conf.d"
-    copy 'netsil-metadata-collector.conf', "#{install_dir}/conf.d/"
   end
 end
