@@ -90,9 +90,13 @@ if linux?
   end
 
   # SysVInit service file
+  # luhkevin: We have replaced netsil-datadog-agent init script with a "master" init script
+  # This master init script will invoke the init of both the datadog-agent (now in our install_dir) and our own collectors
   if redhat?
+    extra_package_file '/etc/rc.d/init.d/netsil-collectors'
     extra_package_file '/etc/rc.d/init.d/netsil-datadog-agent'
   else
+    extra_package_file '/etc/init.d/netsil-collectors'
     extra_package_file '/etc/init.d/netsil-datadog-agent'
   end
 

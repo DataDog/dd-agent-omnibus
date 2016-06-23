@@ -36,13 +36,23 @@ build do
 
   if linux?
     # Configuration files
-    mkdir '/etc/netsil-dd-agent'
+      mkdir '/etc/netsil-dd-agent'
+      mkdir "#{install_dir}/conf.d/"
+      # luhkevin
+      # In a bunch of places, datadog's package-install scripts depend on netsil-datadog-agent existing in /etc/init.d directory
+      # So, we must keep the init script there
       if ohai['platform_family'] == 'rhel'
-        copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/netsil-datadog-agent'
+        copy 'packaging/centos/datadog-agent.init', "/etc/rc.d/init.d/netsil-datadog-agent"
+        command "chmod 755 /etc/rc.d/init.d/netsil-datadog-agent"
+        #copy 'packaging/centos/datadog-agent.init', "#{install_dir}/conf.d/netsil-datadog-agent-rhel"
+        #command "chmod 755 #{install_dir}/conf.d/netsil-datadog-agent-rhel"
       elsif ohai['platform_family'] == 'debian'
-        copy 'packaging/debian/datadog-agent.init', '/etc/init.d/netsil-datadog-agent'
+        #copy 'packaging/debian/datadog-agent.init', "#{install_dir}/conf.d/netsil-datadog-agent-debian"
+        #command "chmod 755 #{install_dir}/conf.d/netsil-datadog-agent-debian"
+        copy 'packaging/debian/datadog-agent.init', "/etc/init.d/netsil-datadog-agent"
+        command "chmod 755 /etc/init.d/netsil-datadog-agent"
         mkdir '/lib/systemd/system'
-        copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/netsil-datadog-agent.service'
+        copy 'packaging/debian/datadog-agent.service', "/lib/systemd/system/netsil-datadog-agent.service"
         copy 'packaging/debian/start_agent.sh', "#{install_dir}/bin/start_agent.sh"
         command "chmod 755 #{install_dir}/bin/start_agent.sh"
       end
@@ -55,7 +65,7 @@ build do
       copy 'datadog.conf.example', '/etc/netsil-dd-agent/datadog.conf.example'
       copy 'conf.d', '/etc/netsil-dd-agent/'
       mkdir '/etc/netsil-dd-agent/checks.d/'
-      command 'chmod 755 /etc/init.d/netsil-datadog-agent'
+      #command 'chmod 755 /etc/init.d/netsil-datadog-agent'
       touch '/usr/bin/netsil-dd-agent'
 
       # Remove the .pyc and .pyo files from the package and list them in a file

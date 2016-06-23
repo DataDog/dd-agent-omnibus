@@ -20,7 +20,7 @@ name "netsil-meta"
 # Sources may be URLs, git locations, or path locations
 #source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors-meta.tar.gz",
 source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors.tar.gz",
-       md5: "e0b67bf7650ec9c6a3e5effcc83619af"
+       md5: "67d1bb98efa3993e3fa5161a39e131a5"
 
 # A software can specify more than one version that is available for install
 # version("1.2.6") { source md5: "618e944d7c7cd6521551e30b32322f4a" }
@@ -34,26 +34,6 @@ build do
   # helper everywhere. It will become the default in the future.
   env = with_standard_compiler_flags(with_embedded_path)
 
-  # Manipulate any configure flags you wish:
-  #   For some reason zlib needs this flag on solaris
-  # env["CFLAGS"] << " -DNO_VIZ" if solaris?
-
-  # "command" is part of the build DSL. There are a number of handy options
-  # available, such as "copy", "sync", "ruby", etc. For a complete list, please
-  # consult the Omnibus gem documentation.
-  #
-  # "install_dir" is exposed and refers to the top-level projects +install_dir+
-  # command "./configure" \
-  #         " --prefix=#{install_dir}/embedded", env: env
-
-  # You can have multiple steps - they are executed in the order in which they
-  # are read.
-  #
-  # "workers" is a DSL method that returns the most suitable number of
-  # builders for the currently running system.
-  # command "make -j #{workers}", env: env
-  # command "make -j #{workers} install", env: env
-
   # Setup supervisor config
   if linux?
     mkdir "#{install_dir}/conf.d"
@@ -61,5 +41,19 @@ build do
     copy 'start.sh', "#{install_dir}/start.sh"
     copy 'stop.sh', "#{install_dir}/stop.sh"
     copy 'netsil-collectors.conf', "#{install_dir}/conf.d/"
+    copy 'netsil-collectors-logrotate', "#{install_dir}/conf.d/"
+
+    # Init scripts
+    if ohai['platform_family'] == 'rhel'
+        copy 'rhel/netsil-collectors.init', '/etc/rc.d/init.d/netsil-collectors'
+        copy 'rhel/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
+        command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
+    elsif ohai['platform_family'] == 'debian'
+        copy 'debian/netsil-collectors.init', '/etc/init.d/netsil-collectors'
+        copy 'debian/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
+        command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
+        mkdir '/lib/systemd/system'
+        copy 'debian/netsil-collectors.service', '/lib/systemd/system/netsil-collectors.service'
+    end
   end
 end
