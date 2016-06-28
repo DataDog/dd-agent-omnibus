@@ -81,6 +81,7 @@ package :msi do
   upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
   wix_candle_extension 'WixUtilExtension'
   wix_light_extension 'WixUtilExtension'
+  signing_identity "ECCDAE36FDCB654D2CBAB3E8975AA55469F96E4C", machine_store: true, algorithm: "SHA256"
   parameters({
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
