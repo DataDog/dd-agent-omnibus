@@ -69,45 +69,12 @@
       </Directory>
     </Directory>
 
-
-    <!-- Some commands to execute after a successfull installation of Datadog-Agent -->
-    <Binary Id="FindReplace" SourceFile="$(var.FindReplaceDir)\FindReplace.exe" />
-    <CustomAction
-        Id="ReplaceAPIKey"
-        BinaryKey="FindReplace"
-        ExeCommand='"[CommonAppDataFolder]\Datadog\datadog.conf" APIKEYHERE [APIKEY]'
-        Execute="deferred"
-        Return="check"
-        Impersonate="no" />
-
-    <CustomAction
-        Id="ReplaceTags"
-        BinaryKey="FindReplace"
-        ExeCommand='"[CommonAppDataFolder]\Datadog\datadog.conf" "#tags: mytag0, mytag1" "tags: [TAGS]"'
-        Execute="deferred"
-        Return="check"
-        Impersonate="no" />
-
-    <CustomAction
-        Id="ReplaceHostname"
-        BinaryKey="FindReplace"
-        ExeCommand='"[CommonAppDataFolder]\Datadog\datadog.conf" "#hostname: mymachine.mydomain" "hostname: [HOSTNAME]"'
-        Execute="deferred"
-        Return="check"
-        Impersonate="no" />
-
     <CustomAction
         Id="LaunchApp"
         Directory="DIST"
         Execute="immediate"
         Return="check"
         ExeCommand="[SystemFolder]cmd.exe /C start agent-manager.exe" />
-
-    <InstallExecuteSequence>
-      <Custom Action="ReplaceAPIKey" Before="StartServices" />
-      <Custom Action="ReplaceTags" Before="StartServices" />
-      <Custom Action="ReplaceHostname" Before="StartServices" />
-    </InstallExecuteSequence>
 
     <!-- Delete application when uninstalling -->
     <!--
@@ -121,17 +88,32 @@
                       Id="APPLICATIONROOTDIRECTORY_REGSEARCH"
                       Name="InstallPath" />
     </Property>
+
     <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
       <Component Id="CleanupMainApplicationFolder" Guid="096249cf-3fe7-4342-a80f-77101ceed5fe">
         <!-- We need to use APPLICATIONROOTDIRECTORY variable here or RemoveFolderEx
-             will not remove on "install". -->
+             will not remove on "uninstall". -->
         <RegistryValue Root="HKLM"
                        Key="SOFTWARE\Datadog\Datadog Agent"
                        Name="InstallPath"
                        Type="string"
-                       Value="[APPLICATIONROOTDIRECTORY]"
-                       KeyPath="yes" />
+                       Value="[APPLICATIONROOTDIRECTORY]"/>
         <util:RemoveFolderEx On="uninstall" Property="APPLICATIONROOTDIRECTORY"/>
+      </Component>
+      <!-- Register variables that will be used by the agent at startup -->
+      <Component Id="RegisterConfVariables" Guid="e2423815-704d-4f29-af3b-9baf23ef03d6">
+        <RegistryKey Root="HKLM"
+                     Key="SOFTWARE\Datadog\Datadog Agent">
+          <RegistryValue Name="api_key"
+                         Type="string"
+                         Value="[APIKEY]"/>
+          <RegistryValue Name="tags"
+                         Type="string"
+                         Value="[TAGS]" />
+          <RegistryValue Name="hostname"
+                         Type="string"
+                         Value="[HOSTNAME]" />
+        </RegistryKey>
       </Component>
     </DirectoryRef>
 
@@ -247,6 +229,7 @@
       <ComponentRef Id="DATADOGAGENTSERVICE" />
       <ComponentGroupRef Id="ExtraEXAMPLECONFSLOCATION" />
       <ComponentRef Id="CleanupMainApplicationFolder" />
+      <ComponentRef Id="RegisterConfVariables" />
     </Feature>
 
     <!-- UI Stuff: 100% Omnibus Generated -->
