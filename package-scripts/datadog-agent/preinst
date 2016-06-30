@@ -32,6 +32,12 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
         rm /etc/dd-agent/supervisor_ddagent.conf
     fi
 
+    # Prepare the GPG keys rotation:
+    # Add the new one to the list of trusted APT keys.
+    echo "Prepare Datadog Agent keys rotation"
+    echo -n "  Add the new 'Datadog, Inc <package@datadoghq.com>' key to the list of APT trusted keys."
+    apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed"
+
     #DEBHELPER#
 
   elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ]; then
