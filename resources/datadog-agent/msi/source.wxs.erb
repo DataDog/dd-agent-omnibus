@@ -24,7 +24,7 @@
              Comments="Copyright 2015 Datadog, Inc."
              Description="Datadog Agent v$(var.DisplayVersionNumber)"
              Manufacturer="!(loc.ManufacturerName)"
-             InstallerVersion="100"
+             InstallerVersion="400"
              Languages="1033"
              InstallPrivileges="elevated"
              Compressed="yes" />
@@ -127,7 +127,7 @@
                 Vital="yes"
                 KeyPath="yes"
                 DiskId="1"
-                Source="$(var.InstallDir)/dist/ddagent.exe"/>
+                Source="$(var.DistFiles)/ddagent.exe"/>
           <ServiceInstall Id="DatadogServiceInstaller"
                           DisplayName="Datadog Agent"
                           Description="Send metrics to Datadog"
@@ -182,10 +182,7 @@
       <Directory Id="checks.d" Name="checks.d">
         <Component Id="checks.d"
                    Guid="92cbe7e0-e72c-42c4-9353-741d94b63495"
-                   SharedDllRefCount="no"
-                   KeyPath="no"
-                   Location="either"
-                   Win64="yes">
+                   Location="either">
           <CreateFolder/>
         </Component>
       </Directory>
@@ -194,10 +191,7 @@
         <Component Id="conf.d"
                    Guid="54fcfacb-726b-46e3-a699-ec19258a24be"
                    Permanent="yes"
-                   Win64="yes"
                    Location="either"
-                   SharedDllRefCount="no"
-                   KeyPath="no"
                    NeverOverwrite="yes">
           <CreateFolder/>
         </Component>
@@ -206,13 +200,9 @@
       <Directory Id="logs" Name="logs">
         <Component Id="logs"
                    Guid="e194d05a-6dc7-40be-a626-6a15b43c456b"
-                   SharedDllRefCount="no"
-                   KeyPath="no"
-                   NeverOverwrite="no"
-                   Permanent="no"
-                   Transitive="no"
-                   Win64="yes"
-                   Location="either">
+                   Permanent="yes"
+                   Location="either"
+                   NeverOverwrite="yes">
           <CreateFolder/>
         </Component>
       </Directory>

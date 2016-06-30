@@ -167,6 +167,8 @@ build do
 
     copy "dist", "#{install_dir}"
     copy "win32/status.html", "#{install_dir}/dist/status.html"
+    # Avoid shipping twice ddagent.exe
+    delete "#{install_dir}/dist/ddagent.exe"
     # The GUI also needs to have the certificate in its folder to send e-mails via Flare
     copy "datadog-cert.pem", "#{install_dir}/dist/datadog-cert.pem"
 

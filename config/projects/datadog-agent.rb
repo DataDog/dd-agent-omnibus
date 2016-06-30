@@ -85,6 +85,7 @@ package :msi do
   parameters({
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
+    'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist"
   })
 end
 # Note: this is to try to avoid issues when upgrading from an
