@@ -1,0 +1,12 @@
+FROM datadog/docker-dd-agent-build-deb-x64
+
+COPY . /netsil-omnibus
+RUN mkdir -p /root/omnibus/staging && \
+    mkdir -p /netsil-omnibus/pkg
+
+RUN cd netsil-omnibus && \
+    /bin/bash -l -c "bundle install --binstubs"
+
+VOLUME ["/netsil-omnibus/pkg"]
+
+ENTRYPOINT /bin/bash -l /netsil-omnibus/omnibus_build.sh

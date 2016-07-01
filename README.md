@@ -1,3 +1,10 @@
+Netsil Collectors - Omnibus Project
+===================================
+* First, build the base docker through ./build/build-omnibus
+* Now, make sure you have collectors binaries and artifacts staged in `${OMNIBUS_STAGING}`
+* Then, run `./build.sh`
+* Original docs from dd-agent-omnibus:
+
 Datadog Agent - Omnibus Project
 ================
 

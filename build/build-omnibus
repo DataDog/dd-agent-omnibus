@@ -1,0 +1,2 @@
+docker build -t netsil/omnibus-deb-x64 -f build/Dockerfile.deb-x64 ./build
+docker build -t netsil/omnibus-rpm-x64 -f build/Dockerfile.rpm-x64 ./build
