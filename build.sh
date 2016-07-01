@@ -8,7 +8,8 @@ mkdir -p pkg
 #mkdir -p "cache/$PLATFORM"
 
 OMNIBUS_FOLDER=${OMNIBUS_FOLDER:-netsil-omnibus}
-OMNIBUS_BUILD=${OMNIBUS_BUILD:-/var/lib/docker/cache/omnibus}
+OMNIBUS_SOURCE=${OMNIBUS_SOURCE:-~/omnibus}
+OMNIBUS_BUILD=${OMNIBUS_BUILD:-~/omnibus/build}
 
 docker run --name "dd-agent-build-$PLATFORM" \
   -e OMNIBUS_BRANCH=$OMNIBUS_BRANCH \
@@ -16,8 +17,8 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -e AGENT_BRANCH=$AGENT_BRANCH \
   -e AGENT_VERSION=$AGENT_VERSION \
   -e RPM_SIGNING_PASSPHRASE=$RPM_SIGNING_PASSPHRASE \
-  -v ${OMNIBUS_BUILD}/staging:/root/omnibus/staging \
-  -v `pwd`/cache/${PLATFORM}:/var/cache/omnibus \
+  -v ${OMNIBUS_SOURCE}/staging:/root/omnibus/staging \
+  -v ${OMNIBUS_BUILD}/cache/${PLATFORM}:/var/cache/omnibus \
   -v `pwd`/pkg:/$OMNIBUS_FOLDER/pkg \
   -v `pwd`/config:/$OMNIBUS_FOLDER/config \
   -v `pwd`/keys:/$OMNIBUS_FOLDER/keys \
