@@ -187,9 +187,9 @@ dependency 'datadog-agent'
 #####################################
 ##### Install netsil-collectors #####
 #####################################
-dependency 'netsil-meta'
-dependency 'traffic-collector' 
-dependency 'metadata-collector' 
+dependency 'netsil-collectors-conf'
+dependency 'traffic-collector'
+dependency 'metadata-collector'
 
 # version manifest file
 dependency 'version-manifest'

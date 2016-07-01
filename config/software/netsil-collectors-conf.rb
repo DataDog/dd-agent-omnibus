@@ -15,19 +15,21 @@
 #
 
 # These options are required for all software definitions
-name "netsil-meta"
+name "netsil-collectors-conf"
 
 # Sources may be URLs, git locations, or path locations
 #source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors-meta.tar.gz",
-source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors.tar.gz",
-       md5: "8c2b2ac008c4d518cdb8ccd100f88ee9"
+#source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors.tar.gz",
+#       md5: "8c2b2ac008c4d518cdb8ccd100f88ee9"
 
+source path: "/root/omnibus/staging/netsil-collectors-conf"
+#source path: "/root/omnibus/staging/netsil-collectors-conf.tar.gz"
 # A software can specify more than one version that is available for install
 # version("1.2.6") { source md5: "618e944d7c7cd6521551e30b32322f4a" }
 # default_version "1.2.6"
 
 # This is the path, inside the tarball, where the source resides
-relative_path "netsil-collectors"
+#relative_path "netsil-collectors-conf"
 
 build do
   # Setup a default environment from Omnibus - you should use this Omnibus
@@ -37,7 +39,7 @@ build do
   # Setup supervisor config
   if linux?
     mkdir "#{install_dir}/conf.d"
-    
+
     copy 'start.sh', "#{install_dir}/start.sh"
     copy 'stop.sh', "#{install_dir}/stop.sh"
     copy 'netsil-collectors.conf', "#{install_dir}/conf.d/"
@@ -48,8 +50,10 @@ build do
         copy 'rhel/netsil-collectors.init', '/etc/rc.d/init.d/netsil-collectors'
         copy 'rhel/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
         command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
+        command 'chmod 755 /etc/rc.d/init.d/netsil-collectors'
     elsif ohai['platform_family'] == 'debian'
         copy 'debian/netsil-collectors.init', '/etc/init.d/netsil-collectors'
+        command 'chmod 755 /etc/init.d/netsil-collectors'
         copy 'debian/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
         command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
         mkdir '/lib/systemd/system'
