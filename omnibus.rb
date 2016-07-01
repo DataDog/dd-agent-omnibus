@@ -11,4 +11,4 @@ else
   use_s3_caching true
 end
 
-windows_arch :x86
+windows_arch :x86_64
