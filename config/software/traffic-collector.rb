@@ -21,7 +21,7 @@ name "traffic-collector"
 #source url: "https://s3.amazonaws.com/bin.netsil.io/rpcapd/traffic-collector.tar.gz",
 #       md5: "437e0f251868d07ebb020be1a13be32f"
 
-source path: "/root/omnibus/staging/traffic-collector"
+source path: "/root/collectors/traffic-collector"
 
 # This is the path, inside the tarball, where the source resides
 #relative_path "traffic-collector"
@@ -32,9 +32,6 @@ build do
   # Setup a default environment from Omnibus - you should use this Omnibus
   # helper everywhere. It will become the default in the future.
   env = with_standard_compiler_flags(with_embedded_path)
-
-  if linux?
-    mkdir "#{install_dir}/traffic-collector/"
-    copy 'rpcapd', "#{install_dir}/traffic-collector/"
-  end
+  patch :source => "libpcap-static-link.patch", :plevel => 1,
+        command "make PLATFORM=linux"
 end
