@@ -22,9 +22,9 @@ rm -rf /opt/$PROJECT_NAME/*
 
 cd $PROJECT_DIR
 # Allow to use a different dd-agent-omnibus branch
-git fetch --all
-git checkout $OMNIBUS_BRANCH
-git reset --hard origin/$OMNIBUS_BRANCH
+#git fetch --all
+#git checkout $OMNIBUS_BRANCH
+#git reset --hard origin/$OMNIBUS_BRANCH
 
 # If an RPM_SIGNING_PASSPHRASE has been passed, let's import the signing key
 #if [ -n "$RPM_SIGNING_PASSPHRASE" ]; then

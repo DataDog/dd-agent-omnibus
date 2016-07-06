@@ -21,17 +21,25 @@ name "traffic-collector"
 #source url: "https://s3.amazonaws.com/bin.netsil.io/rpcapd/traffic-collector.tar.gz",
 #       md5: "437e0f251868d07ebb020be1a13be32f"
 
-source path: "/root/collectors/traffic-collector"
+source path: "/root/collectors/rpcapd"
 
 # This is the path, inside the tarball, where the source resides
 #relative_path "traffic-collector"
 
-puts "#{project_dir}"
+dependency "libpcap"
+dependency "libsodium"
+
+env = {
+  "LIBRARY_PATH" => "#{install_dir}/embedded/lib",
+  "CPATH" => "#{install_dir}/embedded/include",
+  "LD_LIBRARY_PATH" => "#{install_dir}/embedded/lib"
+}
 
 build do
   # Setup a default environment from Omnibus - you should use this Omnibus
   # helper everywhere. It will become the default in the future.
-  env = with_standard_compiler_flags(with_embedded_path)
-  patch :source => "libpcap-static-link.patch", :plevel => 1,
-        command "make PLATFORM=linux"
+  #env = with_standard_compiler_flags(with_embedded_path)
+  mkdir "#{install_dir}/traffic-collector"
+  command "make PLATFORM=linux", :env => env
+  copy "winpcap/wpcap/libpcap/rpcapd/rpcapd", "#{install_dir}/traffic-collector/rpcapd"
 end

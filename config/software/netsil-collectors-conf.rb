@@ -22,14 +22,11 @@ name "netsil-collectors-conf"
 #source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors.tar.gz",
 #       md5: "8c2b2ac008c4d518cdb8ccd100f88ee9"
 
-source path: "/root/omnibus/staging/netsil-collectors-conf"
+source path: "/root/collectors/init"
 #source path: "/root/omnibus/staging/netsil-collectors-conf.tar.gz"
 # A software can specify more than one version that is available for install
 # version("1.2.6") { source md5: "618e944d7c7cd6521551e30b32322f4a" }
 # default_version "1.2.6"
-
-# This is the path, inside the tarball, where the source resides
-#relative_path "netsil-collectors-conf"
 
 build do
   # Setup a default environment from Omnibus - you should use this Omnibus
@@ -40,9 +37,9 @@ build do
   if linux?
     mkdir "#{install_dir}/conf.d"
 
-    copy 'start.sh', "#{install_dir}/start.sh"
-    copy 'stop.sh', "#{install_dir}/stop.sh"
-    copy 'netsil-collectors.conf', "#{install_dir}/conf.d/"
+    #copy 'start.sh', "#{install_dir}/start.sh"
+    #copy 'stop.sh', "#{install_dir}/stop.sh"
+    copy 'supervisor/netsil-collectors.conf', "#{install_dir}/conf.d/"
     copy 'netsil-collectors-logrotate', "#{install_dir}/conf.d/"
 
     # Init scripts
