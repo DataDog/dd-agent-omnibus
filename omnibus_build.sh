@@ -34,10 +34,14 @@ cd $PROJECT_DIR
 # Last but not least, let's make sure that we rebuild the agent everytime because
 # the extra package files are destroyed when the build container stops (we have
 # to tweak omnibus-git-cache directly for that). Same for gohai and go-metro.
+# luhkevin: Also rebuild tc, metadata-collector, and netsil-collectors conf everytime
 if [[ -d /var/cache/omnibus/cache/git_cache/opt/netsil/collectors ]] ; then
     git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep datadog-agent`
     git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep datadog-gohai`
     git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep datadog-metro`
+    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep netsil-collectors-conf`
+    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep traffic-collector`
+    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep metadata-collector`
 fi
 
 # Install the gems we need, with stubs in bin/

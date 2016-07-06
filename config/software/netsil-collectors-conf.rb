@@ -22,7 +22,7 @@ name "netsil-collectors-conf"
 #source url: "https://s3.amazonaws.com/bin.netsil.io/netsil-collectors/netsil-collectors.tar.gz",
 #       md5: "8c2b2ac008c4d518cdb8ccd100f88ee9"
 
-source path: "/root/collectors/init"
+source path: "/root/collectors"
 #source path: "/root/omnibus/staging/netsil-collectors-conf.tar.gz"
 # A software can specify more than one version that is available for install
 # version("1.2.6") { source md5: "618e944d7c7cd6521551e30b32322f4a" }
@@ -37,24 +37,24 @@ build do
   if linux?
     mkdir "#{install_dir}/conf.d"
 
-    #copy 'start.sh', "#{install_dir}/start.sh"
-    #copy 'stop.sh', "#{install_dir}/stop.sh"
-    copy 'supervisor/netsil-collectors.conf', "#{install_dir}/conf.d/"
-    copy 'netsil-collectors-logrotate', "#{install_dir}/conf.d/"
+    copy 'init/supervisor/netsil-collectors.conf', "#{install_dir}/conf.d/"
+    copy 'init/netsil-collectors-logrotate', "#{install_dir}/conf.d/"
+    copy 'scripts/start.sh', "#{install_dir}/start.sh"
+    command "chmod 755 #{install_dir}/start.sh"
 
     # Init scripts
     if ohai['platform_family'] == 'rhel'
-        copy 'rhel/netsil-collectors.init', '/etc/rc.d/init.d/netsil-collectors'
-        copy 'rhel/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
+        copy 'init/rhel/netsil-collectors.init', '/etc/rc.d/init.d/netsil-collectors'
+        copy 'init/rhel/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
         command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
         command 'chmod 755 /etc/rc.d/init.d/netsil-collectors'
     elsif ohai['platform_family'] == 'debian'
-        copy 'debian/netsil-collectors.init', '/etc/init.d/netsil-collectors'
+        copy 'init/debian/netsil-collectors.init', '/etc/init.d/netsil-collectors'
         command 'chmod 755 /etc/init.d/netsil-collectors'
-        copy 'debian/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
+        copy 'init/debian/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
         command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
         mkdir '/lib/systemd/system'
-        copy 'debian/netsil-collectors.service', '/lib/systemd/system/netsil-collectors.service'
+        copy 'init/debian/netsil-collectors.service', '/lib/systemd/system/netsil-collectors.service'
     end
   end
 end
