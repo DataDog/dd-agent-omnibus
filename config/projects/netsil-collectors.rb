@@ -188,6 +188,7 @@ dependency 'datadog-agent'
 ##### Install netsil-collectors #####
 #####################################
 dependency 'traffic-collector'
+dependency 'sslsplit'
 dependency 'netsil-collectors-conf'
 dependency 'metadata-collector'
 
