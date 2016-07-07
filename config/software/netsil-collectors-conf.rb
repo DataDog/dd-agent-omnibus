@@ -35,24 +35,24 @@ build do
 
   # Setup supervisor config
   if linux?
-    mkdir "#{install_dir}/conf.d"
+    mkdir "#{install_dir}/init"
 
-    copy 'init/supervisor/netsil-collectors.conf', "#{install_dir}/conf.d/"
-    copy 'init/netsil-collectors-logrotate', "#{install_dir}/conf.d/"
+    copy 'init/supervisor/netsil-collectors.conf', "#{install_dir}/init/"
+    copy 'init/netsil-collectors-logrotate', "#{install_dir}/init/"
     copy 'scripts/start.sh', "#{install_dir}/start.sh"
     command "chmod 755 #{install_dir}/start.sh"
 
     # Init scripts
     if ohai['platform_family'] == 'rhel'
         copy 'init/rhel/netsil-collectors.init', '/etc/rc.d/init.d/netsil-collectors'
-        copy 'init/rhel/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
-        command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
+        copy 'init/rhel/netsil-collectors-stub.init', "#{install_dir}/init/netsil-collectors-stub"
+        command "chmod 755 #{install_dir}/init/netsil-collectors-stub"
         command 'chmod 755 /etc/rc.d/init.d/netsil-collectors'
     elsif ohai['platform_family'] == 'debian'
         copy 'init/debian/netsil-collectors.init', '/etc/init.d/netsil-collectors'
         command 'chmod 755 /etc/init.d/netsil-collectors'
-        copy 'init/debian/netsil-collectors-stub.init', "#{install_dir}/conf.d/netsil-collectors-stub"
-        command "chmod 755 #{install_dir}/conf.d/netsil-collectors-stub"
+        copy 'init/debian/netsil-collectors-stub.init', "#{install_dir}/init/netsil-collectors-stub"
+        command "chmod 755 #{install_dir}/init/netsil-collectors-stub"
         mkdir '/lib/systemd/system'
         copy 'init/debian/netsil-collectors.service', '/lib/systemd/system/netsil-collectors.service'
     end

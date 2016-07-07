@@ -18,7 +18,8 @@ rm -rf /var/cache/omnibus/pkg/*
 # Clean up what we installed
 rm -f /etc/init.d/netsil-datadog-agent
 rm -rf /etc/netsil-dd-agent
-rm -rf /opt/$PROJECT_NAME/*
+rm -rf /opt/netsil
+#rm -rf /opt/$PROJECT_NAME/*
 
 cd $PROJECT_DIR
 # Allow to use a different dd-agent-omnibus branch
@@ -39,9 +40,9 @@ if [[ -d /var/cache/omnibus/cache/git_cache/opt/netsil/collectors ]] ; then
     git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep datadog-agent`
     git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep datadog-gohai`
     git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep datadog-metro`
-    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep netsil-collectors-conf`
-    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep traffic-collector`
-    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep metadata-collector`
+#    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep netsil-collectors-conf`
+#    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep traffic-collector`
+#    git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/netsil/collectors tag -l | grep metadata-collector`
 fi
 
 # Install the gems we need, with stubs in bin/
