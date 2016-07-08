@@ -25,6 +25,9 @@ dependency "libsodium"
 dependency "libpcap"
 
 env = {
+  "LIBRARY_PATH" => "#{install_dir}/embedded/lib",
+  "CPATH" => "#{install_dir}/embedded/include",
+  "LD_LIBRARY_PATH" => "#{install_dir}/embedded/lib",
   "LIBEVENT_BASE" => "#{install_dir}/embedded",
   "PKGCONFIG" => "#{install_dir}/embedded/bin/pkg-config"
 }
