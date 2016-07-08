@@ -23,13 +23,18 @@ dependency "libevent"
 dependency "openssl"
 dependency "libsodium"
 dependency "libpcap"
+dependency "zlib"
 
 env = {
   "LIBRARY_PATH" => "#{install_dir}/embedded/lib",
   "CPATH" => "#{install_dir}/embedded/include",
   "LD_LIBRARY_PATH" => "#{install_dir}/embedded/lib",
   "LIBEVENT_BASE" => "#{install_dir}/embedded",
-  "PKGCONFIG" => "#{install_dir}/embedded/bin/pkg-config"
+  "PKGCONFIG" => "#{install_dir}/embedded/bin/pkg-config",
+  "OPENSSL_BASE" => "#{install_dir}/embedded",
+  "PCFLAGS" => "\'--static\'",
+  "CFLAGS" => "\'-static\'",
+  "LDFLAGS" => "\'-static\'"
 }
 
 build do
