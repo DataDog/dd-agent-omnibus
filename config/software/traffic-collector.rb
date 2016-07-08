@@ -42,6 +42,5 @@ build do
   mkdir "#{install_dir}/traffic-collector"
   command "make PLATFORM=linux", :env => env
   copy "winpcap/wpcap/libpcap/rpcapd/rpcapd", "#{install_dir}/traffic-collector/rpcapd"
-  copy "rpcapd.ini", "#{install_dir}/traffic-collector/rpcapd.ini"
   copy "supervisord-rpcapd.sh", "#{install_dir}/traffic-collector/supervisord-rpcapd.sh"
 end
