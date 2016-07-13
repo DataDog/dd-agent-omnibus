@@ -67,6 +67,7 @@ if [ -f "/etc/debian_version" ] || [ "$LINUX_DISTRIBUTION" == "Debian" ] || [ "$
         /etc/init.d/netsil-collectors stop || true
     fi
 elif [ -f "/etc/redhat-release" ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ "$LINUX_DISTRIBUTION" == "CentOS" ] || [ "$LINUX_DISTRIBUTION" == "openSUSE" ] || [ "$LINUX_DISTRIBUTION" == "Amazon" ]; then
+        /etc/init.d/netsil-collectors stop
         chkconfig --del netsil-collectors
 fi
 exit 0
