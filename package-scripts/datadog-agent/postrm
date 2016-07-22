@@ -18,8 +18,7 @@ elif [ -f "/etc/redhat-release" ] || [ "$LINUX_DISTRIBUTION" == "RedHat" ] || [ 
     case "$*" in
       0)
         # We're uninstalling.
-        getent passwd dd-agent > /dev/null && userdel dd-agent
-        getent group dd-agent >/dev/null && groupdel dd-agent
+        # We don't delete the dd-agent user/group (see https://fedoraproject.org/wiki/Packaging:UsersAndGroups#Allocation_Strategies)
         ;;
       1)
         # We're upgrading.
