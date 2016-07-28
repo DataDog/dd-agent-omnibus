@@ -17,10 +17,10 @@ GIT
 
 GIT
   remote: git://github.com/datadog/omnibus-software.git
-  revision: c585de2d41c8bb9697112eaf2ecff8af0e91d46d
+  revision: 342375003252c1c36fe9eee0a86cbadad7ee223f
   branch: quentin/omnibus-5.0
   specs:
-    omnibus-software (3.0.0)
+    omnibus-software (4.0.0)
 
 GEM
   remote: https://rubygems.org/
