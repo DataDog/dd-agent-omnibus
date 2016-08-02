@@ -90,7 +90,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # did its job and exist zero, otherwise, if the file exists but it's wrong we
   # have to return a non zero exit status so that the system (and the user) are
   # notified the installation went wrong.
-  /etc/init.d/datadog-agent configcheck
+  /etc/init.d/datadog-agent configcheck &> /dev/null
   RETVAL=$?
   if [ $RETVAL -eq 0 ]; then
       echo "(Re)starting datadog-agent now..."
@@ -107,6 +107,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
           # the step-by-step instructions and will add the config file next.
           exit 0
       else
+          echo "Invalid check configuration. Please run sudo /etc/init.d/datadog-agent configcheck for more details."
           exit $RETVAL
       fi
   fi
