@@ -90,7 +90,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # did its job and exist zero, otherwise, if the file exists but it's wrong we
   # have to return a non zero exit status so that the system (and the user) are
   # notified the installation went wrong.
-  /etc/init.d/datadog-agent configcheck &> /dev/null
+  /etc/init.d/datadog-agent configcheck > /dev/null 2>&1
   RETVAL=$?
   if [ $RETVAL -eq 0 ]; then
       echo "(Re)starting datadog-agent now..."
