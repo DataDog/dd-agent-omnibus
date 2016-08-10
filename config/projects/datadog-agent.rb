@@ -142,6 +142,7 @@ dependency 'zlib'
 # Check dependencies
 dependency 'adodbapi'
 dependency 'dnspython'
+dependency 'easysnmp'
 dependency 'httplib2'
 dependency 'kafka-python'
 dependency 'kazoo'
