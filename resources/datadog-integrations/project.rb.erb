@@ -1,7 +1,7 @@
 name 'dd-check-<%= name %>'
 maintainer 'Datadog Packages <package@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
-install_dir '/opt/datadog-agent'
+install_dir '/opt/datadog-agent/3rd-party'
 
 build_version '<%= version %>'
 build_iteration <%= build_iteration %>
@@ -42,6 +42,9 @@ end
 
 dependency 'preparation'  # creates required build directories
 dependency 'dd-check-<%= name %>-software'
+
+# Checks should require the datadog agent
+runtime_dependency 'datadog-agent'
 
 extends_packages('datadog-agent', 'datadog')
 
