@@ -27,7 +27,6 @@ package :deb do
   license 'Simplified BSD License'
   section 'utils'
   priority 'extra'
-  replace 'datadog-agent'
 end
 
 # .rpm specific flags
@@ -46,6 +45,7 @@ dependency 'dd-check-<%= name %>-software'
 
 # Checks should require the datadog agent
 runtime_dependency 'datadog-agent'
+replace 'datadog-agent'
 
 extends_packages('datadog-agent', 'datadog')
 
