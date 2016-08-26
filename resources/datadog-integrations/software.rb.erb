@@ -13,7 +13,7 @@ build do
 
   # copy files
   mkdir "#{integration_agent_folder}"
-  copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/<%= name %>.yaml.example"
+  copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example"
   command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
   for file in ["check.py", "manifest.json", "requirements.txt", "README.md"]
     copy "#{integration_source_folder}/#{file}", "#{integration_agent_folder}/#{file}"
