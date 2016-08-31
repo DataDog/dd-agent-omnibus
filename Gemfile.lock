@@ -17,7 +17,7 @@ GIT
 
 GIT
   remote: git://github.com/datadog/omnibus-software.git
-  revision: 342375003252c1c36fe9eee0a86cbadad7ee223f
+  revision: 51cc1493dcbb3fd034888ecc14923492b1009333
   branch: quentin/omnibus-5.0
   specs:
     omnibus-software (4.0.0)
