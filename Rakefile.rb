@@ -17,6 +17,12 @@ namespace :agent do
     sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
         git fetch --all &&
         git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} &&
+        git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} &&
+        git reset --hard"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
+        git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
+        git checkout #{integration_branch}"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
         git reset --hard"
   end
 
