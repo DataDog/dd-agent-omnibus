@@ -29,7 +29,7 @@ namespace :agent do
     sh "cd #{PROJECT_DIR} && bundle update"
     puts "building integration #{ENV['INTEGRATION']}"
 
-    manifest = JSON.parse(File.read("#{ENV['INTEGRATIONS_REPO']}/#{ENV['INTEGRATION']}/manifest.json"))
+    manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{ENV['INTEGRATION']}/manifest.json"))
     integration_version = manifest['version'] || ENV['VERSION']
 
     header = erb_header({
