@@ -42,7 +42,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
               echo "Enabling service datadog-agent"
               update-rc.d datadog-agent enable >/dev/null 2>&1
               # Only create dd-agent group and/or user if they don't already exist
-              getent group dd-agent >/dev/null || echo "Creating dd-agent group" && addgroup --system dd-agent --quiet
+              getent group dd-agent >/dev/null || (echo "Creating dd-agent group" && addgroup --system dd-agent --quiet)
               set +e
               id -u dd-agent >/dev/null 2>&1
               USER_EXISTS=$?
