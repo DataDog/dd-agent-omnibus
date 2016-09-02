@@ -47,11 +47,11 @@ package :rpm do
   end
 end
 
-if redhat?
-  if not ENV['SUSE']
-    runtime_dependency 'initscripts'
-  end
-end
+# if redhat?
+#   if not ENV['SUSE']
+#     runtime_dependency 'initscripts'
+#   end
+# end
 
 # OSX .pkg specific flags
 package :pkg do
