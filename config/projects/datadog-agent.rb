@@ -89,7 +89,12 @@ if linux?
 
   # SysVInit service file
   if redhat?
-    extra_package_file '/etc/rc.d/init.d/datadog-agent'
+    # if ENV['SUSE']
+    #   extra_package_file '/etc/init.d/datadog-agent'
+    # else
+    #   extra_package_file '/etc/rc.d/init.d/datadog-agent'
+    # end
+    extra_package_file '/etc/init.d/datadog-agent'
   else
     extra_package_file '/etc/init.d/datadog-agent'
   end
