@@ -47,11 +47,12 @@ package :rpm do
   end
 end
 
-# if redhat?
-#   if not ENV['SUSE']
-#     runtime_dependency 'initscripts'
-#   end
-# end
+if redhat?
+  runtime_dependency 'insserv_prereq'
+  if ENV['SUSE']
+    runtime_dependency 'insserv_prereq'
+  end
+end
 
 # OSX .pkg specific flags
 package :pkg do
