@@ -1,12 +1,12 @@
 # ------------------------------------
-# OS-detection helper functions 
+# OS-detection helper functions
 # ------------------------------------
 def linux?()
     return %w(rhel debian fedora suse gentoo slackware arch exherbo).include? ohai['platform_family']
 end
 
 def redhat?()
-    return %w(rhel fedora suse).include? ohai['platform_family']
+    return %w(rhel fedora).include? ohai['platform_family']
 end
 
 def debian?()
@@ -19,4 +19,8 @@ end
 
 def windows?()
     return ohai['platform_family'] == 'windows'
+end
+
+def suse?()
+  return ohai["platform_family"] == 'suse'
 end

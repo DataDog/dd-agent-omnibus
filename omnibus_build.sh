@@ -40,9 +40,9 @@ set +e
 # Last but not least, let's make sure that we rebuild the agent everytime because
 # the extra package files are destroyed when the build container stops (we have
 # to tweak omnibus-git-cache directly for that). Same for gohai and go-metro.
-git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-agent`
-git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-gohai`
-git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-metro`
+git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-agent` || true
+git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-gohai` || true
+git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-metro` || true
 
 set -e
 

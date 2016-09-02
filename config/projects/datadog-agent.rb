@@ -51,6 +51,10 @@ if redhat?
   runtime_dependency 'initscripts'
 end
 
+if suse?
+  runtime_dependency 'libffi4'
+end
+
 # OSX .pkg specific flags
 package :pkg do
   identifier 'com.datadoghq.agent'
@@ -87,8 +91,11 @@ if linux?
   # SysVInit service file
   if redhat?
     extra_package_file '/etc/rc.d/init.d/datadog-agent'
-  else
+  end
+
+  if suse?
     extra_package_file '/etc/init.d/datadog-agent'
+    extra_package_file '/usr/lib/systemd/system/datadog-agent.service'
   end
 
   # Supervisord config file for the agent
