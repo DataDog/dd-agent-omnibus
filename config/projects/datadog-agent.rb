@@ -51,10 +51,6 @@ if redhat?
   runtime_dependency 'initscripts'
 end
 
-if suse?
-  runtime_dependency 'libffi4'
-end
-
 # OSX .pkg specific flags
 package :pkg do
   identifier 'com.datadoghq.agent'
