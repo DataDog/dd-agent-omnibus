@@ -141,6 +141,7 @@ dependency 'zlib'
 
 # Check dependencies
 dependency 'adodbapi'
+dependency 'beautifulsoup4'
 dependency 'dnspython'
 dependency 'httplib2'
 dependency 'kafka-python'
