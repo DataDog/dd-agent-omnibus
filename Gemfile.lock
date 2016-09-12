@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/datadog/omnibus-ruby.git
-  revision: ce785d6fd371443a32b51ea9c77fe8b5b70db267
+  revision: 47318abdb2fa9c0e409b45756ee7537275b8155b
   branch: quentin/omnibus-5.4.0-datadog-patches
   specs:
     omnibus (5.4.0)
