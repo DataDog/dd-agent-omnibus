@@ -15,13 +15,10 @@ namespace :agent do
   task :'pull-integrations' do
     integration_branch = ENV['VERSION'] || 'master'
 
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
-        git fetch --all"
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
-        git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
-        git checkout #{integration_branch}"
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
-        git reset --hard"
+    sh "git -C /#{ENV['INTEGRATIONS_REPO']} fetch --all"
+    sh "git -C /#{ENV['INTEGRATIONS_REPO']} checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
+        git -C /#{ENV['INTEGRATIONS_REPO']} checkout #{integration_branch}"
+    sh "git -C /#{ENV['INTEGRATIONS_REPO']} reset --hard"
   end
 
   desc 'Execute script'
@@ -30,7 +27,8 @@ namespace :agent do
     puts "building integration #{ENV['INTEGRATION']}"
 
     manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{ENV['INTEGRATION']}/manifest.json"))
-    integration_version = manifest['version'] || ENV['VERSION']
+    # The manifest should always have a version
+    integration_version = manifest['version']
 
     header = erb_header({
       'name' => "#{ENV['INTEGRATION']}",
