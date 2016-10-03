@@ -22,5 +22,6 @@ def windows?()
 end
 
 def suse?()
+  print ohai["platform_family"]
   return ohai["platform_family"] == 'suse'
 end
