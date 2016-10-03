@@ -41,10 +41,11 @@ build do
         copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
       elsif ohai['platform_family'] == 'debian' || suse?
         copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
-        mkdir '/lib/systemd/system'
         if debian?
+          mkdir '/lib/systemd/system'
           copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
         elsif suse?
+          mkdir '/usr/lib/systemd/system'
           copy 'packaging/debian/datadog-agent.service', '/usr/lib/systemd/system/datadog-agent.service'
         end
         copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
