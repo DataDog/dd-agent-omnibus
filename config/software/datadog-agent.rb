@@ -39,17 +39,20 @@ build do
     mkdir '/etc/dd-agent'
       if ohai['platform_family'] == 'rhel'
         copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
-      elsif ohai['platform_family'] == 'debian' || suse?
+      elsif ohai['platform_family'] == 'debian'
         copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
-        if debian?
-          mkdir '/lib/systemd/system'
-          copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
-        elsif suse?
-          mkdir '/usr/lib/systemd/system'
-          copy 'packaging/debian/datadog-agent.service', '/usr/lib/systemd/system/datadog-agent.service'
-        end
+        mkdir '/lib/systemd/system'
+        copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
         copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
         command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+      elsif suse?
+        copy 'packaging/centos/datadog-agent.init', '/etc/init.d/datadog-agent'
+        mkdir '/usr/lib/systemd/system'
+        copy 'packaging/debian/datadog-agent.service', '/usr/lib/systemd/system/datadog-agent.service'
+        copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
+        command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+      end
+    elsif suse?
       end
       # Use a supervisor conf with go-metro on 64-bit platforms only
       if ohai['kernel']['machine'] == 'x86_64'
