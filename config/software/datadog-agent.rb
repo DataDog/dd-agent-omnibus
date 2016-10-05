@@ -52,8 +52,6 @@ build do
         copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
         command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
       end
-    elsif suse?
-      end
       # Use a supervisor conf with go-metro on 64-bit platforms only
       if ohai['kernel']['machine'] == 'x86_64'
         copy 'packaging/supervisor.conf', '/etc/dd-agent/supervisor.conf'
