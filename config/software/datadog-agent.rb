@@ -37,9 +37,9 @@ build do
   if linux?
     # Configuration files
     mkdir '/etc/dd-agent'
-    if ohai['platform_family'] == 'rhel'
+    if redhat?
       copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
-    elsif ohai['platform_family'] == 'debian'
+    elsif debian?
       copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
       mkdir '/lib/systemd/system'
       copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
@@ -52,6 +52,7 @@ build do
       copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
       command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
     end
+
     # Use a supervisor conf with go-metro on 64-bit platforms only
     if ohai['kernel']['machine'] == 'x86_64'
       copy 'packaging/supervisor.conf', '/etc/dd-agent/supervisor.conf'
