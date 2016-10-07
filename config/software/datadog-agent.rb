@@ -46,7 +46,7 @@ build do
         copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
         command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
       elsif suse?
-        copy 'packaging/centos/datadog-agent.init', '/etc/init.d/datadog-agent'
+        copy 'packaging/suse/datadog-agent.init', '/etc/init.d/datadog-agent'
         mkdir '/usr/lib/systemd/system'
         copy 'packaging/debian/datadog-agent.service', '/usr/lib/systemd/system/datadog-agent.service'
         copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
