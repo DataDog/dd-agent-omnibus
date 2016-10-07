@@ -81,6 +81,7 @@ end
 if linux?
   # Debian
   if debian?
+    extra_package_file '/etc/init.d/datadog-agent'
     extra_package_file '/lib/systemd/system/datadog-agent.service'
   end
 
