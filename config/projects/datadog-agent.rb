@@ -125,6 +125,7 @@ dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
+dependency 'grpcio'
 dependency 'docker-py'
 dependency 'ntplib'
 dependency 'pycrypto'
