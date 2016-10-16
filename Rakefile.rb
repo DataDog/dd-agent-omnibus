@@ -18,10 +18,10 @@ namespace :agent do
     sh "rm -rf /#{ENV['INTEGRATIONS_REPO']}"
     sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
     sh "cd /integrations-core && ls -a && git status"
-    sh "git --git-dir=/#{ENV['INTEGRATIONS_REPO']} fetch --all"
-    sh "git --git-dir=/#{ENV['INTEGRATIONS_REPO']} checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
-        git --git-dir=/#{ENV['INTEGRATIONS_REPO']} checkout #{integration_branch}"
-    sh "git --git-dir=/#{ENV['INTEGRATIONS_REPO']} reset --hard"
+    sh "git -C /#{ENV['INTEGRATIONS_REPO']} fetch --all"
+    sh "git -C /#{ENV['INTEGRATIONS_REPO']} checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
+        git -C /#{ENV['INTEGRATIONS_REPO']} checkout #{integration_branch}"
+    sh "git -C /#{ENV['INTEGRATIONS_REPO']} reset --hard"
   end
 
   desc 'Execute script'
