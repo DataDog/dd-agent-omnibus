@@ -15,6 +15,8 @@ namespace :agent do
   task :'pull-integrations' do
     integration_branch = ENV['VERSION'] || 'master'
 
+    sh "ls -a #{ENV['INTEGRATIONS_REPO']}"
+    sh 'ls /'
     sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
     sh "git --git-dir=/#{ENV['INTEGRATIONS_REPO']} fetch --all"
     sh "git --git-dir=/#{ENV['INTEGRATIONS_REPO']} checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
