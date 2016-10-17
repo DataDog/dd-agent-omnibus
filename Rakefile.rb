@@ -1,3 +1,4 @@
+require 'json'
 PROJECT_DIR='/dd-agent-omnibus'
 
 namespace :agent do
@@ -12,10 +13,15 @@ namespace :agent do
 
   desc 'Pull the integrations repo'
   task :'pull-integrations' do
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} &&
-        git fetch --all &&
-        git checkout dd-check-#{ENV['INTEGRATION']}-#{ENV['VERSION']} &&
-        git reset --hard"
+    integration_branch = ENV['VERSION'] || 'master'
+
+    sh "rm -rf /#{ENV['INTEGRATIONS_REPO']}"
+    sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
+    sh "cd /integrations-core && ls -a && git status"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
+        git checkout #{integration_branch}"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git reset --hard"
   end
 
   desc 'Execute script'
@@ -23,9 +29,13 @@ namespace :agent do
     sh "cd #{PROJECT_DIR} && bundle update"
     puts "building integration #{ENV['INTEGRATION']}"
 
+    manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{ENV['INTEGRATION']}/manifest.json"))
+    # The manifest should always have a version
+    integration_version = manifest['version']
+
     header = erb_header({
       'name' => "#{ENV['INTEGRATION']}",
-      'version' => "#{ENV['VERSION']}",
+      'version' => "#{integration_version}",
       'build_iteration' => "#{ENV['BUILD_ITERATION']}"
     })
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"

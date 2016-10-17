@@ -43,8 +43,11 @@ end
 dependency 'preparation'  # creates required build directories
 dependency 'dd-check-<%= name %>-software'
 
+# Checks should require the datadog agent
+runtime_dependency 'datadog-agent'
+
 extends_packages('datadog-agent', 'datadog')
 
-extra_package_file '/etc/dd-agent/conf.d/<%= name %>.yaml.example'
+extra_package_file '/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example'
 
 exclude '\.git*'
