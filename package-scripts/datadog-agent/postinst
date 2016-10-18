@@ -4,7 +4,7 @@ INSTALL_DIR=/opt/datadog-agent
 LOG_DIR=/var/log/datadog
 RUN_DIR=$INSTALL_DIR/run
 
-DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon)" /etc/issue 2>/dev/null || uname -s)
+DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon|SUSE)" /etc/issue 2>/dev/null || uname -s)
 
 error_exit()
 {

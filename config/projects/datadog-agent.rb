@@ -81,14 +81,18 @@ end
 if linux?
   # Debian
   if debian?
+    extra_package_file '/etc/init.d/datadog-agent'
     extra_package_file '/lib/systemd/system/datadog-agent.service'
   end
 
   # SysVInit service file
   if redhat?
     extra_package_file '/etc/rc.d/init.d/datadog-agent'
-  else
+  end
+
+  if suse?
     extra_package_file '/etc/init.d/datadog-agent'
+    extra_package_file '/usr/lib/systemd/system/datadog-agent.service'
   end
 
   # Supervisord config file for the agent

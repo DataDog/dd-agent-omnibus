@@ -37,31 +37,39 @@ build do
   if linux?
     # Configuration files
     mkdir '/etc/dd-agent'
-      if ohai['platform_family'] == 'rhel'
-        copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
-      elsif ohai['platform_family'] == 'debian'
-        copy 'packaging/debian/datadog-agent.init', '/etc/init.d/datadog-agent'
-        mkdir '/lib/systemd/system'
-        copy 'packaging/debian/datadog-agent.service', '/lib/systemd/system/datadog-agent.service'
-        copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
-        command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
-      end
-      # Use a supervisor conf with go-metro on 64-bit platforms only
-      if ohai['kernel']['machine'] == 'x86_64'
-        copy 'packaging/supervisor.conf', '/etc/dd-agent/supervisor.conf'
-      else
-        copy 'packaging/supervisor_32.conf', '/etc/dd-agent/supervisor.conf'
-      end
-      copy 'datadog.conf.example', '/etc/dd-agent/datadog.conf.example'
-      copy 'conf.d', '/etc/dd-agent/'
-      mkdir '/etc/dd-agent/checks.d/'
-      command 'chmod 755 /etc/init.d/datadog-agent'
-      touch '/usr/bin/dd-agent'
+    if redhat?
+      copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
+    end
 
-      # Remove the .pyc and .pyo files from the package and list them in a file
-      # so that the prerm script knows which compiled files to remove
-      command "echo '# DO NOT REMOVE/MODIFY - used by package removal tasks' > #{install_dir}/embedded/.py_compiled_files.txt"
-      command "find #{install_dir}/embedded '(' -name '*.pyc' -o -name '*.pyo' ')' -type f -delete -print >> #{install_dir}/embedded/.py_compiled_files.txt"
+    if suse? || debian?
+      if debian?
+        systemd_directory = '/lib/systemd/systems'
+      elsif suse?
+        systemd_directory = '/usr/lib/systemd/system'
+      end
+      copy 'packaging/suse/datadog-agent.init', '/etc/init.d/datadog-agent'
+      mkdir systemd_directory
+      copy 'packaging/debian/datadog-agent.service', "#{systemd_directory}/datadog-agent.service"
+      copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
+      command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+    end
+
+    # Use a supervisor conf with go-metro on 64-bit platforms only
+    if ohai['kernel']['machine'] == 'x86_64'
+      copy 'packaging/supervisor.conf', '/etc/dd-agent/supervisor.conf'
+    else
+      copy 'packaging/supervisor_32.conf', '/etc/dd-agent/supervisor.conf'
+    end
+    copy 'datadog.conf.example', '/etc/dd-agent/datadog.conf.example'
+    copy 'conf.d', '/etc/dd-agent/'
+    mkdir '/etc/dd-agent/checks.d/'
+    command 'chmod 755 /etc/init.d/datadog-agent'
+    touch '/usr/bin/dd-agent'
+
+    # Remove the .pyc and .pyo files from the package and list them in a file
+    # so that the prerm script knows which compiled files to remove
+    command "echo '# DO NOT REMOVE/MODIFY - used by package removal tasks' > #{install_dir}/embedded/.py_compiled_files.txt"
+    command "find #{install_dir}/embedded '(' -name '*.pyc' -o -name '*.pyo' ')' -type f -delete -print >> #{install_dir}/embedded/.py_compiled_files.txt"
   end
 
   if osx?
