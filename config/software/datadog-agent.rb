@@ -43,11 +43,13 @@ build do
 
     if suse? || debian?
       if debian?
-        systemd_directory = '/lib/systemd/systems'
+        sys_type = 'debian'
+        systemd_directory = '/lib/systemd/system'
       elsif suse?
+        sys_type = 'suse'
         systemd_directory = '/usr/lib/systemd/system'
       end
-      copy 'packaging/suse/datadog-agent.init', '/etc/init.d/datadog-agent'
+      copy "packaging/#{sys_type}/datadog-agent.init", '/etc/init.d/datadog-agent'
       mkdir systemd_directory
       copy 'packaging/debian/datadog-agent.service', "#{systemd_directory}/datadog-agent.service"
       copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
