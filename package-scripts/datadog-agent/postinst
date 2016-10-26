@@ -49,8 +49,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
               set -e
               if [ ! $USER_EXISTS -eq 0 ]; then
                   echo "Creating dd-agent user"
-                  adduser --system dd-agent --disabled-login --shell /bin/sh --no-create-home --group --quiet
-                  usermod -d /opt/datadog-agent dd-agent
+                  adduser --system dd-agent --disabled-login --shell /bin/sh --home ${INSTALL_DIR} --no-create-home --group --quiet
               elif id -nG dd-agent | grep --invert-match --word-regexp --quiet 'dd-agent'; then
                   # User exists but is not part of the dd-agent group
                   echo "Adding dd-agent user to dd-agent group"
@@ -71,8 +70,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   chown -R dd-agent:root ${CONFIG_DIR}
   chown -R dd-agent:root ${LOG_DIR}
   chown root:root /etc/init.d/datadog-agent
-  chown -R root:root /opt/datadog-agent
-  chown -R dd-agent:root ${RUN_DIR}
+  chown -R dd-agent:dd-agent ${INSTALL_DIR}
 
   if command -v chkconfig >/dev/null 2>&1; then
       chkconfig --add datadog-agent
