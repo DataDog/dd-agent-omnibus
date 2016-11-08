@@ -30,6 +30,11 @@ end
 # Agent dependencies
 dependency 'boto'
 dependency 'docker-py'
+
+if ENV['JMX_VERSION'] && !ENV['JMX_VERSION'].empty?
+  dependency 'jmxfetch'
+  dependency 'jmxterm'
+end
 dependency 'ntplib'
 dependency 'protobuf-py'
 dependency 'psutil'
