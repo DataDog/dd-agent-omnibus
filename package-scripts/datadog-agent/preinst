@@ -46,7 +46,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       useradd -r -M -g dd-agent -d $INSTALL_DIR -s /bin/sh \
         -c "Datadog Agent" dd-agent
     # Stop the old agent before installing
-    if [ -f "/etc/" ]; then
+    if [ -f "/etc/init.d/datadog-agent" ]; then
       /etc/init.d/datadog-agent stop || true
     fi
 
