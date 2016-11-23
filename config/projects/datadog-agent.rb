@@ -155,6 +155,7 @@ if not windows?
   # if we ever happen to have a customer use Postgre/pg_boucer on that platform :)
   dependency 'psycopg2'
   dependency 'pg8000'
+  dependency 'zlib'
 else
   # We use our own supervisor shipped as a py2exe-built executable on Windows...
   # therefore we need py2exe. We also need psutil for our home-made supervisor.
