@@ -2,8 +2,9 @@
 
 INSTALL_DIR=/opt/datadog-agent
 SYSTEM_LOG_DIR=/var/log/datadog
-DD_LOG_DIR=/opt/datadog-agent/log
+DD_LOG_DIR=$INSTALL_DIR/log
 RUN_DIR=$INSTALL_DIR/run
+TMP_DIR$INSTALL_DIR/tmp
 
 DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon|SUSE)" /etc/issue 2>/dev/null || uname -s)
 
@@ -119,6 +120,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   APP_DIR="/Applications/Datadog Agent.app"
   CONF_DIR=$INSTALL_DIR/etc
   RUN_DIR=$INSTALL_DIR/run
+  TMP_DIR=$INSTALL_DIR/tmp
 
   # Let's log the standard outputs of this script
   LOG_FILE="$DD_LOG_DIR/postinstall.log"
@@ -157,6 +159,9 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   mkdir -vp "$RUN_DIR"
   chown -vR $INSTALL_USER:admin "$RUN_DIR"
   chmod -v 755 "$RUN_DIR"
+  mkdir -vp "$TMP_DIR"
+  chown -vR $INSTALL_USER:admin "$TMP_DIR"
+  chmod -v 755 "$TMP_DIR"
 
   echo "# Creating default plist"
   sed "s|USER_NAME|$INSTALL_USER|" "$CONF_DIR/com.datadoghq.Agent.plist.example" > "$CONF_DIR/com.datadoghq.Agent.plist"
