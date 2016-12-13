@@ -23,7 +23,8 @@ rm -f /etc/init.d/datadog-agent
 rm -rf /etc/dd-agent
 rm -rf /opt/$PROJECT_NAME/*
 
-cd $PROJECT_DIR
+builtin cd $PROJECT_DIR
+
 # Allow to use a different dd-agent-omnibus branch
 git fetch --all
 git checkout $OMNIBUS_BRANCH
