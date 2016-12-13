@@ -154,14 +154,12 @@ if not windows?
   # Technically these ones should be shipped on Windows too at some point...
   # if we ever happen to have a customer use Postgre/pg_boucer on that platform :)
   dependency 'psycopg2'
-  dependency 'pg8000'
   dependency 'zlib'
 else
   # We use our own supervisor shipped as a py2exe-built executable on Windows...
   # therefore we need py2exe. We also need psutil for our home-made supervisor.
   dependency 'pywin32'
   dependency 'py2exe'
-  dependency 'psutil'
   dependency 'wmi'
 end
 
@@ -179,6 +177,7 @@ dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
+dependency 'docker-py'
 dependency 'ntplib'
 dependency 'protobuf-py'
 dependency 'pycrypto'
@@ -191,16 +190,15 @@ dependency 'tornado'
 dependency 'uptime'
 dependency 'uuid'
 
-# Check dependencies (docker-py is required on Windows too because we import it in
-# dd-agent/utils/platform.py indirectly, since docker - and therefore - docker-py should
-# exist on Windows at some point, we're just anticipating on things anyway :) )
+# Check dependencies
+# psutil is required by the core agent on Windows
 dependency 'adodbapi'
 dependency 'beautifulsoup4'
 dependency 'dnspython'
-dependency 'docker-py'
 dependency 'httplib2'
 dependency 'kazoo'
 dependency 'paramiko'
+dependency 'pg8000'
 dependency 'psutil'
 dependency 'pymongo'
 dependency 'pymysql'

@@ -140,6 +140,12 @@ build do
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
   end
+  unless windows?
+    # The file below is touched by software builds that don't put anything in the installation
+    # directory (libgcc right now) so that the git_cache gets updated let's remove it from the
+    # final package
+    delete "#{install_dir}/uselessfile"
+  end
 
   if windows?
     # Let's ship win32
@@ -169,7 +175,7 @@ build do
     copy "win32/status.html", "#{install_dir}/dist/status.html"
     # Avoid shipping twice ddagent.exe
     delete "#{install_dir}/dist/ddagent.exe"
-    # The GUI also needs to have the certificate in its folder to send e-mails via Flare
+    # The GUI also needs to have the certificate in its folder to send flares
     copy "datadog-cert.pem", "#{install_dir}/dist/datadog-cert.pem"
 
     # Special directories, which won't be installed at the same place than others (ProgramData)
