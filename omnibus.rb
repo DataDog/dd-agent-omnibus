@@ -12,3 +12,4 @@ else
 end
 
 append_timestamp false
+windows_arch :x86_64

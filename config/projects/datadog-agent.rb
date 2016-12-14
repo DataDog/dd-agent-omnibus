@@ -1,9 +1,23 @@
 require "./lib/ostools.rb"
 
 name 'datadog-agent'
-maintainer 'Datadog Packages <package@datadoghq.com>'
+if windows?
+  # Windows doesn't want our e-mail address :(
+  maintainer 'Datadog Inc.'
+else
+  maintainer 'Datadog Packages <package@datadoghq.com>'
+end
 homepage 'http://www.datadoghq.com'
-install_dir '/opt/datadog-agent'
+
+if ohai['platform'] == "windows"
+  # Note: this is not the final install dir, not even the default one, just a convenient
+  # spaceless dir in which the agent will be built.
+  # Omnibus doesn't quote the Git commands it launches unfortunately, which makes it impossible
+  # to put a space here...
+  install_dir "C:/opt/datadog-agent/"
+else
+  install_dir '/opt/datadog-agent'
+end
 
 build_version do
   source :git, from_dependency: 'datadog-agent'
@@ -62,6 +76,21 @@ compress :dmg do
   pkg_position '10, 10'
 end
 
+# Windows .msi specific flags
+package :msi do
+  # For a consistent package management, please NEVER change this code
+  upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
+  wix_candle_extension 'WixUtilExtension'
+  wix_light_extension 'WixUtilExtension'
+  if ENV['SIGN_WINDOWS']
+    signing_identity "ECCDAE36FDCB654D2CBAB3E8975AA55469F96E4C", machine_store: true, algorithm: "SHA256"
+  end
+  parameters({
+    'InstallDir' => install_dir,
+    'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
+    'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist"
+  })
+end
 # Note: this is to try to avoid issues when upgrading from an
 # old version of the agent which shipped also a datadog-agent-base
 # package.
@@ -116,6 +145,25 @@ if linux?
   dependency 'sysstat'
 end
 
+# Ship supervisor anywhere but on Windows
+if not windows?
+  dependency 'kafka-python'
+  dependency 'python-gearman'
+  dependency 'snakebite'
+  dependency 'supervisor'
+
+  # Technically these ones should be shipped on Windows too at some point...
+  # if we ever happen to have a customer use Postgre/pg_boucer on that platform :)
+  dependency 'psycopg2'
+  dependency 'zlib'
+else
+  # We use our own supervisor shipped as a py2exe-built executable on Windows...
+  # therefore we need py2exe. We also need psutil for our home-made supervisor.
+  dependency 'pywin32'
+  dependency 'py2exe'
+  dependency 'wmi'
+end
+
 # Mac and Windows
 if osx? or windows?
   dependency 'gui'
@@ -139,37 +187,34 @@ dependency 'python-consul'
 dependency 'python-etcd'
 dependency 'pyyaml'
 dependency 'simplejson'
-dependency 'supervisor'
 dependency 'tornado'
 dependency 'uptime'
 dependency 'uuid'
-dependency 'zlib'
 
 # Check dependencies
+# psutil is required by the core agent on Windows
 dependency 'adodbapi'
 dependency 'beautifulsoup4'
 dependency 'dnspython'
 dependency 'httplib2'
-dependency 'kafka-python'
 dependency 'kazoo'
 dependency 'paramiko'
 dependency 'pg8000'
 dependency 'psutil'
-dependency 'psycopg2'
 dependency 'pymongo'
 dependency 'pymysql'
 dependency 'pysnmp'
-dependency 'python-gearman'
 dependency 'python-memcached'
 dependency 'python-redis'
 dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'requests'
 dependency 'scandir'
-dependency 'snakebite'
 
-# Additional software
-dependency 'datadogpy'
+if not windows?
+  # Additional software
+  dependency 'datadogpy'
+end
 
 # datadog-gohai and datadog-metro are built last before datadog-agent since they should always
 # be rebuilt (if put above, they would dirty the cache of the dependencies below

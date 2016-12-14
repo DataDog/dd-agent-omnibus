@@ -21,18 +21,19 @@ relative_path 'dd-agent'
 
 build do
   ship_license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'
-  # Agent code
+
   mkdir  "#{install_dir}/agent/"
+
+  # Agent code
   copy 'checks.d', "#{install_dir}/agent/"
   copy 'checks', "#{install_dir}/agent/"
   copy 'dogstream', "#{install_dir}/agent/"
-  copy 'resources', "#{install_dir}/agent/"
   copy 'utils', "#{install_dir}/agent/"
-  command "cp *.py #{install_dir}/agent/"
+
+  command "cp *.py \"#{install_dir}/agent/\""
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
 
   mkdir "#{install_dir}/run/"
-
 
   if linux?
     # Configuration files
@@ -121,10 +122,10 @@ build do
 
     # Clean GUI related things
     %w(build dist images gui.py status.html packaging Datadog_Agent.egg-info).each do |file|
-        delete "#{install_dir}/agent/#{file}"
+      delete "#{install_dir}/agent/#{file}"
     end
     %w(py2app macholib modulegraph altgraph).each do |package|
-        command "yes | #{install_dir}/embedded/bin/pip uninstall #{package}"
+      command "yes | #{install_dir}/embedded/bin/pip uninstall #{package}"
     end
     %w(pyside guidata spyderlib).each do |dependency_name|
       # Installed with `python setup.py install`, needs to be uninstalled manually
@@ -139,9 +140,55 @@ build do
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
   end
+  unless windows?
+    # The file below is touched by software builds that don't put anything in the installation
+    # directory (libgcc right now) so that the git_cache gets updated let's remove it from the
+    # final package
+    delete "#{install_dir}/uselessfile"
+  end
 
-  # The file below is touched by software builds that don't put anything in the installation
-  # directory (libgcc right now) so that the git_cache gets updated let's remove it from the
-  # final package
-  delete "#{install_dir}/uselessfile"
+  if windows?
+    # Let's ship win32
+    copy 'win32', "#{install_dir}/agent"
+
+    # Let's ship images for our wonderful GUI too as well as an HTML template we can definitely
+    # show off with...
+    mkdir "dist"
+    copy "packaging/datadog-agent/win32/install_files/guidata", "dist"
+    copy "packaging/datadog-agent/win32/install_files/ca-certificates.crt", "#{install_dir}/agent/"
+    copy "packaging/datadog-agent/win32/install_files/license.rtf", "#{install_dir}/license.rtf"
+
+    # Let's build an exe to launch as a service (and the GUI at the same time)
+    # Note that it'd be really cool to build the service exe in Go because we wouldn't have to ship
+    # Python with it and it would save several megabytes
+    # Also if we could find a way to build GUIs (JS on Windows, Native on OSX ?) that don't require
+    # any deps, I'm pretty sure we could go under 35 Megs on Windows
+    %w(pywintypes27 pythoncom27 pythoncomloader27).each do |name|
+      copy "#{install_dir}/embedded/Lib/site-packages/pywin32_system32/#{name}.dll",
+           "#{install_dir}/embedded/Lib/site-packages/win32"
+    end
+
+    # Let's "compile" the GUI and the service
+    command "#{install_dir}/embedded/python setup.py py2exe"
+
+    copy "dist", "#{install_dir}"
+    copy "win32/status.html", "#{install_dir}/dist/status.html"
+    # Avoid shipping twice ddagent.exe
+    delete "#{install_dir}/dist/ddagent.exe"
+    # The GUI also needs to have the certificate in its folder to send flares
+    copy "datadog-cert.pem", "#{install_dir}/dist/datadog-cert.pem"
+
+    # Special directories, which won't be installed at the same place than others (ProgramData)
+    mkdir "../../extra_package_files"
+    mkdir "../../extra_package_files/EXAMPLECONFSLOCATION"
+
+    # This uses part of our fork of Omnibus. We copy "extra_package_files" that we want here
+    # so that they can be harvested by heat, and shipped in the MSI by light
+    copy "conf.d/*", "../../extra_package_files/EXAMPLECONFSLOCATION"
+
+    # Weight-loss surgery
+    command "#{install_dir}/embedded/Scripts/pip.exe uninstall -y PySide"
+    command "CHDIR #{install_dir} & del /Q /S *.pyc"
+    command "CHDIR #{install_dir} & del /Q /S *.chm"
+  end
 end
