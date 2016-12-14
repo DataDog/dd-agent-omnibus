@@ -31,6 +31,12 @@ build do
   command "cp *.py #{install_dir}/agent/"
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
 
+  # build the rpc client
+  command_build_grpc = "#{install_dir}/embedded/bin/python -m grpc.tools.protoc -I./rpc/proto --python_out=./rpc/ --grpc_python_out=./rpc/"
+  command "#{command_build_grpc} ./rpc/proto/service_discovery.proto"
+  copy 'rpc', "#{install_dir}/agent/"
+  command "touch #{install_dir}/agent/rpc/__init__.py"
+
   mkdir "#{install_dir}/run/"
 
 

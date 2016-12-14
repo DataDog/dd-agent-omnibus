@@ -130,6 +130,7 @@ dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
+dependency 'grpcio'
 dependency 'docker-py'
 dependency 'ntplib'
 dependency 'protobuf-py'
@@ -169,6 +170,8 @@ dependency 'scandir'
 dependency 'snakebite'
 
 # Additional software
+dependency 'cython'
+dependency 'grpcio-tools'
 dependency 'datadogpy'
 
 # datadog-gohai and datadog-metro are built last before datadog-agent since they should always
