@@ -8,6 +8,7 @@ boto
 ** curl
 datadog-gohai
 datadog-metro L
+datadog-trace-agent L
 * futures
 ** gdbm
 gui M W
