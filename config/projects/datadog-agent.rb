@@ -224,7 +224,7 @@ if linux? and ohai['kernel']['machine'] == 'x86_64'
   dependency 'datadog-metro'
 end
 
-if linux? and ohai['kernel']['machine'] == 'x86_64'
+if linux?
   dependency 'datadog-trace-agent'
 end
 
