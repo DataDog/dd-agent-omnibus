@@ -226,6 +226,9 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
+if ENV["USE_INTEGRATION_SDK"]
+  dependency 'datadog-agent-integrations'
+end
 
 # version manifest file
 dependency 'version-manifest'
