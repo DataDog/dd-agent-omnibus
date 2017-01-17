@@ -37,9 +37,6 @@ if [ -n "$RPM_SIGNING_PASSPHRASE" ]; then
   gpg --import /keys/RPM-SIGNING-KEY.private
 fi
 
-git --git-dir=/integrations-core fetch --all || true
-git --git-dir=/integrations-core checkout $INTEGRATION_CORE_BRANCH || true
-
 # Last but not least, let's make sure that we rebuild the agent everytime because
 # the extra package files are destroyed when the build container stops (we have
 # to tweak omnibus-git-cache directly for that). Same for gohai and go-metro.
