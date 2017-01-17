@@ -28,12 +28,6 @@ else
 end
 
 build do
-  if ohai['platform'] == "windows"
-    integrations_dir = project_dir
-  else
-    integrations_dir = project_dir
-  end
-
   mkdir  "#{install_dir}/agent/"
   # Agent code
   mkdir "#{install_dir}/agent/checks.d"
