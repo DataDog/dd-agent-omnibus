@@ -34,29 +34,28 @@ build do
 
   # Grab all the checks
   checks = Dir.glob("#{integrations_dir}/*/")
+  # Only use the parts of the filename we need
+  check.slice! "#{integrations_dir}/"
+  check.slice! "/"
 
   # Open the concatenated checks requirements file
   # We're going to store it with the agent install
   all_reqs_file = File.open("#{install_dir}/agent/check_requirements.txt", 'w')
 
+  # The conf directory is different on every system
+  if linux?
+    conf_directory = "/etc/dd-agent/conf.d"
+  elsif osx?
+    conf_directory = "#{install_dir}/etc"
+  elsif windows?
+    conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
+  end
+
   # loop through them
   checks.each do |check|
-    # Only use the parts of the filename we need
-    check.slice! "#{integrations_dir}/"
-    check.slice! "/"
-
     # Copy the checks over
     if File.exists? "#{integrations_dir}/#{check}/check.py"
       copy "#{integrations_dir}/#{check}/check.py", "#{install_dir}/agent/checks.d/#{check}.py"
-    end
-
-    # The conf directory is different on every system
-    if linux?
-      conf_directory = "/etc/dd-agent/conf.d"
-    elsif osx?
-      conf_directory = "#{install_dir}/etc"
-    elsif windows?
-      conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
     end
 
     # Copy the check config to the conf directories
@@ -72,7 +71,7 @@ build do
     # It's mostly for ones where we have both an agent check and a jmx check,
     # And by some, I mean only ActiveMQ
     if Dir.exists? "#{integrations_dir}/#{check}"
-      Dir.foreach "#{integrations_dir}/#{check}" do |config_file|
+      Dir.foreach "#{integrations_dir}/#{check}/conf" do |config_file|
         config_file.slice! "#{integrations_dir}/#{check}/conf/"
         if config_file == 'auto_conf.yaml'
           copy "#{integrations_dir}/#{check}/conf/#{config_file}", "#{conf_directory}/auto_conf/#{check}.yaml"
