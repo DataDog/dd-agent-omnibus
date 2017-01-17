@@ -40,8 +40,10 @@ build do
 
   # Grab all the checks
   checks = Dir.glob("#{integrations_dir}/*/")
-  # logging.info('datadog-agent-integrations') { checks }
-  # logging.info('datadog-agent-integrations') { Dir.glob("*") }
+
+  # Open the concatenated checks requirements file
+  # We're going to store it with the agent install
+  all_reqs_file = File.open("#{install_dir}/agent/check_requirements.txt", 'w')
 
   # loop through them
   checks.each do |check|
@@ -94,7 +96,15 @@ build do
     end
 
     if File.exists? "#{integrations_dir}/#{check}/requirements.txt"
-      pip "install -I --target=#{install_dir}/lib -r #{integrations_dir}/#{check}/requirements.txt", :env => env
+      reqs = File.open(file, 'r').read
+      reqs.each_line do |line|
+        all_reqs_file << line
+      end
     end
   end
+
+  # Close the checks requirements file
+  all_reqs_file.close
+
+  pip "install --target=#{install_dir}/lib -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt", :env => env
 end

@@ -58,5 +58,5 @@ build do
   end
 
   # install requirements
-  command "#{install_dir}/embedded/bin/pip install -I --target=#{integration_agent_folder}/lib -r #{integration_source_folder}/requirements.txt"
+  command "#{install_dir}/embedded/bin/pip install --target=#{integration_agent_folder}/lib -c -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
 end

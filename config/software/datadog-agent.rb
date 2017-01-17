@@ -32,6 +32,8 @@ build do
   copy 'dogstream', "#{install_dir}/agent/"
   copy 'utils', "#{install_dir}/agent/"
 
+  copy 'requirements.txt', "#{install_dir}/agent/"
+
   command "cp *.py \"#{install_dir}/agent/\""
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
 
