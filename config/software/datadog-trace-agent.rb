@@ -10,6 +10,7 @@ else
 end
 
 dd_agent_version = ENV['AGENT_VERSION']
+ldflags = "-X 'main.Version=#{dd_agent_version}'"
 
 gourl = "https://storage.googleapis.com/golang/go1.7.1.linux-amd64.tar.gz"
 goout = "go.tar.gz"
@@ -44,5 +45,5 @@ build do
 
    # Build datadog-trace-agent
    command "$GOPATH/bin/glock sync github.com/DataDog/datadog-trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
-   command "#{gobin} build -i -o trace-agent -X main.Version=#{dd_agent_version} github.com/DataDog/datadog-trace-agent/agent && mv ./trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
+   command "#{gobin} build -i -o trace-agent -ldflags \"#{ldflags}\" github.com/DataDog/datadog-trace-agent/agent && mv ./trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
 end
