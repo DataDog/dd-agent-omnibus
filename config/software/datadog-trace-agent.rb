@@ -4,7 +4,7 @@ source git: 'https://github.com/DataDog/datadog-trace-agent.git'
 trace_agent_branch = ENV['TRACE_AGENT_BRANCH']
 
 if trace_agent_branch.nil? || trace_agent_branch.empty?
-      default_version 'last-stable'
+      default_version 'v0.99.1101'
 else
       default_version trace_agent_branch
 end
@@ -44,8 +44,6 @@ build do
    command "#{gobin} install github.com/robfig/glock", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/robfig/glock"
 
    # Build datadog-trace-agent
-   command "git checkout #{version} && git pull", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
-
    command "$GOPATH/bin/glock sync github.com/DataDog/datadog-trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
    command "#{gobin} build -i -o trace-agent -ldflags \"#{ldflags}\" github.com/DataDog/datadog-trace-agent/agent && mv ./trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
 end
