@@ -35,20 +35,6 @@ build do
     copy "#{integration_source_folder}/conf.yaml.default", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.default"
   end
 
-  # There are some cases where there are multiple config files for a check,
-  # It's mostly for ones where we have both an agent check and a jmx check,
-  # And by some, I mean only ActiveMQ
-  if Dir.exists? "#{integrations_dir}/#{check}"
-    Dir.foreach "#{integrations_dir}/#{check}" do |config_file|
-      config_file.slice! "#{integrations_dir}/#{check}/conf/"
-      if config_file == 'autoconf.yaml'
-        copy "#{integrations_dir}/#{check}/conf/#{config_file}", "#{conf_directory}/auto_conf/#{check}.yaml"
-      else
-        copy "#{integrations_dir}/#{check}/conf/#{config_file}", "#{conf_directory}/#{config_file}"
-      end
-    end
-  end
-
   command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
 
   # We need to move all the important stuff over

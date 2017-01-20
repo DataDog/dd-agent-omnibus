@@ -68,20 +68,6 @@ build do
       copy "#{integrations_dir}/#{check}/conf.yaml.default", "#{conf_directory}/#{check}.yaml.default"
     end
 
-    # There are some cases where there are multiple config files for a check,
-    # It's mostly for ones where we have both an agent check and a jmx check,
-    # And by some, I mean only ActiveMQ
-    if Dir.exists? "#{integrations_dir}/#{check}"
-      Dir.foreach "#{integrations_dir}/#{check}/conf" do |config_file|
-        config_file.slice! "#{integrations_dir}/#{check}/conf/"
-        if config_file == 'auto_conf.yaml'
-          copy "#{integrations_dir}/#{check}/conf/#{config_file}", "#{conf_directory}/auto_conf/#{check}.yaml"
-        else
-          copy "#{integrations_dir}/#{check}/conf/#{config_file}", "#{conf_directory}/#{config_file}"
-        end
-      end
-    end
-
     # We don't have auto_conf on windows yet
     unless windows?
       if File.exists? "#{integrations_dir}/#{check}/auto_conf.yaml"
