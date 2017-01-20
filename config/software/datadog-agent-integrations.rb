@@ -100,5 +100,5 @@ build do
   # Close the checks requirements file
   all_reqs_file.close
 
-  pip "install --target=#{install_dir}/lib -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt", :env => env
+  pip "install -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt", :env => env
 end
