@@ -7,10 +7,6 @@ dependency 'datadog-agent'
 
 relative_path 'integrations-core'
 
-env = {
-  "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
-}
-
 # The only integrations that will be packaged with the agent
 # are the ones that are officiallly supported.
 local_integrations_core_repo = ENV['LOCAL_INTEGRATIONS_CORE_REPO']
@@ -29,7 +25,6 @@ else
 end
 
 build do
-  mkdir  "#{install_dir}/agent/"
   # Agent code
   mkdir "#{install_dir}/agent/checks.d"
 
@@ -86,5 +81,5 @@ build do
   # Close the checks requirements file
   all_reqs_file.close
 
-  pip "install -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt", :env => env
+  pip "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt"
 end

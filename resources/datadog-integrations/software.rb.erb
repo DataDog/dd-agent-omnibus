@@ -2,6 +2,7 @@ name "dd-check-<%= name %>-software"
 default_version "0.0.1"
 
 require 'json'
+dependency 'pip'
 require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
 integration_agent_folder = "#{install_dir}/3rd-party/<%= name %>"
@@ -44,5 +45,5 @@ build do
   end
 
   # install requirements
-  command "#{install_dir}/embedded/bin/pip install --target=#{integration_agent_folder}/lib -c -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
+  pip "install --target=#{integration_agent_folder}/lib -c -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
 end
