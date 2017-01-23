@@ -30,9 +30,6 @@ build do
 
   # Grab all the checks
   checks = Dir.glob("#{integrations_dir}/*/")
-  # Only use the parts of the filename we need
-  check.slice! "#{integrations_dir}/"
-  check.slice! "/"
 
   # Open the concatenated checks requirements file
   # We're going to store it with the agent install
@@ -49,6 +46,10 @@ build do
 
   # loop through them
   checks.each do |check|
+    # Only use the parts of the filename we need
+    check.slice! "#{integrations_dir}/"
+    check.slice! "/"
+
     # Copy the checks over
     if File.exists? "#{integrations_dir}/#{check}/check.py"
       copy "#{integrations_dir}/#{check}/check.py", "#{install_dir}/agent/checks.d/#{check}.py"
