@@ -25,10 +25,14 @@ build do
   mkdir  "#{install_dir}/agent/"
 
   # Agent code
+  mkdir "#{install_dir}/agent/checks.d"
   copy 'checks.d', "#{install_dir}/agent/"
+
   copy 'checks', "#{install_dir}/agent/"
   copy 'dogstream', "#{install_dir}/agent/"
   copy 'utils', "#{install_dir}/agent/"
+
+  copy 'requirements.txt', "#{install_dir}/agent/"
 
   command "cp *.py \"#{install_dir}/agent/\""
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
@@ -64,7 +68,9 @@ build do
       copy 'packaging/supervisor_32.conf', '/etc/dd-agent/supervisor.conf'
     end
     copy 'datadog.conf.example', '/etc/dd-agent/datadog.conf.example'
+    mkdir "/etc/dd-agent/conf.d/auto_conf"
     copy 'conf.d', '/etc/dd-agent/'
+
     mkdir '/etc/dd-agent/checks.d/'
     command 'chmod 755 /etc/init.d/datadog-agent'
     touch '/usr/bin/dd-agent'
@@ -137,6 +143,7 @@ build do
     mkdir "#{install_dir}/etc"
     copy "packaging/osx/supervisor.conf", "#{install_dir}/etc/supervisor.conf"
     copy 'datadog.conf.example', "#{install_dir}/etc/datadog.conf.example"
+    mkdir "/etc/dd-agent/conf.d/auto_conf"
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
   end

@@ -190,26 +190,28 @@ dependency 'simplejson'
 dependency 'tornado'
 dependency 'uptime'
 dependency 'uuid'
-
-# Check dependencies
-# psutil is required by the core agent on Windows
-dependency 'adodbapi'
-dependency 'beautifulsoup4'
-dependency 'dnspython'
-dependency 'httplib2'
-dependency 'kazoo'
-dependency 'paramiko'
-dependency 'pg8000'
 dependency 'psutil'
-dependency 'pymongo'
-dependency 'pymysql'
-dependency 'pysnmp'
-dependency 'python-memcached'
-dependency 'python-redis'
-dependency 'python-rrdtool'
-dependency 'pyvmomi'
 dependency 'requests'
-dependency 'scandir'
+
+if !ENV["USE_INTEGRATION_SDK"]
+  # Check dependencies
+  # psutil is required by the core agent on Windows
+  dependency 'adodbapi'
+  dependency 'beautifulsoup4'
+  dependency 'dnspython'
+  dependency 'httplib2'
+  dependency 'kazoo'
+  dependency 'paramiko'
+  dependency 'pg8000'
+  dependency 'pymongo'
+  dependency 'pymysql'
+  dependency 'pysnmp'
+  dependency 'python-memcached'
+  dependency 'python-redis'
+  dependency 'python-rrdtool'
+  dependency 'pyvmomi'
+  dependency 'scandir'
+end
 
 if not windows?
   # Additional software
@@ -231,6 +233,9 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
+if ENV["USE_INTEGRATION_SDK"]
+  dependency 'datadog-agent-integrations'
+end
 
 # version manifest file
 dependency 'version-manifest'

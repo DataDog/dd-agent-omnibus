@@ -2,6 +2,7 @@ name "dd-check-<%= name %>-software"
 default_version "0.0.1"
 
 require 'json'
+dependency 'pip'
 require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
 integration_agent_folder = "#{install_dir}/3rd-party/<%= name %>"
@@ -13,13 +14,36 @@ build do
 
   # copy files
   mkdir "#{integration_agent_folder}"
-  mkdir "/etc/dd-agent/conf.d/examples/"
-  copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example"
+
+  # The conf directory is different on every system
+  if linux?
+    conf_directory = "/etc/dd-agent/conf.d"
+  elsif osx?
+    conf_directory = "#{install_dir}/etc"
+  elsif windows?
+    conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
+  end
+
+  mkdir "#{conf_directory}/examples/"
+
+  # Move config files to examples folder.
+  if File.exists? "#{integrations_dir}/#{check}/conf.yaml.example"
+    copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example"
+  end
+
+  # If it is a default, we need to move it as a default
+  if File.exists? "#{integrations_dir}/#{check}/conf.yaml.default"
+    copy "#{integration_source_folder}/conf.yaml.default", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.default"
+  end
+
   command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
+
+  # We need to move all the important stuff over
+  # The manifest and the readme are important to move over
   for file in ["check.py", "manifest.json", "requirements.txt", "README.md"]
     copy "#{integration_source_folder}/#{file}", "#{integration_agent_folder}/#{file}"
   end
 
   # install requirements
-  command "#{install_dir}/embedded/bin/pip install -I --target=#{integration_agent_folder}/lib -r #{integration_source_folder}/requirements.txt"
+  pip "install --target=#{integration_agent_folder}/lib -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
 end
