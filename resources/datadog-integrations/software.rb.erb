@@ -45,5 +45,5 @@ build do
   end
 
   # install requirements
-  pip "install --target=#{integration_agent_folder}/lib -c -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
+  pip "install --target=#{integration_agent_folder}/lib -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
 end
