@@ -41,6 +41,7 @@ fi
 git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-agent` || true
 git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-gohai` || true
 git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-metro` || true
+git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -d `git --git-dir=/var/cache/omnibus/cache/git_cache/opt/datadog-agent tag -l | grep datadog-trace-agent` || true
 
 # Install the gems we need, with stubs in bin/
 bundle update # Make sure to update to the latest version of omnibus-software
