@@ -2,12 +2,7 @@ name "datadog-trace-agent"
 source git: 'https://github.com/DataDog/datadog-trace-agent.git'
 
 trace_agent_branch = ENV['TRACE_AGENT_BRANCH']
-
-if trace_agent_branch.nil? || trace_agent_branch.empty?
-      default_version 'last-stable'
-else
-      default_version trace_agent_branch
-end
+default_version trace_agent_branch
 
 dd_agent_version = ENV['AGENT_VERSION']
 ldflags = "-X 'main.Version=#{dd_agent_version}'"
