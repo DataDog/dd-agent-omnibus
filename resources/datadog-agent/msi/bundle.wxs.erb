@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+	<Bundle Name="Datadog Agent Installer" 
+            Version="$(var.VersionNumber)" 
+            Manufacturer="Datadog Inc." 
+            UpgradeCode="$(var.BundleUpgradeCode)" >
+		
+        <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
+          <bal:WixStandardBootstrapperApplication
+          LicenseFile="Resources\assets\license.rtf" 
+          />
+        </BootstrapperApplicationRef>
+
+		<Chain>
+      <ExePackage
+        SourceFile="$(var.HelperDir)\upgrade_helper.exe"
+        PerMachine="yes"
+        Permanent="yes"
+        LogPathVariable="UninstallRelatedProductsLogPath"
+        InstallCommand="--uninstall"
+        >
+        <!-- 0 indicates it's not installed, proceed-->
+        <ExitCode Value="0" Behavior="success"/>
+        <!-- 1 indicates was installed by this user, uninstalled, proceed-->
+        <ExitCode Value="1" Behavior="success"/>
+        <!-- -1 indicates it's installed as another user, fail -->
+        <ExitCode Value="-1" Behavior="error"/> 
+        <!-- All other values error -->
+      </ExePackage>
+      <MsiPackage SourceFile="$(var.DDMSI)"/>
+		</Chain>
+	</Bundle>
+</Wix>

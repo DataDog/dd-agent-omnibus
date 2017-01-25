@@ -78,8 +78,15 @@ end
 
 # Windows .msi specific flags
 package :msi do
+  # previous upgrade code was used for older installs, and generated
+  # per-user installs.  Changing upgrade code, and switching to
+  # per-machine
+  # previous upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
+  
   # For a consistent package management, please NEVER change this code
-  upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
+  upgrade_code '0c50421b-aefb-4f15-a809-7af256d608a5'
+  bundle_upgrade_code 'E6179AB5-A20F-47E0-8BA2-3AA5F0F9B014'
+  bundle_msi true
   wix_candle_extension 'WixUtilExtension'
   wix_light_extension 'WixUtilExtension'
   if ENV['SIGN_WINDOWS']
@@ -88,7 +95,8 @@ package :msi do
   parameters({
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
-    'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist"
+    'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist",
+    'BundleUpgradeCode' => bundle_upgrade_code
   })
 end
 # Note: this is to try to avoid issues when upgrading from an
