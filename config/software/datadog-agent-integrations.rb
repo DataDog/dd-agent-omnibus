@@ -26,14 +26,21 @@ end
 
 build do
   # Agent code
-  mkdir "#{install_dir}/agent/checks.d"
+  mkdir  "#{install_dir}/agent/checks.d"
 
   # Grab all the checks
-  checks = Dir.glob("#{integrations_dir}/*/")
+  checks = Dir.glob("#{project_dir}/*/")
 
   # Open the concatenated checks requirements file
   # We're going to store it with the agent install
-  all_reqs_file = File.open("#{install_dir}/agent/check_requirements.txt", 'w')
+  all_reqs_file_path = "/check_requirements.txt"
+  if File.exist?(all_reqs_file_path)
+    all_reqs_file = File.open(all_reqs_file_path, 'w+')
+  else
+    all_reqs_file = File.new(all_reqs_file_path, 'w+')
+  end
+
+  # all_reqs_file = File.open("#{install_dir}/agent/check_requirements.txt", 'w+')
 
   # The conf directory is different on every system
   if linux?
@@ -47,34 +54,36 @@ build do
   # loop through them
   checks.each do |check|
     # Only use the parts of the filename we need
-    check.slice! "#{integrations_dir}/"
+    check.slice! "#{project_dir}/"
     check.slice! "/"
 
     # Copy the checks over
-    if File.exists? "#{integrations_dir}/#{check}/check.py"
-      copy "#{integrations_dir}/#{check}/check.py", "#{install_dir}/agent/checks.d/#{check}.py"
+    if File.exists? "#{project_dir}/#{check}/check.py"
+      copy "#{project_dir}/#{check}/check.py", "#{install_dir}/agent/checks.d/#{check}.py"
     end
 
     # Copy the check config to the conf directories
-    if File.exists? "#{integrations_dir}/#{check}/conf.yaml.example"
-      copy "#{integrations_dir}/#{check}/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
+    if File.exists? "#{project_dir}/#{check}/conf.yaml.example"
+      copy "#{project_dir}/#{check}/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
     end
     # Copy the default config, if it exists
-    if File.exists? "#{integrations_dir}/#{check}/conf.yaml.default"
-      copy "#{integrations_dir}/#{check}/conf.yaml.default", "#{conf_directory}/#{check}.yaml.default"
+    if File.exists? "#{project_dir}/#{check}/conf.yaml.default"
+      copy "#{project_dir}/#{check}/conf.yaml.default", "#{conf_directory}/#{check}.yaml.default"
     end
 
     # We don't have auto_conf on windows yet
     unless windows?
-      if File.exists? "#{integrations_dir}/#{check}/auto_conf.yaml"
-        copy "#{integrations_dir}/#{check}/autoconf.yaml", "#{conf_directory}/auto_conf/#{check}.yaml"
+      if File.exists? "#{project_dir}/#{check}/auto_conf.yaml"
+        copy "#{project_dir}/#{check}/autoconf.yaml", "#{conf_directory}/auto_conf/#{check}.yaml"
       end
     end
 
-    if File.exists? "#{integrations_dir}/#{check}/requirements.txt"
-      reqs = File.open(file, 'r').read
+    if File.exists? "#{project_dir}/#{check}/requirements.txt"
+      reqs = File.open("#{project_dir}/#{check}/requirements.txt", 'r').read
       reqs.each_line do |line|
-        all_reqs_file << line
+        if line[0] != '#'
+          all_reqs_file.puts line
+        end
       end
     end
   end
@@ -82,5 +91,7 @@ build do
   # Close the checks requirements file
   all_reqs_file.close
 
-  pip "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt"
+  pip "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt"
+
+  copy '/check_requirements.txt', "#{install_dir}/agent/"
 end
