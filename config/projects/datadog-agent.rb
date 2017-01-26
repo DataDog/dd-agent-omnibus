@@ -81,7 +81,7 @@ package :msi do
   # previous upgrade code was used for older installs, and generated
   # per-user installs.  Changing upgrade code, and switching to
   # per-machine
-  # previous upgrade_code '82210ed1-bbe4-4051-aa15-002ea31dde15'
+  per_user_upgrade_code = '82210ed1-bbe4-4051-aa15-002ea31dde15'
   
   # For a consistent package management, please NEVER change this code
   upgrade_code '0c50421b-aefb-4f15-a809-7af256d608a5'
@@ -96,7 +96,8 @@ package :msi do
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
     'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist",
-    'BundleUpgradeCode' => bundle_upgrade_code
+    'BundleUpgradeCode' => bundle_upgrade_code,
+    'PerUserUpgradeCode' => per_user_upgrade_code
   })
 end
 # Note: this is to try to avoid issues when upgrading from an

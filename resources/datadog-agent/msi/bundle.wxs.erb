@@ -19,7 +19,7 @@
         PerMachine="yes"
         Permanent="yes"
         LogPathVariable="UninstallRelatedProductsLogPath"
-        InstallCommand="--uninstall"
+        InstallCommand="-oldcode={$(var.PerUserUpgradeCode)} -newcode={$(var.UpgradeCode)}"
         >
         <!-- 0 indicates it's not installed, proceed-->
         <ExitCode Value="0" Behavior="success"/>
