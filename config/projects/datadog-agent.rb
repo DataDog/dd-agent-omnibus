@@ -85,8 +85,6 @@ package :msi do
   
   # For a consistent package management, please NEVER change this code
   upgrade_code '0c50421b-aefb-4f15-a809-7af256d608a5'
-  #bundle_upgrade_code 'E6179AB5-A20F-47E0-8BA2-3AA5F0F9B014'
-  bundle_upgrade_code upgrade_code
   bundle_msi true
   wix_candle_extension 'WixUtilExtension'
   wix_light_extension 'WixUtilExtension'
@@ -97,7 +95,6 @@ package :msi do
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
     'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist",
-    'BundleUpgradeCode' => bundle_upgrade_code,
     'PerUserUpgradeCode' => per_user_upgrade_code
   })
 end

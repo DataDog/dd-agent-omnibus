@@ -2,10 +2,10 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
       xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
   <?include "parameters.wxi" ?>
-	<Bundle Name="Datadog Agent Upgrade Installer" 
+	<Bundle Name="Datadog Agent Installer" 
             Version="$(var.VersionNumber)" 
             Manufacturer="Datadog Inc." 
-            UpgradeCode="$(var.BundleUpgradeCode)" >
+            UpgradeCode="$(var.UpgradeCode)" >
 		
         <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
           <bal:WixStandardBootstrapperApplication
