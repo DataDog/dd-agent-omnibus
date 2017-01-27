@@ -38,6 +38,7 @@ build do
   copy 'datadog-cert.pem', "#{install_dir}/agent/"
 
   mkdir "#{install_dir}/run/"
+  mkdir "#{install_dir}/bin/"
 
   if linux?
     # Configuration files
