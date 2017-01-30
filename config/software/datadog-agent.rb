@@ -1,6 +1,7 @@
 require './lib/ostools.rb'
 
 name 'datadog-agent'
+always_build true
 
 local_agent_repo = ENV['LOCAL_AGENT_REPO']
 if local_agent_repo.nil? || local_agent_repo.empty?
