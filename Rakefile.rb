@@ -38,14 +38,14 @@ namespace :agent do
       'version' => "#{integration_version}",
       'build_iteration' => "#{ENV['BUILD_ITERATION']}"
     })
-    sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
+    `(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb`
 
     header = erb_header({
       'name' => "#{ENV['INTEGRATION']}",
       'PROJECT_DIR' => "#{PROJECT_DIR}",
       'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
     })
-    sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
+    `(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb`
 
     sh "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{ENV['INTEGRATION']} --output_manifest=false"
   end
