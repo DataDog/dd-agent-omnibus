@@ -139,12 +139,16 @@ if linux?
   # during RPM upgrades. (the old files from the RPM file listthat are not in the new RPM file
   # list will get removed, that's why we need this one here)
   extra_package_file '/usr/bin/dd-agent'
+end
 
-  # Linux-specific dependencies
+# creates required build directories - has to be the first declared dep
+dependency 'preparation'
+
+# Linux-specific dependencies
+if linux?
   dependency 'procps-ng'
   dependency 'sysstat'
 end
-
 # Ship supervisor anywhere but on Windows
 if not windows?
   dependency 'kafka-python'
@@ -173,8 +177,6 @@ end
 # Dependencies
 # ------------------------------------
 
-# creates required build directories
-dependency 'preparation'
 
 # Agent dependencies
 dependency 'boto'
