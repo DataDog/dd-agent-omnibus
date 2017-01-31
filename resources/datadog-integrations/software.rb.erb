@@ -27,12 +27,12 @@ build do
   mkdir "#{conf_directory}/examples/"
 
   # Move config files to examples folder.
-  if File.exists? "#{integrations_dir}/#{check}/conf.yaml.example"
+  if File.exists? "#{project_dir}/#{check}/conf.yaml.example"
     copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example"
   end
 
   # If it is a default, we need to move it as a default
-  if File.exists? "#{integrations_dir}/#{check}/conf.yaml.default"
+  if File.exists? "#{project_dir}/#{check}/conf.yaml.default"
     copy "#{integration_source_folder}/conf.yaml.default", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.default"
   end
 
