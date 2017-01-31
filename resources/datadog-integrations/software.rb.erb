@@ -1,11 +1,12 @@
+require "./lib/ostools.rb"
+require 'json'
+
 name "dd-check-<%= name %>-software"
 default_version "0.0.1"
 
-require 'json'
-dependency 'pip'
 require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
-integration_agent_folder = "#{install_dir}/3rd-party/<%= name %>"
+integration_agent_folder = "#{install_dir}/integrations/<%= name %>"
 
 build do
   # validate manifest.json
@@ -27,14 +28,8 @@ build do
   mkdir "#{conf_directory}/examples/"
 
   # Move config files to examples folder.
-  if File.exists? "#{project_dir}/<%= name %>/conf.yaml.example"
-    copy "#{integration_source_folder}/conf.yaml.example", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example"
-  end
-
-  # If it is a default, we need to move it as a default
-  if File.exists? "#{project_dir}/<%= name %>/conf.yaml.default"
-    copy "#{integration_source_folder}/conf.yaml.default", "/etc/dd-agent/conf.d/examples/<%= name %>.yaml.default"
-  end
+  copy "#{integration_source_folder}/conf.yaml.example", "#{conf_directory}/examples/<%= name %>.yaml.example"
+  copy "#{integration_source_folder}/conf.yaml.default", "#{conf_directory}/examples/<%= name %>.yaml.default"
 
   command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
 
@@ -44,12 +39,15 @@ build do
     copy "#{integration_source_folder}/#{file}", "#{integration_agent_folder}/#{file}"
   end
 
-  # install requirements
-  install_cmd = "install --target=#{integration_agent_folder}/lib "
-  # Only apply the constraints file if one exists
-  if File.exists? #{install_dir}/agent/requirements.txt
-    install_cmd += " -c #{install_dir}/agent/requirements.txt "
+
+  if File.exists? "#{integration_source_folder}/requirements.txt"
+    # install requirements
+    install_cmd = "install --target=#{integration_agent_folder}/lib "
+    # Only apply the constraints file if one exists
+    if File.exists? "#{install_dir}/agent/requirements.txt"
+      install_cmd += " -c #{install_dir}/agent/requirements.txt "
+    end
+    install_cmd += " -r #{integration_source_folder}/requirements.txt"
+    pip install_cmd
   end
-  install_cmd += " -r #{integration_source_folder}/requirements.txt"
-  pip install_cmd
 end

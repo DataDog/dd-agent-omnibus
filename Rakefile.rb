@@ -13,14 +13,13 @@ namespace :agent do
 
   desc 'Pull the integrations repo'
   task :'pull-integrations' do
-    integration_branch = ENV['VERSION'] || 'master'
+    integration_branch = ENV['INTEGRATION_BRANCH'] || 'master'
 
     sh "rm -rf /#{ENV['INTEGRATIONS_REPO']}"
     sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
-    sh "cd /integrations-core && ls -a && git status"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} ||
-        git checkout #{integration_branch}"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout master"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git reset --hard"
   end
 
@@ -36,7 +35,8 @@ namespace :agent do
     header = erb_header({
       'name' => "#{ENV['INTEGRATION']}",
       'version' => "#{integration_version}",
-      'build_iteration' => "#{ENV['BUILD_ITERATION']}"
+      'build_iteration' => "#{ENV['BUILD_ITERATION']}",
+      'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
     })
     sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
 

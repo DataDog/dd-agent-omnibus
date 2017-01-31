@@ -1,3 +1,5 @@
+require "./lib/ostools.rb"
+
 name 'dd-check-<%= name %>'
 maintainer 'Datadog Packages <package@datadoghq.com>'
 homepage 'http://www.datadoghq.com'
@@ -5,7 +7,7 @@ install_dir '/opt/datadog-agent'
 
 build_version '<%= version %>'
 build_iteration <%= build_iteration %>
-json_manifest_path "#{install_dir}/3rd-party/<%= name %>/version-manifest.json"
+json_manifest_path "#{install_dir}/integrations/<%= name %>/version-manifest.json"
 
 description '<%= name %> Integration for Datadog Monitoring Agent
  The Datadog Monitoring Agent is a lightweight process that monitors system
@@ -48,6 +50,12 @@ runtime_dependency 'datadog-agent'
 
 extends_packages('datadog-agent', 'datadog')
 
-extra_package_file '/etc/dd-agent/conf.d/examples/<%= name %>.yaml.example'
+license_file_path "licenses/dd-check-<%= name %>"
+
+if linux?
+  extra_package_file "/etc/dd-agent/conf.d/examples"
+elsif osx?
+  extra_package_file "/opt/datadog-agent/etc/examples"
+end
 
 exclude '\.git*'
