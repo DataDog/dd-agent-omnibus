@@ -45,5 +45,11 @@ build do
   end
 
   # install requirements
-  pip "install --target=#{integration_agent_folder}/lib -c #{install_dir}/agent/requirements.txt -r #{integration_source_folder}/requirements.txt"
+  install_cmd = "install --target=#{integration_agent_folder}/lib "
+  # Only apply the constraints file if one exists
+  if File.exists? #{install_dir}/agent/requirements.txt
+    install_cmd += " -c #{install_dir}/agent/requirements.txt "
+  end
+  install_cmd += " -r #{integration_source_folder}/requirements.txt"
+  pip install_cmd
 end
