@@ -48,6 +48,10 @@ build do
       install_cmd += " -c #{install_dir}/agent/requirements.txt "
     end
     install_cmd += " -r #{integration_source_folder}/requirements.txt"
-    pip install_cmd
+
+    build_env = {
+      "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
+    }
+    command "pip #{install_cmd}", :env => build_env
   end
 end

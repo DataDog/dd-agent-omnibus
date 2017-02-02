@@ -91,7 +91,11 @@ build do
   # Close the checks requirements file
   all_reqs_file.close
 
-  pip "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt"
+  pip_cmd = "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt"
+  build_env = {
+    "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
+  }
+  command "pip #{pip_cmd}", :env => build_env
 
   copy '/check_requirements.txt', "#{install_dir}/agent/"
 end
