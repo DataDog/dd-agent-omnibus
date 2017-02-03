@@ -81,31 +81,30 @@
       Read the path value and set the APPLICATIONROOTDIRECTORY property with the value.
     -->
     <Property Id="APPLICATIONROOTDIRECTORY">
-      <RegistrySearch Key="SOFTWARE\Datadog\Datadog Agent"
+      <RegistrySearch Key="SOFTWARE\Datadog\Datadog Agent\Integrations\$(var.IntegrationName)"
                       Root="HKLM"
                       Type="raw"
                       Id="APPLICATIONROOTDIRECTORY_REGSEARCH"
                       Name="InstallPath" />
     </Property>
 
-
-    <DirectoryRef Id="APPLICATIONDATADIRECTORY">
-      <Directory Id="EXAMPLECONFSLOCATION" Name= "conf.d">
-        <Component Id="conf.d"
-                   Guid="54fcfacb-726b-46e3-a699-ec19258a24be"
-                   Permanent="yes"
-                   Location="either"
-                   NeverOverwrite="yes">
-          <CreateFolder/>
-        </Component>
-      </Directory>
-   </DirectoryRef>
+    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+      <Component Id="CleanupMainApplicationFolder" Guid="*">
+        <!-- We need to use APPLICATIONROOTDIRECTORY variable here or RemoveFolderEx
+             will not remove on "uninstall". -->
+        <RegistryValue Root="HKLM"
+                       Key="SOFTWARE\Datadog\Datadog Agent\Integrations\$(var.IntegrationName)"
+                       Name="InstallPath"
+                       Type="string"
+                       Value="[APPLICATIONROOTDIRECTORY]"/>
+        <util:RemoveFolderEx On="uninstall" Property="APPLICATIONROOTDIRECTORY"/>
+      </Component>
+    </DirectoryRef>
 
     <!-- Set the components defined in our fragment files that will be used for our feature  -->
     <Feature Id="MainApplication" Title="Datadog Agent" Level="1" ConfigurableDirectory="APPLICATIONROOTDIRECTORY">
       <ComponentGroupRef Id="ProjectDir" />
-      <ComponentRef Id="conf.d" />
-<!-- is this needed? FIXME       <ComponentGroupRef Id="ExtraEXAMPLECONFSLOCATION" /> -->
+      <ComponentRef Id="CleanupMainApplicationFolder" />
     </Feature>
 
     <!-- UI Stuff: 100% Omnibus Generated -->
