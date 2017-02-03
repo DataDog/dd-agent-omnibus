@@ -1,4 +1,4 @@
-require "./lib/ostools.rb"
+require './lib/ostools.rb'
 require 'json'
 
 name "dd-check-<%= name %>-software"
@@ -6,8 +6,8 @@ default_version "0.0.1"
 
 if windows?
   require_relative "../../resources/datadog-integrations/validate_manifest"
-else 
-  require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
+else
+  require_relative "<%= project_dir %>/resources/datadog-integrations/validate_manifest"
 end
 
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
@@ -66,7 +66,7 @@ build do
       "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
     }
     if not windows?
-      command "pip #{install_cmd}", env => build_env
+      command "pip #{install_cmd}", :env => build_env
     else
       install_cmd = '"C:\Program Files\Datadog\Datadog Agent\embedded\python.exe"' + ' -m pip ' + install_cmd
       command install_cmd
