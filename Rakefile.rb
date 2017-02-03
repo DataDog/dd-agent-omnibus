@@ -5,8 +5,10 @@ require 'FileUtils'
 
 if OS.windows?
   PROJECT_DIR='c:\dd-agent-omnibus'
+  FSROOT="/c/"
 else
   PROJECT_DIR='/dd-agent-omnibus'
+  FSROOT="/"
 end
 
 
@@ -17,10 +19,10 @@ namespace :agent do
   desc 'Cleanup generated files'
   task :clean do |t|
     puts "Clean up generated files"
-    sh "rm -rf /var/cache/omnibus/pkg/*"
-    sh "rm -f /etc/init.d/datadog-agent"
-    sh "rm -rf /etc/dd-agent"
-    sh "rm -rf /opt/datadog-agent"
+    sh "rm -rf #{FSROOT}var/cache/omnibus/pkg/*"
+    sh "rm -f #{FSROOT}etc/init.d/datadog-agent"
+    sh "rm -rf #{FSROOT}etc/dd-agent"
+    sh "rm -rf #{FSROOT}opt/datadog-agent"
     t.reenable
   end
 
@@ -28,13 +30,12 @@ namespace :agent do
   task :'pull-integrations' do
     integration_branch = ENV['INTEGRATION_BRANCH'] || 'master'
 
-    sh "rm -rf /#{ENV['INTEGRATIONS_REPO']}"
-    sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
+    sh "rm -rf #{FSROOT}#{ENV['INTEGRATIONS_REPO']}"
+    #sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
+    sh "git clone git@github.com:DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout master"
-    # fixme doesn't work on Windows ATM
-    # sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} || git checkout #{integration_branch}"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} || git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git reset --hard"
   end
 
