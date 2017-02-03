@@ -35,14 +35,11 @@ namespace :agent do
     Rake::Task["agent:pull-integrations"].invoke
     if ENV['BUILD_ALL_INTEGRATIONS'] || !ENV['INTEGRATION']
       Rake::Task["agent:build-all-integrations"].invoke
-    elsif ENV['INTEGRATIONS']
-      checks = ENV['INTEGRATIONS'].split(',')
+    elsif ENV['INTEGRATION']
+      checks = ENV['INTEGRATION'].split(',')
       checks.each do |check|
-        ENV['INTEGRATION'] = check
         prepare_and_execute_build(check)
       end
-    else
-      prepare_and_execute_build(check)
     end
   end
 
