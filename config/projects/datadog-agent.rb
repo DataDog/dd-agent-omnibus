@@ -193,7 +193,7 @@ dependency 'uuid'
 dependency 'psutil'
 dependency 'requests'
 
-if !ENV["USE_INTEGRATION_SDK"]
+unless ENV["USE_INTEGRATION_SDK"] == 'true'
   # Check dependencies
   # psutil is required by the core agent on Windows
   dependency 'adodbapi'
@@ -233,7 +233,7 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
-if ENV["USE_INTEGRATION_SDK"]
+if ENV["USE_INTEGRATION_SDK"] == 'true'
   dependency 'datadog-agent-integrations'
 end
 
