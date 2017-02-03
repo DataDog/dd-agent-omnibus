@@ -81,8 +81,7 @@ dependency 'dd-check-<%= name %>-software'
 # Checks should require the datadog agent
 runtime_dependency 'datadog-agent'
 
-if ohai['platform'] == "windows"
-else
+unless ohai['platform'] == "windows"
   extends_packages('datadog-agent', 'datadog')
 end
 
