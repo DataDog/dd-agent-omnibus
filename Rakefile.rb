@@ -1,7 +1,15 @@
 require 'json'
 require 'ohai'
+require 'os'
+require 'FileUtils'
 
-PROJECT_DIR='/dd-agent-omnibus'
+if OS.windows?
+  PROJECT_DIR='c:\dd-agent-omnibus'
+else
+  PROJECT_DIR='/dd-agent-omnibus'
+end
+
+
 
 @ohai = Ohai::System.new.tap { |o| o.all_plugins(%w{platform}) }.data
 
@@ -25,6 +33,8 @@ namespace :agent do
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout master"
+    # fixme doesn't work on Windows ATM
+    # sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} || git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git reset --hard"
   end
 
@@ -35,14 +45,11 @@ namespace :agent do
     Rake::Task["agent:pull-integrations"].invoke
     if ENV['BUILD_ALL_INTEGRATIONS'] || !ENV['INTEGRATION']
       Rake::Task["agent:build-all-integrations"].invoke
-    elsif ENV['INTEGRATIONS']
-      checks = ENV['INTEGRATIONS'].split(',')
+    elsif ENV['INTEGRATION']
+      checks = ENV['INTEGRATION'].split(',')
       checks.each do |check|
-        ENV['INTEGRATION'] = check
         prepare_and_execute_build(check)
       end
-    else
-      prepare_and_execute_build(check)
     end
   end
 
@@ -62,7 +69,9 @@ namespace :env do
   desc 'Import signing RPM key'
   task :'import-rpm-key' do
     # If an RPM_SIGNING_PASSPHRASE has been passed, let's import the signing key
-    sh "if [ \"$RPM_SIGNING_PASSPHRASE\" ]; then gpg --import /keys/RPM-SIGNING-KEY.private; fi"
+    if ENV.has_key?('RPM_SIGNING_PASSPHRASE') and not ENV['RPM_SIGNING_PASSPHRASE'].empty?
+      sh "if [ \"$RPM_SIGNING_PASSPHRASE\" ]; then gpg --import /keys/RPM-SIGNING-KEY.private; fi"
+    end
   end
 end
 
@@ -85,20 +94,32 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
     'name' => "#{integration}",
     'version' => "#{integration_version}",
     'build_iteration' => "#{ENV['BUILD_ITERATION']}",
-    'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
+    'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}",
+    'guid' => manifest['guid'],
+    'description' => manifest['description']
   })
 
-  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
-
+  `(echo "'#{header}'" && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
   header = erb_header({
     'name' => "#{integration}",
     'PROJECT_DIR' => "#{PROJECT_DIR}",
     'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
   })
 
-  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
+  `(echo "'#{header}'" && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb`
 
-  build_cmd = "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{integration} --output_manifest=false"
+  if OS.windows?
+    FileUtils.mkdir_p("#{PROJECT_DIR}/resources/dd-check-#{integration}/msi")
+    `cp -r #{PROJECT_DIR}/resources/datadog-integrations/msi/* #{PROJECT_DIR}/resources/dd-check-#{integration}/msi`
+  end
+
+  if OS.windows?
+    sh "cd #{PROJECT_DIR} && omnibus.bat --version"
+    build_cmd = "cd #{PROJECT_DIR} && bundle exec omnibus build --log-level debug dd-check-#{integration}"
+  else
+    sh "cd #{PROJECT_DIR} && omnibus --version"
+    build_cmd = "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{integration} --output_manifest=false"
+  end
 
   if dont_error_on_build
     build_cmd += " || true"

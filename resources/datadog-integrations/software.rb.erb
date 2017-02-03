@@ -4,9 +4,19 @@ require 'json'
 name "dd-check-<%= name %>-software"
 default_version "0.0.1"
 
-require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
+if windows?
+  require_relative "../../resources/datadog-integrations/validate_manifest"
+else 
+  require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
+end
+
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
-integration_agent_folder = "#{install_dir}/integrations/<%= name %>"
+
+if windows?
+  integration_agent_folder = install_dir
+else
+  integration_agent_folder = "#{install_dir}/integrations/<%= name %>"
+end
 
 build do
   # validate manifest.json
@@ -31,7 +41,9 @@ build do
   copy "#{integration_source_folder}/conf.yaml.example", "#{conf_directory}/examples/<%= name %>.yaml.example"
   copy "#{integration_source_folder}/conf.yaml.default", "#{conf_directory}/examples/<%= name %>.yaml.default"
 
-  command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
+  if not windows?
+    command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
+  end
 
   # We need to move all the important stuff over
   # The manifest and the readme are important to move over
@@ -53,6 +65,13 @@ build do
       "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
       "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
     }
-    command "pip #{install_cmd}", env => build_env
+    if not windows?
+      command "pip #{install_cmd}", env => build_env
+    else
+      install_cmd = '"C:\Program Files\Datadog\Datadog Agent\embedded\python.exe"' + ' -m pip ' + install_cmd
+      command install_cmd
+      command "CHDIR #{install_dir} & del /Q /S *.pyc"
+      command "CHDIR #{install_dir} & del /Q /S *.chm"
+    end
   end
 end
