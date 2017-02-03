@@ -1,19 +1,28 @@
 require 'json'
 require 'ohai'
-require 'os'
-require 'FileUtils'
 
-if OS.windows?
+@ohai = Ohai::System.new.tap { |o| o.all_plugins(%w{platform}) }.data
+
+def linux?()
+  %w(rhel debian fedora suse gentoo slackware arch exherbo).include? @ohai['platform_family']
+end
+
+def osx?()
+  @ohai['platform_family'] == 'mac_os_x'
+end
+
+def windows?()
+  @ohai['platform_family'] == 'windows'
+end
+
+
+if windows?
   PROJECT_DIR='c:\dd-agent-omnibus'
   FSROOT="/c/"
 else
   PROJECT_DIR='/dd-agent-omnibus'
   FSROOT="/"
 end
-
-
-
-@ohai = Ohai::System.new.tap { |o| o.all_plugins(%w{platform}) }.data
 
 namespace :agent do
   desc 'Cleanup generated files'
@@ -31,8 +40,7 @@ namespace :agent do
     integration_branch = ENV['INTEGRATION_BRANCH'] || 'master'
 
     sh "rm -rf #{FSROOT}#{ENV['INTEGRATIONS_REPO']}"
-    #sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
-    sh "git clone git@github.com:DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
+    sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} || git checkout #{integration_branch}"
@@ -96,25 +104,26 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
     'version' => "#{integration_version}",
     'build_iteration' => "#{ENV['BUILD_ITERATION']}",
     'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}",
-    'guid' => manifest['guid'],
-    'description' => manifest['description']
+    'guid' => "#{manifest['guid']}",
+    'description' => "#{manifest['description']}"
   })
 
-  `(echo "'#{header}'" && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
+  `(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
+
   header = erb_header({
     'name' => "#{integration}",
-    'PROJECT_DIR' => "#{PROJECT_DIR}",
+    'project_dir' => "#{PROJECT_DIR}",
     'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
   })
 
-  `(echo "'#{header}'" && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb`
+  `(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb`
 
-  if OS.windows?
+  if windows?
     FileUtils.mkdir_p("#{PROJECT_DIR}/resources/dd-check-#{integration}/msi")
     `cp -r #{PROJECT_DIR}/resources/datadog-integrations/msi/* #{PROJECT_DIR}/resources/dd-check-#{integration}/msi`
   end
 
-  if OS.windows?
+  if windows?
     sh "cd #{PROJECT_DIR} && omnibus.bat --version"
     build_cmd = "cd #{PROJECT_DIR} && bundle exec omnibus build --log-level debug dd-check-#{integration}"
   else
@@ -136,16 +145,4 @@ def erb_header(variables)
     out += "<% #{key}=\"#{value}\" %>"
   end
   out
-end
-
-def linux?()
-  return %w(rhel debian fedora suse gentoo slackware arch exherbo).include? @ohai['platform_family']
-end
-
-def osx?()
-  return @ohai['platform_family'] == 'mac_os_x'
-end
-
-def windows?()
-  return @ohai['platform_family'] == 'windows'
 end
