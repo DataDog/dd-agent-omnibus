@@ -20,3 +20,12 @@ dependency 'python-redis'
 dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'scandir'
+
+dependency 'psycopg2'
+dependency 'zlib'
+
+if not windows?
+  dependency 'kafka-python'
+  dependency 'python-gearman'
+  dependency 'snakebite'
+else
