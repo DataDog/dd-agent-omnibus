@@ -10,10 +10,15 @@
         <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
           <bal:WixStandardBootstrapperApplication
           LicenseFile="Resources\assets\license.rtf" 
+          LogoSideFile="Resources\assets\dd_logo_side.png"
+          LogoFile="Resources\assets\burn_logo.png"
           />
         </BootstrapperApplicationRef>
 
-		<Chain>
+    <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Resources\assets\banner_background.bmp" />
+		
+    <Chain>
       <ExePackage
         SourceFile="$(var.HelperDir)\upgrade-helper.exe"
         PerMachine="yes"
