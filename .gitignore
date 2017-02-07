@@ -2,3 +2,4 @@
 .vagrant/*
 bin/*
 ./**/.DS_Store
+Gemfile.lock
