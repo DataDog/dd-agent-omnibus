@@ -4,7 +4,7 @@ name 'datadog-agent-integrations'
 
 dependency 'pip'
 dependency 'datadog-agent'
-dependency 'datadog-agent-integration-deps'
+dependency 'integration-deps'
 
 relative_path 'integrations-core'
 

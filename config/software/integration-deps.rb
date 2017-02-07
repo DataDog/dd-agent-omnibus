@@ -1,6 +1,6 @@
 require './lib/ostools.rb'
 
-name 'datadog-agent-integration-deps'
+name 'integration-deps'
 
 dependency 'datadog-agent'
 
