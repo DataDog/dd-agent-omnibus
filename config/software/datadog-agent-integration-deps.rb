@@ -28,4 +28,4 @@ if not windows?
   dependency 'kafka-python'
   dependency 'python-gearman'
   dependency 'snakebite'
-else
+end
