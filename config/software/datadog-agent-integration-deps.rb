@@ -4,7 +4,8 @@ name 'datadog-agent-integration-deps'
 
 dependency 'datadog-agent'
 
-# These are the deps for the agent
+# These are the deps for the integrations that are shipped with the agent
+# we may also put any other C deps here that other integrations need
 dependency 'adodbapi'
 dependency 'beautifulsoup4'
 dependency 'dnspython'
@@ -21,8 +22,9 @@ dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'scandir'
 
+# This didn't use to be on windows.
+# We have bumped the version to one that builds successfully on windows
 dependency 'psycopg2'
-dependency 'zlib'
 
 if not windows?
   dependency 'kafka-python'
