@@ -151,14 +151,7 @@ if linux?
 end
 # Ship supervisor anywhere but on Windows
 if not windows?
-  dependency 'kafka-python'
-  dependency 'python-gearman'
-  dependency 'snakebite'
   dependency 'supervisor'
-
-  # Technically these ones should be shipped on Windows too at some point...
-  # if we ever happen to have a customer use Postgre/pg_boucer on that platform :)
-  dependency 'psycopg2'
   dependency 'zlib'
 else
   # We use our own supervisor shipped as a py2exe-built executable on Windows...
@@ -198,22 +191,9 @@ dependency 'requests'
 unless ENV["USE_INTEGRATION_SDK"] == 'true'
   # Check dependencies
   # psutil is required by the core agent on Windows
-  dependency 'adodbapi'
-  dependency 'beautifulsoup4'
-  dependency 'dnspython'
-  dependency 'httplib2'
-  dependency 'kazoo'
-  dependency 'paramiko'
-  dependency 'pg8000'
-  dependency 'pymongo'
-  dependency 'pymysql'
-  dependency 'pysnmp'
-  dependency 'python-memcached'
-  dependency 'python-redis'
-  dependency 'python-rrdtool'
-  dependency 'pyvmomi'
-  dependency 'scandir'
+  dependency 'integration-deps'
 end
+
 
 if not windows?
   # Additional software
