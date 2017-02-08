@@ -2,8 +2,6 @@ require './lib/ostools.rb'
 
 name 'integration-deps'
 
-dependency 'datadog-agent'
-
 # These are the deps for the integrations that are shipped with the agent
 # we may also put any other C deps here that other integrations need
 dependency 'adodbapi'
