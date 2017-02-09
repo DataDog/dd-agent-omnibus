@@ -20,12 +20,9 @@ dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'scandir'
 
-# This didn't use to be on windows.
-# We have bumped the version to one that builds successfully on windows
-dependency 'psycopg2'
-
 if not windows?
   dependency 'kafka-python'
+  dependency 'psycopg2'
   dependency 'python-gearman'
   dependency 'snakebite'
 end
