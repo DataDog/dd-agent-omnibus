@@ -19,42 +19,7 @@ else
 end
 
 relative_path 'dd-agent'
-if windows?
-  dependency 'pywin32'
-  dependency 'py2exe'
-  dependency 'wmi'
-  dependency 'boto'
-  dependency 'docker-py'
-  dependency 'ntplib'
-  dependency 'protobuf-py'
-  dependency 'pycrypto'
-  dependency 'pyopenssl'
-  dependency 'python-consul'
-  dependency 'python-etcd'
-  dependency 'pyyaml'
-  dependency 'simplejson'
-  dependency 'tornado'
-  dependency 'uptime'
-  dependency 'uuid'
-  dependency 'psutil'
-  dependency 'requests'
 
-  dependency 'adodbapi'
-  dependency 'beautifulsoup4'
-  dependency 'dnspython'
-  dependency 'httplib2'
-  dependency 'kazoo'
-  dependency 'paramiko'
-  dependency 'pg8000'
-  dependency 'pymongo'
-  dependency 'pymysql'
-  dependency 'pysnmp'
-  dependency 'python-memcached'
-  dependency 'python-redis'
-  dependency 'python-rrdtool'
-  dependency 'pyvmomi'
-  dependency 'scandir'
-end
 
 build do
   ship_license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'

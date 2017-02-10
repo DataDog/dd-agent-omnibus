@@ -194,13 +194,10 @@ dependency 'uptime'
 dependency 'uuid'
 dependency 'psutil'
 dependency 'requests'
+dependency 'integration-deps'
 
 if ENV["USE_INTEGRATION_SDK"] == 'true'
   dependency 'datadog-agent-integrations'
-else
-  # Check dependencies
-  # psutil is required by the core agent on Windows
-  dependency 'integration-deps'
 end
 
 
