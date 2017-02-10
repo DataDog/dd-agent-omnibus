@@ -195,7 +195,9 @@ dependency 'uuid'
 dependency 'psutil'
 dependency 'requests'
 
-unless ENV["USE_INTEGRATION_SDK"] == 'true'
+if ENV["USE_INTEGRATION_SDK"] == 'true'
+  dependency 'datadog-agent-integrations'
+else
   # Check dependencies
   # psutil is required by the core agent on Windows
   dependency 'integration-deps'
@@ -225,9 +227,7 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
-if ENV["USE_INTEGRATION_SDK"] == 'true'
-  dependency 'datadog-agent-integrations'
-end
+
 
 # version manifest file
 dependency 'version-manifest'
