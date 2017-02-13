@@ -93,11 +93,16 @@ build do
   all_reqs_file.close
 
   pip_cmd = "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt"
-  build_env = {
-    "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-    "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
-  }
-  command "pip #{pip_cmd}", :env => build_env
+  if windows?
+    inst_cmd = "#{windows_safe_path(install_dir)}\\embedded\\scripts\\pip.exe " + pip_cmd
+    command inst_cmd
+  else
+    build_env = {
+      "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+      "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
+    }
+    command "pip #{pip_cmd}", :env => build_env
+  end
 
   copy '/check_requirements.txt', "#{install_dir}/agent/"
 end
