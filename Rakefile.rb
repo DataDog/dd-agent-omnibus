@@ -126,7 +126,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   end
 
   if windows?
-    sh "cd #{PROJECT_DIR} && omnibus.bat --version"
+    sh "cd #{PROJECT_DIR} && bundle exec omnibus --version"
     build_cmd = "cd #{PROJECT_DIR} && bundle exec omnibus build --log-level debug dd-check-#{integration}"
   else
     sh "cd #{PROJECT_DIR} && omnibus --version"

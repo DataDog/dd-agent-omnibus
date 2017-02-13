@@ -68,8 +68,6 @@ package :msi do
   end
   parameters({
     'InstallDir' => install_dir,
-    'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
-    'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist",
     'PackageName' => "DataDog <%= name %> Integration",
     'IntegrationName' => "<%= name %>",
     'Description' => " <%= description %>"
