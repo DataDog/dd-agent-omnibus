@@ -58,7 +58,7 @@ build do
     check.slice! "#{project_dir}/"
     check.slice! "/"
 
-    sh %(echo #{check})
+    `echo #{check}`
 
     # Copy the checks over
     if File.exists? "#{project_dir}/#{check}/check.py"
