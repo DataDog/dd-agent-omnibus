@@ -58,6 +58,8 @@ build do
     check.slice! "#{project_dir}/"
     check.slice! "/"
 
+    sh %(echo #{check})
+
     # Copy the checks over
     if File.exists? "#{project_dir}/#{check}/check.py"
       copy "#{project_dir}/#{check}/check.py", "#{install_dir}/agent/checks.d/#{check}.py"
