@@ -7,6 +7,7 @@ default_version "0.0.1"
 require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
 integration_agent_folder = "#{install_dir}/integrations/<%= name %>"
+is_core_integration = <%= core %>
 
 build do
   # validate manifest.json
@@ -31,8 +32,6 @@ build do
   copy "#{integration_source_folder}/conf.yaml.example", "#{conf_directory}/examples/<%= name %>.yaml.example"
   copy "#{integration_source_folder}/conf.yaml.default", "#{conf_directory}/examples/<%= name %>.yaml.default"
 
-  command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
-
   # We need to move all the important stuff over
   # The manifest and the readme are important to move over
   for file in ["check.py", "manifest.json", "requirements.txt", "README.md"]
@@ -40,19 +39,23 @@ build do
   end
 
 
-  if File.exists? "#{integration_source_folder}/requirements.txt"
-    # install requirements
-    install_cmd = "install --target=#{integration_agent_folder}/lib "
-    # Only apply the constraints file if one exists
-    if File.exists? "#{install_dir}/agent/requirements.txt"
-      install_cmd += " -c #{install_dir}/agent/requirements.txt "
-    end
-    install_cmd += " -r #{integration_source_folder}/requirements.txt"
+  unless is_core_integration
+    command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
 
-    build_env = {
-      "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-      "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
-    }
-    command "pip #{install_cmd}", env => build_env
+    if File.exists? "#{integration_source_folder}/requirements.txt"
+      # install requirements
+      install_cmd = "install --target=#{integration_agent_folder}/lib "
+      # Only apply the constraints file if one exists
+      if File.exists? "#{install_dir}/agent/requirements.txt"
+        install_cmd += " -c #{install_dir}/agent/requirements.txt "
+      end
+      install_cmd += " -r #{integration_source_folder}/requirements.txt"
+
+      build_env = {
+        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+        "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
+      }
+      command "pip #{install_cmd}", env => build_env
+    end
   end
 end

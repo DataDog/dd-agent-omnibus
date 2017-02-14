@@ -2,6 +2,7 @@ require 'json'
 require 'ohai'
 
 PROJECT_DIR='/dd-agent-omnibus'
+CORE_REPOS = ['integrations-core']
 
 @ohai = Ohai::System.new.tap { |o| o.all_plugins(%w{platform}) }.data
 
@@ -70,6 +71,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   sh "cd #{PROJECT_DIR} && bundle update"
   puts "building integration #{integration}"
 
+  is_core = CORE_REPOS.include? ENV['INTEGRATIONS_REPO']
   manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{integration}/manifest.json"))
   # The manifest should always have a version
   integration_version = manifest['version']
@@ -84,16 +86,17 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   header = erb_header({
     'name' => "#{integration}",
     'version' => "#{integration_version}",
-    'build_iteration' => "#{ENV['BUILD_ITERATION']}",
-    'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
+    'build_iteration' => ENV['BUILD_ITERATION'],
+    'integrations_repo' => ENV['INTEGRATIONS_REPO']
   })
 
   sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
 
   header = erb_header({
     'name' => "#{integration}",
-    'PROJECT_DIR' => "#{PROJECT_DIR}",
-    'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
+    'PROJECT_DIR' => PROJECT_DIR,
+    'integrations_repo' => ENV['INTEGRATIONS_REPO'],
+    'core' => is_core
   })
 
   sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
@@ -116,14 +119,14 @@ def erb_header(variables)
   out
 end
 
-def linux?()
-  return %w(rhel debian fedora suse gentoo slackware arch exherbo).include? @ohai['platform_family']
+def linux?
+  %w(rhel debian fedora suse gentoo slackware arch exherbo).include? @ohai['platform_family']
 end
 
-def osx?()
-  return @ohai['platform_family'] == 'mac_os_x'
+def osx?
+  @ohai['platform_family'] == 'mac_os_x'
 end
 
-def windows?()
-  return @ohai['platform_family'] == 'windows'
+def windows?
+  @ohai['platform_family'] == 'windows'
 end
