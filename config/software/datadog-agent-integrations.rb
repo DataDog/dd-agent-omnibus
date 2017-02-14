@@ -32,6 +32,9 @@ build do
   # Grab all the checks
   checks = Dir.glob("#{project_dir}/*/")
 
+  `echo #{project_dir}`
+  `echo #{checks}`
+
   # Open the concatenated checks requirements file
   # We're going to store it with the agent install
   all_reqs_file_path = "/check_requirements.txt"
