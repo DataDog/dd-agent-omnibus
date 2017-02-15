@@ -27,31 +27,26 @@ end
 # Dependencies
 # ------------------------------------
 
-
 # Agent dependencies
 dependency 'boto'
 dependency 'docker-py'
 dependency 'ntplib'
 dependency 'protobuf-py'
+dependency 'psutil'
 dependency 'pycrypto'
 dependency 'pyopenssl'
 dependency 'python-consul'
 dependency 'python-etcd'
 dependency 'pyyaml'
+dependency 'requests'
 dependency 'simplejson'
 dependency 'tornado'
 dependency 'uptime'
 dependency 'uuid'
-dependency 'psutil'
-dependency 'requests'
 
 # Check dependencies
 # psutil is required by the core agent on Windows
 dependency 'integration-deps'
-
-
-
-
 
 # version manifest file
 dependency 'version-manifest'
