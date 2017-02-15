@@ -29,8 +29,20 @@ build do
   # Agent code
   mkdir  "#{install_dir}/agent/checks.d"
 
-  # Grab all the checks
-  checks = Dir.glob("#{project_dir}/*/")
+  block do
+    # Grab all the checks
+    checks = Dir.glob("#{project_dir}/*/")
+
+    Omnibus.logger.info("integrations") {
+      project_dir
+    }
+    Omnibus.logger.info("integrations") {
+      checks
+    }
+    Omnibus.logger.info("integrations") {
+      `ls #{project_dir}`
+    }
+  end
 
   Omnibus.logger.info("integrations") {
     project_dir
