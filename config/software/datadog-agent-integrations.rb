@@ -32,10 +32,16 @@ build do
   # Grab all the checks
   checks = Dir.glob("#{project_dir}/*/")
 
-  `echo #{project_dir}`
-  `echo #{checks}`
-  `ls #{project_dir}`
-  
+  Omnibus.logger.info("integrations") {
+    project_dir
+  }
+  Omnibus.logger.info("integrations") {
+    checks
+  }
+  Omnibus.logger.info("integrations") {
+    `ls #{project_dir}`
+  }
+
   # Open the concatenated checks requirements file
   # We're going to store it with the agent install
   all_reqs_file_path = "/check_requirements.txt"
