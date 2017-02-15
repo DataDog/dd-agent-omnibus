@@ -64,7 +64,16 @@ build do
       check.slice! "#{project_dir}/"
       check.slice! "/"
 
-      `echo #{check}`
+      # Check the manifest to be sure that this check is enabled on this system
+      # or skip this iteration
+      manifest = JSON.parse(File.read("#{project_dir}/#{check}/manifest.json"))
+      if linux?
+        manifest['supported_os'].include?('linux') || next
+      elsif windows?
+        manifest['supported_os'].include?('windows') || next
+      elsif osx?
+        manifest['supported_os'].include?('osx') || next
+      end
 
       # Copy the checks over
       if File.exists? "#{project_dir}/#{check}/check.py"
