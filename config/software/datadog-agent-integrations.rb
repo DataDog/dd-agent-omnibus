@@ -31,6 +31,8 @@ build do
 
   checks = []
 
+  # build do cannot have fully dynamic actions in it
+  # Dynamic actions must be put inside of "block do"
   block do
     # Grab all the checks
     checks = Dir.glob("#{project_dir}/*/")
