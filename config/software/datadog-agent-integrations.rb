@@ -33,19 +33,10 @@ build do
 
   # build do cannot have fully dynamic actions in it
   # Dynamic actions must be put inside of "block do"
+  # since most of this is dynamic, I'll wrap the whole thing in `block do`
   block do
     # Grab all the checks
     checks = Dir.glob("#{project_dir}/*/")
-
-    Omnibus.logger.info("integrations") {
-      project_dir
-    }
-    Omnibus.logger.info("integrations") {
-      checks
-    }
-    Omnibus.logger.info("integrations") {
-      `ls #{project_dir}`
-    }
 
     # Open the concatenated checks requirements file
     # We're going to store it with the agent install
