@@ -151,56 +151,6 @@ end
 # creates required build directories - has to be the first declared dep
 dependency 'preparation'
 
-# Linux-specific dependencies
-if linux?
-  dependency 'procps-ng'
-  dependency 'sysstat'
-end
-# Ship supervisor anywhere but on Windows
-if not windows?
-  dependency 'supervisor'
-  dependency 'zlib'
-else
-  # We use our own supervisor shipped as a py2exe-built executable on Windows...
-  # therefore we need py2exe. We also need psutil for our home-made supervisor.
-  dependency 'pywin32'
-  dependency 'py2exe'
-  dependency 'wmi'
-end
-
-# Mac and Windows
-if osx? or windows?
-  dependency 'gui'
-end
-
-# ------------------------------------
-# Dependencies
-# ------------------------------------
-
-
-# Agent dependencies
-dependency 'boto'
-dependency 'docker-py'
-dependency 'ntplib'
-dependency 'protobuf-py'
-dependency 'pycrypto'
-dependency 'pyopenssl'
-dependency 'python-consul'
-dependency 'python-etcd'
-dependency 'pyyaml'
-dependency 'simplejson'
-dependency 'tornado'
-dependency 'uptime'
-dependency 'uuid'
-dependency 'psutil'
-dependency 'requests'
-
-unless ENV["USE_INTEGRATION_SDK"] == 'true'
-  # Check dependencies
-  # psutil is required by the core agent on Windows
-  dependency 'integration-deps'
-end
-
 
 if not windows?
   # Additional software
@@ -228,9 +178,5 @@ dependency 'datadog-agent'
 if ENV["USE_INTEGRATION_SDK"] == 'true'
   dependency 'datadog-agent-integrations'
 end
-
-# version manifest file
-dependency 'version-manifest'
-
 exclude '\.git*'
 exclude 'bundler\/git'

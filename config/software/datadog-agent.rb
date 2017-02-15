@@ -20,6 +20,8 @@ end
 
 relative_path 'dd-agent'
 
+dependency 'agent-deps'
+
 build do
   ship_license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'
 
