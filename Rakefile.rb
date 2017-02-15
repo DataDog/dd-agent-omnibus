@@ -110,15 +110,16 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
     'description' => "#{manifest['description']}"
   })
 
-  `(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
-
+  #`(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
+  sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb"
+  
   header = erb_header({
     'name' => "#{integration}",
     'project_dir' => "#{PROJECT_DIR}",
     'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
   })
 
-  `(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb`
+  sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb"
 
   if windows?
     FileUtils.mkdir_p("#{PROJECT_DIR}/resources/dd-check-#{integration}/msi")
