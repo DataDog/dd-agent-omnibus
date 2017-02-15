@@ -35,14 +35,11 @@ namespace :agent do
     Rake::Task["agent:pull-integrations"].invoke
     if ENV['BUILD_ALL_INTEGRATIONS'] || !ENV['INTEGRATION']
       Rake::Task["agent:build-all-integrations"].invoke
-    elsif ENV['INTEGRATIONS']
-      checks = ENV['INTEGRATIONS'].split(',')
+    elsif ENV['INTEGRATION']
+      checks = ENV['INTEGRATION'].split(',')
       checks.each do |check|
-        ENV['INTEGRATION'] = check
         prepare_and_execute_build(check)
       end
-    else
-      prepare_and_execute_build(check)
     end
   end
 
@@ -88,7 +85,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
     'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
   })
 
-  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
+  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb"
 
   header = erb_header({
     'name' => "#{integration}",
@@ -96,7 +93,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
     'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
   })
 
-  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
+  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb"
 
   build_cmd = "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{integration} --output_manifest=false"
 
