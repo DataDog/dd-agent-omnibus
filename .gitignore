@@ -2,3 +2,6 @@
 .vagrant/*
 bin/*
 ./**/.DS_Store
+resources/dd-check-*
+config/software/dd-check-*-software.rb
+config/projects/dd-check-*.rb
