@@ -34,7 +34,8 @@ build do
 
   `echo #{project_dir}`
   `echo #{checks}`
-
+  `ls #{project_dir}`
+  
   # Open the concatenated checks requirements file
   # We're going to store it with the agent install
   all_reqs_file_path = "/check_requirements.txt"
