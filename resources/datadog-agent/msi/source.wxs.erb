@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <!-- This is how we include wxi files -->
   <?include "parameters.wxi" ?>
 
@@ -39,13 +40,13 @@
     </Upgrade>
 
     <!-- Close application when uninstalling -->
-    <util:CloseApplication Id="CloseAgentManager"
-                           Target="agent-manager.exe"
-                           PromptToContinue="no"
-                           CloseMessage="yes"
-                           TerminateProcess="1"
-                           Description="Please close the Agent Manager"
-                           RebootPrompt="no" />
+    <util:CloseApplication Id="CloseTrayApp" 
+                          CloseMessage="yes" 
+                          Target="agent-manager.exe" 
+                          ElevatedCloseMessage="yes"
+                          TerminateProcess="1"
+                          Timeout="1"
+                          RebootPrompt="no"/>
 
     <!-- No need to restart Windows after the installation -->
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
@@ -223,6 +224,10 @@
       <ComponentRef Id="RegisterConfVariables" />
     </Feature>
 
+    <InstallExecuteSequence>
+      <Custom Action="WixCloseApplications"
+          After="StopServices"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
+    </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
@@ -236,12 +241,15 @@
       <TextStyle Id="WixUI_Font_Bigger_White" FaceName="Tahoma" Size="12" Red="255" Green="255" Blue="255" />
       <TextStyle Id="WixUI_Font_Title_White" FaceName="Tahoma" Size="9" Bold="yes" Red="255" Green="255" Blue="255" />
       <Publish Dialog="ExitDialog"
-        Control="Finish"
-        Event="DoAction"
-        Value="LaunchApp">
-        NOT Installed
+          Control="Finish"
+          Event="DoAction"
+          Value="LaunchApp">
+          WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
       </Publish>
     </UI>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT"
+                  Value="!(loc.LaunchAgentManager)" />
+    
 
     <WixVariable Id="WixUILicenseRtf" Value="Resources\assets\LICENSE.rtf" />
     <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />
