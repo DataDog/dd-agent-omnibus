@@ -78,6 +78,15 @@
         Return="check"
         ExeCommand="[SystemFolder]cmd.exe /C start agent-manager.exe" />
 
+    <Binary Id="UpgradeHelper" SourceFile="$(var.HelperDir)\upgrade-helper.exe" />
+    <CustomAction
+        Id="CheckForOldVersion"
+        BinaryKey="UpgradeHelper"
+        ExeCommand="-oldcode={$(var.PerUserUpgradeCode)} -newcode={$(var.UpgradeCode)} -checkonly=true"
+        Execute="deferred"
+        Return="check"
+        Impersonate="no" />
+
     <!-- Delete application when uninstalling -->
     <!--
       RemoveFolderEx requires that we "remember" the path for uninstall.
@@ -227,6 +236,8 @@
     <InstallExecuteSequence>
       <Custom Action="WixCloseApplications"
           After="StopServices"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
+      <Custom Action="CheckForOldVersion"
+          After="InstallInitialize">NOT Installed AND NOT REMOVE</Custom>
     </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
