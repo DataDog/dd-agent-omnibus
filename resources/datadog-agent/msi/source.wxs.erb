@@ -38,6 +38,13 @@
                         Minimum='1.0.0' IncludeMinimum='yes'
                         Maximum="$(var.DisplayVersionNumber)" IncludeMaximum='no'/>
     </Upgrade>
+    <!-- This removes entirely the previous version -->
+    <Upgrade Id="$(var.PerUserUpgradeCode)">
+        <UpgradeVersion OnlyDetect='no'
+                        Property='PREVIOUSFOUND'
+                        Minimum='1.0.0' IncludeMinimum='yes'
+                        Maximum="99.99.99.99" IncludeMaximum='no'/>
+    </Upgrade>
 
     <!-- Close application when uninstalling -->
     <util:CloseApplication Id="CloseTrayApp" 
@@ -237,7 +244,7 @@
       <Custom Action="WixCloseApplications"
           After="StopServices"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
       <Custom Action="CheckForOldVersion"
-          After="InstallInitialize">NOT Installed AND NOT REMOVE</Custom>
+          After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE]]></Custom>
     </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
