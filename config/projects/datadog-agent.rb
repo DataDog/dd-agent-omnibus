@@ -176,12 +176,12 @@ dependency 'datadogpy'
 # are built last before datadog-agent since they should always be rebuilt
 # (if put above, they would dirty the cache of the dependencies below
 # and trigger a useless rebuild of many packages)
-dependency 'datadog-gohai'
 if linux? and ohai['kernel']['machine'] == 'x86_64'
   dependency 'datadog-metro'
 end
 
 if linux?
+  dependency 'datadog-gohai'
   dependency 'datadog-trace-agent'
 end
 
