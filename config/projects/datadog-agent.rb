@@ -82,7 +82,7 @@ package :msi do
   # per-user installs.  Changing upgrade code, and switching to
   # per-machine
   per_user_upgrade_code = '82210ed1-bbe4-4051-aa15-002ea31dde15'
-  
+
   # For a consistent package management, please NEVER change this code
   upgrade_code '0c50421b-aefb-4f15-a809-7af256d608a5'
   bundle_msi true
@@ -175,8 +175,6 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
-if ENV["USE_INTEGRATION_SDK"] == 'true'
-  dependency 'datadog-agent-integrations'
-end
+dependency 'datadog-agent-integrations'
 exclude '\.git*'
 exclude 'bundler\/git'
