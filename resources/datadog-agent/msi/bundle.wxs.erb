@@ -17,6 +17,10 @@
 
     <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />
     <WixVariable Id="WixUIBannerBmp" Value="Resources\assets\banner_background.bmp" />
+
+    <Variable Name="APIKEY" bal:Overridable="yes"/>
+    <Variable Name="TAGS" bal:Overridable="yes"/>
+    <Variable Name="HOSTNAME" bal:Overridable="yes"/>
 		
     <Chain>
       <ExePackage
@@ -34,7 +38,11 @@
         <ExitCode Value="-1" Behavior="error"/> 
         <!-- All other values error -->
       </ExePackage>
-      <MsiPackage SourceFile="$(var.PackageMsi)"/>
+      <MsiPackage SourceFile="$(var.PackageMsi)">
+        <MsiProperty Name="APIKEY" Value="[APIKEY]"/>
+        <MsiProperty Name="TAGS" Value="[TAGS]"/>
+        <MsiProperty Name="HOSTNAME" Value="[HOSTNAME]"/>
+      </MsiPackage>
 		</Chain>
 	</Bundle>
 </Wix>
