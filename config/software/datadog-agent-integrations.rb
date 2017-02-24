@@ -66,7 +66,13 @@ build do
 
       # Check the manifest to be sure that this check is enabled on this system
       # or skip this iteration
-      manifest = JSON.parse(File.read("#{project_dir}/#{check}/manifest.json"))
+      manifest_file_path = "#{project_dir}/#{check}/manifest.json"
+
+      # If there is no manifest file, then we should assume the folder does not
+      # contain a working check and move onto the next
+      File.exist?(manifest_file_path) || next
+
+      manifest = JSON.parse(File.read(manifest_file_path))
       if linux?
         manifest['supported_os'].include?('linux') || next
       elsif windows?
