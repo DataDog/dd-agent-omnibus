@@ -102,7 +102,7 @@ build do
         end
       end
 
-      if File.exists? "#{project_dir}/#{check}/requirements.txt"
+      if File.exists? "#{project_dir}/#{check}/requirements.txt" && manifest['use_reqs_file']
         reqs = File.open("#{project_dir}/#{check}/requirements.txt", 'r').read
         reqs.each_line do |line|
           if line[0] != '#'
