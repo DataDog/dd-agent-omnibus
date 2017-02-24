@@ -37,13 +37,13 @@ build do
    command "rm -rf $GOPATH/src/github.com/DataDog/datadog-trace-agent && mv #{agent_source_dir} $GOPATH/src/github.com/DataDog/", :env => env
 
    # Checkout datadog-trace-agent's build dependencies
-   command "#{gobin} get -d github.com/robfig/glock", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com"
+   command "#{gobin} get -d github.com/Masterminds/glide", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com"
 
    # Pin build deps to known versions
-   command "git checkout 7bc8ce51048e2adc11733f90a87b1c02fb7feebe", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/robfig/glock"
-   command "#{gobin} install github.com/robfig/glock", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/robfig/glock"
+   command "git reset --hard v0.12.3", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/Masterminds/glide"
+   command "#{gobin} install github.com/Masterminds/glide", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/Masterminds/glide"
 
    # Build datadog-trace-agent
-   command "$GOPATH/bin/glock sync github.com/DataDog/datadog-trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
+   command "$GOPATH/bin/glide install", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
    command "#{gobin} build -i -o trace-agent -ldflags \"#{ldflags}\" github.com/DataDog/datadog-trace-agent/agent && mv ./trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => "#{Omnibus::Config.cache_dir}/src/datadog-trace-agent/src/github.com/DataDog/datadog-trace-agent"
 end
