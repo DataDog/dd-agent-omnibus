@@ -224,7 +224,21 @@
           <CreateFolder/>
         </Component>
       </Directory>
-   </DirectoryRef>
+    </DirectoryRef>
+    
+    <DirectoryRef Id="TARGETDIR">
+      <Merge Id="VCRedist" SourceFile="$(var.MSMLocation)\Microsoft_VC90_CRT_x86_x64.msm" DiskId="1" Language="0"/>
+    </DirectoryRef>
+    <DirectoryRef Id="TARGETDIR">
+      <Merge Id="VCRedirectRedist" SourceFile="$(var.MSMLocation)\policy_9_0_Microsoft_VC90_CRT_x86_x64.msm" DiskId="1" Language="0"/>
+    </DirectoryRef>
+
+    <Feature Id="VCRedist" Title="Visual C++ 9.0 Runtime" AllowAdvertise="no" Display="hidden" Level="1">
+      <MergeRef Id="VCRedist"/>
+    </Feature>
+    <Feature Id="VCRedirectRedist" Title="Visual C++ 9.0 Runtime Redirector" AllowAdvertise="no" Display="hidden" Level="1">
+      <MergeRef Id="VCRedirectRedist"/>
+    </Feature>
 
     <!-- Set the components defined in our fragment files that will be used for our feature  -->
     <Feature Id="MainApplication" Title="Datadog Agent" Level="1" ConfigurableDirectory="APPLICATIONROOTDIRECTORY">

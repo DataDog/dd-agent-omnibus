@@ -16,6 +16,8 @@ else
   dependency 'pywin32'
   dependency 'py2exe'
   dependency 'wmi'
+  dependency 'vc_redist_msm'
+  dependency 'vc_redist_policy_msm'
 end
 
 # Mac and Windows

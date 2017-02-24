@@ -95,7 +95,8 @@ package :msi do
     'InstallDir' => install_dir,
     'InstallFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/packaging/datadog-agent/win32/install_files",
     'DistFiles' => "#{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist",
-    'PerUserUpgradeCode' => per_user_upgrade_code
+    'PerUserUpgradeCode' => per_user_upgrade_code,
+    'MSMLocation' => "#{Omnibus::Config.source_dir()}/extra_package_files"
   })
 end
 # Note: this is to try to avoid issues when upgrading from an
