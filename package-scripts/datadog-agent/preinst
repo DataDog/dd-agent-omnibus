@@ -34,10 +34,18 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
 
     # Prepare the GPG keys rotation:
     # Add the new one to the list of trusted APT keys.
+    # Some servers are on severely resticted networks.  Check for proxy,
+    # and check if key already exists.
     echo "Prepare Datadog Agent keys rotation"
     echo -n "  Add the new 'Datadog, Inc <package@datadoghq.com>' key to the list of APT trusted keys."
-    apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed"
-
+    if $( apt-key finger | grep -q '935F 5A43 6A5A 6E87 88F0  765B 226A E980 C7A7 DA52' ); then
+        echo "... key already installed"
+    else
+        if [ "$http_proxy" != "" ]; then
+            HKP_PROXY="--keyserver-options http-proxy=$http_proxy"
+        fi
+        apt-key adv $HKP_PROXY --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed" 
+    fi
     #DEBHELPER#
 
   elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ] || [ "$DISTRIBUTION" == "SUSE" ]; then
