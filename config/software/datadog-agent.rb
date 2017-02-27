@@ -79,45 +79,46 @@ build do
       'PATH' => "#{install_dir}/embedded/bin/:#{ENV['PATH']}"
     }
 
-    app_temp_dir = "#{install_dir}/agent/dist/Datadog Agent.app/Contents"
-    app_temp_dir_escaped = "#{install_dir}/agent/dist/Datadog\\ Agent.app/Contents"
-    pyside_build_dir =  "#{install_dir}/agent/build/bdist.macosx-10.5-intel/python2.7-standalone/app/collect/PySide"
-    command_fix_shiboken = 'install_name_tool -change @rpath/libshiboken-python2.7.1.2.dylib'\
-                      ' @executable_path/../Frameworks/libshiboken-python2.7.1.2.dylib '
-    command_fix_pyside = 'install_name_tool -change @rpath/libpyside-python2.7.1.2.dylib'\
-                      ' @executable_path/../Frameworks/libpyside-python2.7.1.2.dylib '
+#     app_temp_dir = "#{install_dir}/agent/dist/Datadog Agent.app/Contents"
+#     app_temp_dir_escaped = "#{install_dir}/agent/dist/Datadog\\ Agent.app/Contents"
+#     pyside_build_dir =  "#{install_dir}/agent/build/bdist.macosx-10.5-intel/python2.7-standalone/app/collect/PySide"
+#     command_fix_shiboken = 'install_name_tool -change @rpath/libshiboken-python2.7.1.2.dylib'\
+#                       ' @executable_path/../Frameworks/libshiboken-python2.7.1.2.dylib '
+#     command_fix_pyside = 'install_name_tool -change @rpath/libpyside-python2.7.1.2.dylib'\
+#                       ' @executable_path/../Frameworks/libpyside-python2.7.1.2.dylib '
 
     # Command line tool
     copy 'packaging/osx/datadog-agent', "#{install_dir}/bin"
     command "chmod 755 #{install_dir}/bin/datadog-agent"
 
     # GUI
-    copy 'packaging/datadog-agent/win32/install_files/guidata/images', "#{install_dir}/agent"
-    copy 'win32/gui.py', "#{install_dir}/agent"
-    copy 'win32/status.html', "#{install_dir}/agent"
-    mkdir "#{install_dir}/agent/packaging"
-    copy 'packaging/osx/app/*', "#{install_dir}/agent/packaging"
-
-    command "cd #{install_dir}/agent && "\
-            "#{install_dir}/embedded/bin/python #{install_dir}/agent/setup.py py2app"\
-            ' && cd -', env: env
-    # Time to patch the install, see py2app bug: (dependencies to system PySide)
-    # https://bitbucket.org/ronaldoussoren/py2app/issue/143/resulting-app-mistakenly-looks-for-pyside
-    copy "#{pyside_build_dir}/libshiboken-python2.7.1.2.dylib", "#{app_temp_dir}/Frameworks/libshiboken-python2.7.1.2.dylib"
-    copy "#{pyside_build_dir}/libpyside-python2.7.1.2.dylib", "#{app_temp_dir}/Frameworks/libpyside-python2.7.1.2.dylib"
-
-    command "chmod a+x #{app_temp_dir_escaped}/Frameworks/{libpyside,libshiboken}-python2.7.1.2.dylib"
-    command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Frameworks/libpyside-python2.7.1.2.dylib"
-    command 'install_name_tool -change /usr/local/lib/QtCore.framework/Versions/4/QtCore '\
-            '@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore '\
-            "#{app_temp_dir_escaped}/Frameworks/libpyside-python2.7.1.2.dylib"
-    command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
-    command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
-    command "#{command_fix_pyside} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
-    command "#{command_fix_pyside} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
-
-    # And finally
-    command "cp -Rf #{install_dir}/agent/dist/Datadog\\ Agent.app #{install_dir}"
+#     copy 'packaging/datadog-agent/win32/install_files/guidata/images', "#{install_dir}/agent"
+#     copy 'win32/gui.py', "#{install_dir}/agent"
+#     copy 'win32/status.html', "#{install_dir}/agent"
+#     mkdir "#{install_dir}/agent/packaging"
+#     copy 'packaging/osx/app/*', "#{install_dir}/agent/packaging"
+# 
+#     command "cd #{install_dir}/agent && "\
+#             "#{install_dir}/embedded/bin/python #{install_dir}/agent/setup.py py2app"\
+#             ' && cd -', env: env
+#     # Time to patch the install, see py2app bug: (dependencies to system PySide)
+#     # https://bitbucket.org/ronaldoussoren/py2app/issue/143/resulting-app-mistakenly-looks-for-pyside
+#     copy "#{pyside_build_dir}/libshiboken-python2.7.1.2.dylib", "#{app_temp_dir}/Frameworks/libshiboken-python2.7.1.2.dylib"
+#     copy "#{pyside_build_dir}/libpyside-python2.7.1.2.dylib", "#{app_temp_dir}/Frameworks/libpyside-python2.7.1.2.dylib"
+# 
+#     command "chmod a+x #{app_temp_dir_escaped}/Frameworks/{libpyside,libshiboken}-python2.7.1.2.dylib"
+#     command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Frameworks/libpyside-python2.7.1.2.dylib"
+#     command 'install_name_tool -change /usr/local/lib/QtCore.framework/Versions/4/QtCore '\
+#             '@executable_path/../Frameworks/QtCore.framework/Versions/4/QtCore '\
+#             "#{app_temp_dir_escaped}/Frameworks/libpyside-python2.7.1.2.dylib"
+#     command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
+#     command "#{command_fix_shiboken} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
+#     command "#{command_fix_pyside} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtCore.so"
+#     command "#{command_fix_pyside} #{app_temp_dir_escaped}/Resources/lib/python2.7/lib-dynload/PySide/QtGui.so"
+# 
+#     # And finally
+#     command "cp -Rf #{install_dir}/agent/dist/Datadog\\ Agent.app #{install_dir}"
+    command "cp -Rf /tmp/Datadog\\ Agent.app #{install_dir}"
 
     # Clean GUI related things
     %w(build dist images gui.py status.html packaging Datadog_Agent.egg-info).each do |file|
