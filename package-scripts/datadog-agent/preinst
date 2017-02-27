@@ -38,7 +38,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     # and check if key already exists.
     echo "Prepare Datadog Agent keys rotation"
     echo -n "  Add the new 'Datadog, Inc <package@datadoghq.com>' key to the list of APT trusted keys."
-    if $( apt-key finger | grep -q '935F 5A43 6A5A 6E87 88F0  765B 226A E980 C7A7 DA52' ); then
+    if $( apt-key finger | grep -q 'A292 3DFF 56ED A6E7 6E55  E492 D3A8 0E30 382E 94DE' ); then
         echo "... key already installed"
     else
         if [ "$http_proxy" != "" ]; then
