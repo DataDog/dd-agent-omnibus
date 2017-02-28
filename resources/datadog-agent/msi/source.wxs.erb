@@ -146,7 +146,6 @@
                 KeyPath="yes"
                 DiskId="1"
                 Source="$(var.DistFiles)/ddagent.exe"/>
-                <!--
           <ServiceInstall Id="DatadogServiceInstaller"
                           DisplayName="Datadog Agent"
                           Description="Send metrics to Datadog"
@@ -164,7 +163,7 @@
                           Start="install"
                           Stop="both"
                           Remove="uninstall"
-                          Wait="yes" /> -->
+                          Wait="yes" />
           <RemoveFolder Id="APPLICATIONROOTDIRECTORY" On="uninstall" />
         </Component>
       </Directory>
