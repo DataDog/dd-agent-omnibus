@@ -259,6 +259,72 @@
           After="StopServices"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
       <Custom Action="CheckForOldVersion"
           After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE]]></Custom>
+
+          <!-- InstallExecuteSequence taken from MS documentation:
+             https://msdn.microsoft.com/en-us/library/aa372038(v=vs.85).aspx -->
+        <LaunchConditions Sequence="100"/>
+        <AppSearch Sequence="400"/>
+        <CCPSearch Sequence="500">NOT Installed</CCPSearch>
+        <RMCCPSearch Sequence="600">NOT Installed</RMCCPSearch>
+        <ValidateProductID Sequence="700"/>
+        <CostInitialize Sequence="800"/>
+        <FileCost Sequence="900"/>
+        <CostFinalize Sequence="1000"/>
+        <SetODBCFolders Sequence="1100" />       
+        <InstallValidate Sequence="1400" />
+        <InstallInitialize Sequence="1501" />
+        <AllocateRegistrySpace Sequence="1550">NOT Installed</AllocateRegistrySpace>
+        <ProcessComponents Sequence="1600" />
+        <UnpublishComponents Sequence="1700" />
+        <UnpublishFeatures Sequence="1800" />
+        <StopServices Sequence="1900">VersionNT</StopServices>
+        <DeleteServices Sequence="2000">VersionNT</DeleteServices>
+        <UnregisterComPlus Sequence="2100" />
+        <SelfUnregModules Sequence="2200" />
+        <UnregisterTypeLibraries Sequence="2300" />
+        <RemoveODBC Sequence="2400" />
+        <UnregisterFonts Sequence="2500" />
+        <RemoveRegistryValues Sequence="2600" />
+        <UnregisterClassInfo Sequence="2700" />
+        <UnregisterExtensionInfo Sequence="2800" />
+        <UnregisterProgIdInfo Sequence="2900" />
+        <UnregisterMIMEInfo Sequence="3000" />
+        <RemoveIniValues Sequence="3100" />
+        <RemoveShortcuts Sequence="3200" />
+        <RemoveEnvironmentStrings Sequence="3300" />
+        <RemoveDuplicateFiles Sequence="3400" />
+        <RemoveFiles Sequence="3500" />
+        <RemoveFolders Sequence="3600" />
+        <CreateFolders Sequence="3700" />
+        <MoveFiles Sequence="3800" />
+        <InstallFiles Sequence="4000" />
+        <PatchFiles Sequence="4090" />
+        <DuplicateFiles Sequence="4210" />
+        <BindImage Sequence="4300" />
+        <CreateShortcuts Sequence="4500" />
+        <RegisterClassInfo Sequence="4600" />
+        <RegisterExtensionInfo Sequence="4700" />
+        <RegisterProgIdInfo Sequence="4800" />
+        <RegisterMIMEInfo Sequence="4900" />
+        <WriteRegistryValues Sequence="5000" />
+        <WriteIniValues Sequence="5100" />
+        <WriteEnvironmentStrings Sequence="5200" />
+        <RegisterFonts Sequence="5300" />
+        <InstallODBC Sequence="5400" />
+        <RegisterTypeLibraries Sequence="5500" />
+        <SelfRegModules Sequence="5600" />
+        <RegisterComPlus Sequence="5700" />
+        <RegisterUser Sequence="6000" />
+        <RegisterProduct Sequence="6100" />
+        <PublishComponents Sequence="6200" />
+        <PublishFeatures Sequence="6300" />
+        
+        <InstallServices Sequence="6350">VersionNT</InstallServices>
+        <StartServices Sequence="6375">VersionNT</StartServices>
+        
+        <PublishProduct Sequence="6400" />
+        <InstallFinalize Sequence="6600" />
+
     </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
