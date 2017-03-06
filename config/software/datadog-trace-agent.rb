@@ -4,7 +4,7 @@ source git: 'https://github.com/DataDog/datadog-trace-agent.git'
 trace_agent_branch = ENV['TRACE_AGENT_BRANCH']
 
 if trace_agent_branch.nil? || trace_agent_branch.empty?
-      default_version 'last-stable'
+      default_version 'master'
 else
       default_version trace_agent_branch
 end
