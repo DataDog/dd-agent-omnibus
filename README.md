@@ -46,7 +46,7 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -e AGENT_VERSION=$AGENT_VERSION \
   -e TRACE_AGENT_BRANCH=$TRACE_AGENT_BRANCH \
   -e RPM_SIGNING_PASSPHRASE=$RPM_SIGNING_PASSPHRASE \
-  -e $LOCAL_AGENT_REPO=/dd-agent-repo # Only to use if you want to build from a local repo \
+  -e LOCAL_AGENT_REPO=$LOCAL_AGENT_REPO # Only to use if you want to build from a local repo \
   -v `pwd`/pkg:/dd-agent-omnibus/pkg \
   -v `pwd`/keys:/keys \
   -v "`pwd`/cache/$PLATFORM:/var/cache/omnibus" \
