@@ -21,6 +21,7 @@ See:
 
 ```bash
 PLATFORM="deb-x64" # must be in "deb-x64", "deb-i386", "rpm-x64", "rpm-i386"
+TRACE_AGENT_BRANCH="master" # Branch of the datadog-trace-agent repo to use, default "master"
 AGENT_BRANCH="master" # Branch of dd-agent repo to use, default "master"
 OMNIBUS_BRANCH="master" # Branch of dd-agent-omnibus repo to use, default "master"
 AGENT_VERSION="5.4.0" # default to the latest tag on that branch
@@ -43,6 +44,7 @@ docker run --name "dd-agent-build-$PLATFORM" \
   -e LOG_LEVEL=$LOG_LEVEL \
   -e AGENT_BRANCH=$AGENT_BRANCH \
   -e AGENT_VERSION=$AGENT_VERSION \
+  -e TRACE_AGENT_BRANCH=$TRACE_AGENT_BRANCH \
   -e RPM_SIGNING_PASSPHRASE=$RPM_SIGNING_PASSPHRASE \
   -e $LOCAL_AGENT_REPO=/dd-agent-repo # Only to use if you want to build from a local repo \
   -v `pwd`/pkg:/dd-agent-omnibus/pkg \
