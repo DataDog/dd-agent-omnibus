@@ -98,7 +98,7 @@ build do
       # We don't have auto_conf on windows yet
       unless windows?
         if File.exists? "#{project_dir}/#{check}/auto_conf.yaml"
-          copy "#{project_dir}/#{check}/autoconf.yaml", "#{conf_directory}/auto_conf/#{check}.yaml"
+          copy "#{project_dir}/#{check}/auto_conf.yaml", "#{conf_directory}/auto_conf/#{check}.yaml"
         end
       end
 
