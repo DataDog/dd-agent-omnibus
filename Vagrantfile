@@ -106,6 +106,8 @@ ENVSCRIPT
     S3_OMNIBUS_BUCKET
     S3_ACCESS_KEY
     S3_SECRET_KEY
+    TRACE_AGENT_VERSION
+    TRACE_AGENT_ADD_BUILD_VARS
   ]
   env_variables_passthru.each do |var|
     env_variables_script += "\necho export #{var}=#{ENV[var]} >> #{profile_file}"
