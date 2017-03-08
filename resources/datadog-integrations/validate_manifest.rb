@@ -16,6 +16,7 @@ def validate_manifest_0_1_0(manifest_hash)
     "short_description",
     "support",
     "version",
+    "guid",
   ]
   validate_manifest_loop(manifest_hash, mandatory_fields)
 end
@@ -30,6 +31,7 @@ def validate_manifest_1_0_0(manifest_hash)
     "short_description",
     "support",
     "version",
+    "guid",
   ]
   validate_manifest_loop(manifest_hash, mandatory_fields)
 end
