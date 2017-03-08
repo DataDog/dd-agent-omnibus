@@ -52,12 +52,13 @@
                           Target="agent-manager.exe" 
                           ElevatedCloseMessage="yes"
                           TerminateProcess="1"
-                          Timeout="1"
+                          PromptToContinue="no"
+                          Timeout="5"
                           RebootPrompt="no"/>
 
     <!-- No need to restart Windows after the installation -->
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
-
+    
     <!-- Make sure that we get rid of any older installation of the Agent -->
     <MajorUpgrade
       DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
@@ -242,7 +243,7 @@
 
     <InstallExecuteSequence>
       <Custom Action="WixCloseApplications"
-          After="StopServices"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
+          After="InstallInitialize"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
       <Custom Action="CheckForOldVersion"
           After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE]]></Custom>
     </InstallExecuteSequence>
