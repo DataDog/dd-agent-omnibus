@@ -50,7 +50,7 @@
     <util:CloseApplication Id="CloseTrayApp" 
                           CloseMessage="yes" 
                           Target="agent-manager.exe" 
-                          ElevatedCloseMessage="yes"
+                          ElevatedCloseMessage="no"
                           TerminateProcess="1"
                           Timeout="1"
                           RebootPrompt="no"/>
@@ -242,7 +242,7 @@
 
     <InstallExecuteSequence>
       <Custom Action="WixCloseApplications"
-          After="InstallInitialize"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
+          Before="InstallInitialize"> </Custom> 
       <Custom Action="CheckForOldVersion"
           After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE]]></Custom>
     </InstallExecuteSequence>
