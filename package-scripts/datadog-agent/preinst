@@ -66,7 +66,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
   # It is also here because version < 5.4 didn't delete .pyc,
   # so we need to be sure to clean them here (if a file is deleted for instance)
-  find $INSTALL_DIR/agent -name '*.py[co]' -type f -delete 2>&1 >/dev/null || true
+  find $INSTALL_DIR/agent -name '*.py[co]' -type f -delete >/dev/null 2>&1 || true
 
   # FIXME: remove when CentOS5 support is dropped (03/31/2017) or when everybody
   # has stopped using dd-agent 5.3 (and older versions ofc)
