@@ -97,9 +97,9 @@
     <!-- Delete application when uninstalling -->
     <!--
       RemoveFolderEx requires that we "remember" the path for uninstall.
-      Read the path value and set the APPLICATIONROOTDIRECTORY property with the value.
+      Read the path value and set the PROJECTLOCATION property with the value.
     -->
-    <Property Id="APPLICATIONROOTDIRECTORY">
+    <Property Id="PROJECTLOCATION">
       <RegistrySearch Key="SOFTWARE\Datadog\Datadog Agent"
                       Root="HKLM"
                       Type="raw"
@@ -107,7 +107,7 @@
                       Name="InstallPath" />
     </Property>
 
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+    <DirectoryRef Id="PROJECTLOCATION">
       <Component Id="CleanupMainApplicationFolder" Guid="096249cf-3fe7-4342-a80f-77101ceed5fe">
         <!-- We need to use APPLICATIONROOTDIRECTORY variable here or RemoveFolderEx
              will not remove on "uninstall". -->
@@ -115,8 +115,8 @@
                        Key="SOFTWARE\Datadog\Datadog Agent"
                        Name="InstallPath"
                        Type="string"
-                       Value="[APPLICATIONROOTDIRECTORY]"/>
-        <util:RemoveFolderEx On="uninstall" Property="APPLICATIONROOTDIRECTORY"/>
+                       Value="[PROJECTLOCATION]"/>
+        <util:RemoveFolderEx On="uninstall" Property="PROJECTLOCATION"/>
       </Component>
       <!-- Register variables that will be used by the agent at startup -->
       <Component Id="RegisterConfVariables" Guid="e2423815-704d-4f29-af3b-9baf23ef03d6">
@@ -242,7 +242,7 @@
 
     <InstallExecuteSequence>
       <Custom Action="WixCloseApplications"
-          After="StopServices"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
+          After="InstallInitialize"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
       <Custom Action="CheckForOldVersion"
           After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE]]></Custom>
     </InstallExecuteSequence>
