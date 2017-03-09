@@ -54,6 +54,11 @@ build do
 
    # Build datadog-trace-agent
    command "$GOPATH/bin/glide install", :env => env, :cwd => agent_cache_dir
-   command "rake build", :env => env, :cwd => agent_cache_dir
-   command "mv ./trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => agent_cache_dir
+   if rhel? # temporary workaround for RHEL 5 build issue with the regular `build -a` command
+     command "rake install", :env => env, :cwd => agent_cache_dir
+     command "mv $GOPATH/bin/trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => agent_cache_dir
+   else
+     command "rake build", :env => env, :cwd => agent_cache_dir
+     command "mv ./trace-agent #{install_dir}/bin/trace-agent", :env => env, :cwd => agent_cache_dir
+   end
 end
