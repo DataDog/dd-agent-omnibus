@@ -179,5 +179,16 @@ end
 # Datadog agent
 dependency 'datadog-agent'
 dependency 'datadog-agent-integrations'
+
+# Remove pyc/pyo files from package
+# should be built after all the other python-related software defs
+if linux?
+  dependency 'py-compiled-cleanup'
+end
+
+# version manifest file
+# should be built after all the other dependencies
+dependency 'version-manifest'
+
 exclude '\.git*'
 exclude 'bundler\/git'

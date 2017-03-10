@@ -78,11 +78,6 @@ build do
     mkdir '/etc/dd-agent/checks.d/'
     command 'chmod 755 /etc/init.d/datadog-agent'
     touch '/usr/bin/dd-agent'
-
-    # Remove the .pyc and .pyo files from the package and list them in a file
-    # so that the prerm script knows which compiled files to remove
-    command "echo '# DO NOT REMOVE/MODIFY - used by package removal tasks' > #{install_dir}/embedded/.py_compiled_files.txt"
-    command "find #{install_dir}/embedded '(' -name '*.pyc' -o -name '*.pyo' ')' -type f -delete -print >> #{install_dir}/embedded/.py_compiled_files.txt"
   end
 
   if osx?
