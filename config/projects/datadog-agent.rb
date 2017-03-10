@@ -179,5 +179,10 @@ end
 # Datadog agent
 dependency 'datadog-agent'
 dependency 'datadog-agent-integrations'
+
+# version manifest file
+# should be built after all the other dependencies
+dependency 'version-manifest'
+
 exclude '\.git*'
 exclude 'bundler\/git'

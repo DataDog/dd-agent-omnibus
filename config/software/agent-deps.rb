@@ -47,6 +47,3 @@ dependency 'uuid'
 # Check dependencies
 # psutil is required by the core agent on Windows
 dependency 'integration-deps'
-
-# version manifest file
-dependency 'version-manifest'
