@@ -112,7 +112,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
 
   #`(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
   sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb"
-  
+
   header = erb_header({
     'name' => "#{integration}",
     'project_dir' => "#{PROJECT_DIR}",
@@ -145,7 +145,7 @@ def erb_header(variables)
   # this method generates a header usable by a ERB file
   out = ""
   variables.each do |key, value|
-    out += "<% #{key}=\"#{value}\" %>"
+    out += "<% #{key}='#{value}' %>"
   end
   out
 end
