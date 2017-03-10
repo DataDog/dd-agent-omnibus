@@ -26,4 +26,6 @@ if not windows?
   dependency 'psycopg2'
   dependency 'python-gearman'
   dependency 'snakebite'
+else
+  dependency 'pyodbc'
 end
