@@ -41,10 +41,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     if $( apt-key finger | grep -q 'A292 3DFF 56ED A6E7 6E55  E492 D3A8 0E30 382E 94DE' ); then
         echo "... key already installed"
     else
-        if [ "$http_proxy" != "" ]; then
-            HKP_PROXY="--keyserver-options http-proxy=$http_proxy"
-        fi
-        apt-key adv $HKP_PROXY --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed" 
+        apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed" 
     fi
     #DEBHELPER#
 
