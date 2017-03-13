@@ -34,8 +34,8 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
 
     # Prepare the GPG keys rotation:
     # Add the new one to the list of trusted APT keys.
-    # Some servers are on severely resticted networks.  Check for proxy,
-    # and check if key already exists.
+    # Some servers are on severely restricted networks.
+    # Check if key already exists.
     echo "Prepare Datadog Agent keys rotation"
     echo -n "  Add the new 'Datadog, Inc <package@datadoghq.com>' key to the list of APT trusted keys."
     if $( apt-key finger | grep -q 'A292 3DFF 56ED A6E7 6E55  E492 D3A8 0E30 382E 94DE' ); then
