@@ -7,11 +7,14 @@
             Manufacturer="Datadog Inc." 
             UpgradeCode="$(var.UpgradeCode)" >
 		
-        <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
+         <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
+          
           <bal:WixStandardBootstrapperApplication
           LicenseFile="Resources\assets\license.rtf" 
+          ThemeFile="bundle_theme.xml"
           LogoSideFile="Resources\assets\dd_logo_side.png"
-          LogoFile="Resources\assets\burn_logo.png"
+          LogoFile="Resources\assets\dd_logo_side.png"
+          LocalizationFile="localization-en-us.wxl" 
           />
         </BootstrapperApplicationRef>
 

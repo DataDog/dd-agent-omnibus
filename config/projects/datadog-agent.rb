@@ -86,6 +86,7 @@ package :msi do
   # For a consistent package management, please NEVER change this code
   upgrade_code '0c50421b-aefb-4f15-a809-7af256d608a5'
   bundle_msi true
+  bundle_theme true
   wix_candle_extension 'WixUtilExtension'
   wix_light_extension 'WixUtilExtension'
   if ENV['SIGN_WINDOWS']
