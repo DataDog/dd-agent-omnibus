@@ -18,7 +18,7 @@ else
   source path: ENV['LOCAL_INTEGRATIONS_CORE_REPO']
 end
 
-integrations_core_branch = ENV['INTEGRATION_CORE_BRANCH']
+integrations_core_branch = ENV['INTEGRATIONS_CORE_BRANCH']
 if integrations_core_branch.nil? || integrations_core_branch.empty?
   default_version 'master'
 else
