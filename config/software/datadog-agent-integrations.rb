@@ -11,6 +11,7 @@ relative_path 'integrations-core'
 # The only integrations that will be packaged with the agent
 # are the ones that are officiallly supported.
 local_integrations_core_repo = ENV['LOCAL_INTEGRATIONS_CORE_REPO']
+
 if local_integrations_core_repo.nil? || local_integrations_core_repo.empty?
   source git: 'https://github.com/DataDog/integrations-core.git'
 else
@@ -24,6 +25,9 @@ if integrations_core_branch.nil? || integrations_core_branch.empty?
 else
   default_version integrations_core_branch
 end
+puts "INT_CORE: #{default_version} icb #{integrations_core_branch}"
+puts "ENVa: #{ENV['INTEGRATIONS_CORE_BRANCH']}"
+puts 'ENVb: #{ENV["INTEGRATIONS_CORE_BRANCH"]}'
 
 build do
   # Agent code
