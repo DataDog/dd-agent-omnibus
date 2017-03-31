@@ -14,9 +14,9 @@ end
 
 dd_agent_version = ENV['AGENT_VERSION']
 
-gourl = "https://storage.googleapis.com/golang/go1.7.1.linux-amd64.tar.gz"
+gourl = "https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz"
 goout = "go.tar.gz"
-godir = "/usr/local/go17"
+godir = "/usr/local/go18"
 gobin = "#{godir}/go/bin/go"
 gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
 
@@ -26,7 +26,7 @@ agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
 
 env = {
   "GOPATH" => gopath,
-  "GOROOT" => "/usr/local/go17/go",
+  "GOROOT" => "/usr/local/go18/go",
   "PATH" => "#{godir}/go/bin:#{ENV["PATH"]}",
   "TRACE_AGENT_VERSION" => dd_agent_version, # used by gorake.rb in the trace-agent
   "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
@@ -35,7 +35,7 @@ env = {
 build do
    ship_license "https://raw.githubusercontent.com/DataDog/datadog-trace-agent/#{version}/LICENSE"
 
-   # download go1.7
+   # download go
    command "curl #{gourl} -o #{goout}"
    mkdir godir
    command "tar zxfv #{goout} -C #{godir}"
