@@ -115,7 +115,7 @@ build do
     # Close the checks requirements file
     all_reqs_file.close
 
-  pip_cmd = "install --install-option=\"--install-scripts=#{windows_safe_path(install_dir)}/bin\" -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt"
+  pip_cmd = "install -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt"
   if windows?
     inst_cmd = "#{windows_safe_path(install_dir)}\\embedded\\scripts\\pip.exe " + pip_cmd
     command inst_cmd
