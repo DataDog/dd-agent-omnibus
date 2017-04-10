@@ -21,6 +21,7 @@
     <Variable Name="APIKEY" bal:Overridable="yes"/>
     <Variable Name="TAGS" bal:Overridable="yes"/>
     <Variable Name="HOSTNAME" bal:Overridable="yes"/>
+    <Variable Name="NOTUPGRADE" bal:Overridable="yes"/>
 		
     <Chain>
       <ExePackage
@@ -42,6 +43,7 @@
         <MsiProperty Name="APIKEY" Value="[APIKEY]"/>
         <MsiProperty Name="TAGS" Value="[TAGS]"/>
         <MsiProperty Name="HOSTNAME" Value="[HOSTNAME]"/>
+        <MsiProperty Name="NOTUPGRADE" Value="[NOTUPGRADE]"/>
       </MsiPackage>
 		</Chain>
 	</Bundle>
