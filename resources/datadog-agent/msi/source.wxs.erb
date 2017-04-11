@@ -247,7 +247,7 @@
       <Custom Action="WixCloseApplications"
           After="InstallInitialize"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
       <Custom Action="CheckForOldVersion"
-          After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE]]></Custom>
+          After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE AND NOT NOTUPGRADE]]></Custom>
     </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
