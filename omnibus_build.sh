@@ -64,6 +64,7 @@ if [ "$JMX_VERSION" == "current" ]; then
     unset_jmx
   fi
 else
+  # just verify the specified repo supports distributing JMXFetch from standalone S3.
   if [ -n "$LOCAL_AGENT_REPO" ]; then
     cd $LOCAL_DD_AGENT
     git show $AGENT_BRANCH:config.py | grep 'JMX_VERSION'
