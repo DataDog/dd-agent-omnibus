@@ -4,5 +4,5 @@ gem 'omnibus-software', git: 'git://github.com/datadog/omnibus-software.git', br
 gem 'httparty'
 gem 'win32-process'
 gem 'ohai'
-gem 'pedump'
+gem 'pedump', '~> 0.5.0'
 gem 'rake', '~> 11.0'
