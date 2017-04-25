@@ -82,7 +82,6 @@ runtime_dependency 'datadog-agent'
 unless ohai['platform'] == "windows"
   #extends_packages not supported by Omnibus on Windows
   extends_packages('datadog-agent', 'datadog')
-  whitelist_file /\/opt\/datadog-agent\/.+\.so.+/
 end
 
 license_file_path "licenses/dd-check-<%= name %>"

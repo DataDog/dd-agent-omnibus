@@ -8,6 +8,7 @@ if windows?
   require_relative "../../resources/datadog-integrations/validate_manifest"
 else
   require_relative "<%= project_dir %>/resources/datadog-integrations/validate_manifest"
+    whitelist_file /\/opt\/datadog-agent\/.+\.so.+/
 end
 
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
