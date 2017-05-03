@@ -42,11 +42,11 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     if $( apt-key finger | grep -q 'A292 3DFF 56ED A6E7 6E55  E492 D3A8 0E30 382E 94DE' ); then
         echo "... key already installed"
     else
-        apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed" 
+        apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed"
     fi
     #DEBHELPER#
 
-  elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ] || [ "$DISTRIBUTION" == "SUSE" ] || [ "$LINUX_DISTRIBUTION" == "Arista" ]; then
+  elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ] || [ "$DISTRIBUTION" == "SUSE" ] || [ "$DISTRIBUTION" == "Arista" ]; then
     getent group dd-agent >/dev/null || groupadd -r dd-agent
     getent passwd dd-agent >/dev/null || \
       useradd -r -M -g dd-agent -d $INSTALL_DIR -s /bin/sh \
