@@ -13,6 +13,7 @@ export OMNIBUS_BRANCH=${OMNIBUS_BRANCH:-"master"}
 export OMNIBUS_SOFTWARE_BRANCH=${OMNIBUS_SOFTWARE_BRANCH:-"master"}
 export OMNIBUS_RUBY_BRANCH=${OMNIBUS_RUBY_BRANCH:-"datadog-5.5.0"}
 export INTEGRATIONS_CORE_BRANCH=${INTEGRATIONS_CORE_BRANCH:-"master"}
+export GO_VERSION=${GO_VERSION:-"1.3.3"}
 
 set -e
 
@@ -35,6 +36,12 @@ git reset --hard origin/$OMNIBUS_BRANCH
 if [ -n "$RPM_SIGNING_PASSPHRASE" ]; then
   gpg --import /keys/RPM-SIGNING-KEY.private
 fi
+
+# Configure go environment variables
+eval "$(curl -sL https://raw.githubusercontent.com/travis-ci/gimme/master/gimme | GIMME_GO_VERSION=$GO_VERSION bash)"
+source $HOME/.gimme/envs/go$GO_VERSION.env
+export GOBIN=$(which go)
+export GOROOT=$GOROOT
 
 # Install the gems we need, with stubs in bin/
 bundle update # Make sure to update to the latest version of omnibus-software
