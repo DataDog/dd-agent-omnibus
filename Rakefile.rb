@@ -41,7 +41,11 @@ namespace :agent do
   task :'pull-integrations' do
     integration_branch = ENV['INTEGRATION_BRANCH'] || 'master'
 
+    # FSROOT is "/" on linux, "c:\" on windows.  Let's not clobber the filesystem
+    # if someone forgets to set INTEGRATIONS_REPO
+    raise 'INTEGRATIONS_REPO not set!' unless ENV['INTEGRATIONS_REPO']
     sh "rm -rf #{FSROOT}#{ENV['INTEGRATIONS_REPO']}"
+    
     sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
