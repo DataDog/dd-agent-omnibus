@@ -12,7 +12,7 @@ remove_py_compiled_files()
 }
 
 
-if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
+if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
     if command -v invoke-rc.d >/dev/null 2>&1; then
         invoke-rc.d datadog-agent stop || true
 
@@ -24,7 +24,7 @@ if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRI
     fi
 
     remove_py_compiled_files
-elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ] || [ "$DISTRIBUTION" == "SUSE" ] || [ "$DISTRIBUTION" == "Arista" ]; then
+elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" = "RedHat" ] || [ "$DISTRIBUTION" = "CentOS" ] || [ "$DISTRIBUTION" = "openSUSE" ] || [ "$DISTRIBUTION" = "Amazon" ] || [ "$DISTRIBUTION" = "SUSE" ] || [ "$DISTRIBUTION" = "Arista" ]; then
     case "$*" in
           0)
             # We're uninstalling.

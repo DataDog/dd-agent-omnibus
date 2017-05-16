@@ -9,7 +9,7 @@ DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  || gre
 
 # Linux installation
 if [ "$DISTRIBUTION" != "Darwin" ]; then
-  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
+  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
     set -e
     if [ -f "/etc/init.d/datadog-agent" ]; then
       if command -v invoke-rc.d >/dev/null 2>&1; then
@@ -46,7 +46,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
     fi
     #DEBHELPER#
 
-  elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ] || [ "$DISTRIBUTION" == "SUSE" ] || [ "$DISTRIBUTION" == "Arista" ]; then
+  elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" = "RedHat" ] || [ "$DISTRIBUTION" = "CentOS" ] || [ "$DISTRIBUTION" = "openSUSE" ] || [ "$DISTRIBUTION" = "Amazon" ] || [ "$DISTRIBUTION" = "SUSE" ] || [ "$DISTRIBUTION" = "Arista" ]; then
     getent group dd-agent >/dev/null || groupadd -r dd-agent
     getent passwd dd-agent >/dev/null || \
       useradd -r -M -g dd-agent -d $INSTALL_DIR -s /bin/sh \

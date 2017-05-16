@@ -34,7 +34,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       rm /etc/supervisor/conf.d/ddagent.conf
   fi
 
-  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
+  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
       set -e
       case "$1" in
           configure)
@@ -137,7 +137,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
 
   # Otherwise, we hope he is using the install script and try to this user
   # If it fails, no choice but to use root :'(
-  if [ -z "$INSTALL_USER" ] || [ "$INSTALL_USER" == "root" ]; then
+  if [ -z "$INSTALL_USER" ] || [ "$INSTALL_USER" = "root" ]; then
     SCRIPT_INSTALL="yes"
     INSTALL_USER=`cat /tmp/datadog-install-user || echo 'root'`
     rm -v /tmp/datadog-install-user || true
@@ -189,7 +189,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   sudo -Hu $INSTALL_USER ln -vs $CONF_DIR/checks.d "$USER_HOME/.datadog-agent/checks.d"
 
   # Error if app not properly installed or root
-  if [ "$INSTALL_USER" == "root" ]; then
+  if [ "$INSTALL_USER" = "root" ]; then
     echo 'INSTALL_USER is set to root, Datadog Agent app has been installed'
     echo 'but is not configured. Running Datadog Agent as root is not advised!'
     exit 1
