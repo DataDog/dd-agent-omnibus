@@ -26,7 +26,7 @@ AGENT_BRANCH="master" # Branch of dd-agent repo to use, default "master"
 OMNIBUS_BRANCH="master" # Branch of dd-agent-omnibus repo to use, default "master"
 AGENT_VERSION="5.4.0" # default to the latest tag on that branch
 LOG_LEVEL="debug" # default to "info"
-LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from. Defaut is not set and the build will be done against the github repo
+LOCAL_AGENT_REPO="~/dd-agent" # Path to a local repo of the agent to build from. Default is not set and the build will be done against the github repo. If using a local repo to build, include the following in your docker run command: -v $LOCAL_AGENT_REPO \
 
 # The passphrase of the key you want to use to sign your .rpm package (if
 # building an RPM package). If you don't set this variable, the RPM won't be
