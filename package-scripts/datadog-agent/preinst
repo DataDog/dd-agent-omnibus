@@ -11,13 +11,6 @@ DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  || gre
 if [ "$DISTRIBUTION" != "Darwin" ]; then
   if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
     set -e
-    if [ -f "/etc/init.d/datadog-agent" ]; then
-      if command -v invoke-rc.d >/dev/null 2>&1; then
-        invoke-rc.d datadog-agent stop || true
-      else
-        /etc/init.d/datadog-agent stop || true
-      fi
-    fi
 
     # Since we now package our own supervisor config, we no longer want
     # the old config to be loaded. Since supervisor automatically loads
