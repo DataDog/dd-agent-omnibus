@@ -1,8 +1,10 @@
 #!/bin/sh
 
 INSTALL_DIR=/opt/datadog-agent
-LOG_DIR=/var/log/datadog
+SYSTEM_LOG_DIR=/var/log/datadog
+DD_LOG_DIR=$INSTALL_DIR/log
 RUN_DIR=$INSTALL_DIR/run
+TMP_DIR$INSTALL_DIR/tmp
 
 KNOWN_DISTRIBUTION="(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon|Arista|SUSE)"
 DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  || grep -Eo $KNOWN_DISTRIBUTION /etc/issue 2>/dev/null || grep -Eo $KNOWN_DISTRIBUTION /etc/Eos-release 2>/dev/null || uname -s)
@@ -13,7 +15,9 @@ error_exit()
   exit 1
 }
 
-mkdir -p ${LOG_DIR} || error_exit "Cannot create ${LOG_DIR}!"
+mkdir -p ${DD_LOG_DIR} || error_exit "Cannot create ${DD_LOG_DIR}!"
+mkdir -p /var/log || error_exit "Cannot create /var/log!"
+ln -s /opt/datadog-agent/log /var/log/datadog
 
 # If we are inside the Docker container, do nothing
 if [ -n "$DOCKER_DD_AGENT" ]; then
@@ -69,7 +73,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
 
   # Set proper rights to the dd-agent user
   chown -R dd-agent:dd-agent ${CONFIG_DIR}
-  chown -R dd-agent:dd-agent ${LOG_DIR}
+  chown -R dd-agent:dd-agent ${SYSTEM_LOG_DIR}
   chown root:root /etc/init.d/datadog-agent
   chown -R dd-agent:dd-agent ${INSTALL_DIR}
 
@@ -117,10 +121,11 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   APP_DIR="/Applications/Datadog Agent.app"
   CONF_DIR=$INSTALL_DIR/etc
   RUN_DIR=$INSTALL_DIR/run
+  TMP_DIR=$INSTALL_DIR/tmp
 
   # Let's log the standard outputs of this script
-  LOG_FILE="$LOG_DIR/postinstall.log"
-  mkdir -vp $LOG_DIR
+  LOG_FILE="$DD_LOG_DIR/postinstall.log"
+  mkdir -vp $SYSTEM_LOG_DIR
   exec > $LOG_FILE 2>&1
 
   # Let's talk to our user installing the Agent a bit
@@ -145,8 +150,8 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   echo "INSTALL_USER: $INSTALL_USER"
 
   echo "# Prepareing log dir"
-  chown -vR $INSTALL_USER:admin $LOG_DIR
-  chmod -v 755 $LOG_DIR
+  chown -vR $INSTALL_USER:admin $DD_LOG_DIR
+  chmod -v 755 $DD_LOG_DIR
 
   echo "# Installing the app"
   mv -v "$OPT_APP_DIR" /Applications || echo "App already installed"
@@ -155,6 +160,9 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   mkdir -vp "$RUN_DIR"
   chown -vR $INSTALL_USER:admin "$RUN_DIR"
   chmod -v 755 "$RUN_DIR"
+  mkdir -vp "$TMP_DIR"
+  chown -vR $INSTALL_USER:admin "$TMP_DIR"
+  chmod -v 755 "$TMP_DIR"
 
   echo "# Creating default plist"
   sed "s|USER_NAME|$INSTALL_USER|" "$CONF_DIR/com.datadoghq.Agent.plist.example" > "$CONF_DIR/com.datadoghq.Agent.plist"
