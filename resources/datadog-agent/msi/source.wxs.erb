@@ -88,14 +88,14 @@
         Return="check"
         ExeCommand="[SystemFolder]cmd.exe /C start agent-manager.exe" />
 
-    <Binary Id="UpgradeHelper" SourceFile="$(var.HelperDir)\upgrade-helper.exe" />
+    <Binary Id="ddcal" SourceFile="Resources\assets\ddcal.dll" />
     <CustomAction
-        Id="CheckForOldVersion"
-        BinaryKey="UpgradeHelper"
-        ExeCommand="-oldcode={$(var.PerUserUpgradeCode)} -newcode={$(var.UpgradeCode)} -checkonly=true"
+        Id="isProductInstalled"
+        BinaryKey="ddcal"
         Execute="deferred"
         Return="check"
-        Impersonate="no" />
+        DllEntry="isProductInstalled"
+        Impersonate="yes" />
 
     <!-- Delete application when uninstalling -->
     <!--
@@ -246,7 +246,7 @@
     <InstallExecuteSequence>
       <Custom Action="WixCloseApplications"
           After="InstallInitialize"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
-      <Custom Action="CheckForOldVersion"
+      <Custom Action="isProductInstalled"
           After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE AND NOT NOTUPGRADE]]></Custom>
     </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
