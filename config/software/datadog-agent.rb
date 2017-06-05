@@ -184,6 +184,13 @@ build do
     # The GUI also needs to have the certificate in its folder to send flares
     copy "datadog-cert.pem", "#{install_dir}/dist/datadog-cert.pem"
 
+    #make (yet another) copy of the the microsoft DLLS in the embedded DLLS
+    # directory. For some reason, it's not using the correct binary search
+    # path, and the compiled DLLs fail to load.  Appears to only be a problem
+    # on Win2k8, on later OSes that CRT is part of the OS'
+    copy "#{install_dir}/dist/msvc*.dll", "#{install_dir}/embedded/DLLs"
+    copy "#{install_dir}/dist/Microsoft*.manifest", "#{install_dir}/embedded/DLLs"
+
     # Special directories, which won't be installed at the same place than others (ProgramData)
     mkdir "../../extra_package_files"
     mkdir "../../extra_package_files/EXAMPLECONFSLOCATION"
