@@ -2,7 +2,9 @@
 <% if path =~ /(.*)\/agent\/agent.py/ -%>
 <%= checksum %>  <%= path %>
 <%= checksum %> usr/bin/dd-agent
-<% elsif path=="usr/bin/dd-agent" -%>
+<% elsif -%>
+<% if path=="usr/bin/dd-agent" -%>
+<% end -%>
 <% else -%>
 <%= checksum %>  <%= path %>
 <% end -%>
