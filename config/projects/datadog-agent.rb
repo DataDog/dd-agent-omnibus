@@ -143,6 +143,10 @@ if linux?
   # Custom checks directory
   extra_package_file '/etc/dd-agent/checks.d'
 
+  # Just a dummy file that needs to be in the RPM package list if we don't want it to be removed
+  # during RPM upgrades. (the old files from the RPM file listthat are not in the new RPM file
+  # list will get removed, that's why we need this one here)
+  extra_package_file '/usr/bin/dd-agent'
 end
 
 # creates required build directories - has to be the first declared dep
