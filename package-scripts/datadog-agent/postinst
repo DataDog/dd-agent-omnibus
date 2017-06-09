@@ -126,7 +126,7 @@ elif [ "$DISTRIBUTION" = "Darwin" ]; then
   # Let's talk to our user installing the Agent a bit
   echo "# State at the beginning"
   echo "## Agent version"
-  grep AGENT_VERSION $INSTALL_DIR/agent/cofnig.py || echo "No config file"
+  grep AGENT_VERSION $INSTALL_DIR/agent/config.py || echo "No config file"
   echo "## $INSTALL_DIR"
   ls -al $INSTALL_DIR || "No agent installed"
   echo "## $APP_DIR/Contents/Resources"
