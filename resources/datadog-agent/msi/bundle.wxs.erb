@@ -25,6 +25,11 @@
     <Variable Name="TAGS" bal:Overridable="yes"/>
     <Variable Name="HOSTNAME" bal:Overridable="yes"/>
     <Variable Name="NOTUPGRADE" bal:Overridable="yes"/>
+    <Variable Name="PROXY_HOST" bal:Overridable="yes"/>
+    <Variable Name="PROXY_PORT" bal:Overridable="yes"/>
+    <Variable Name="PROXY_USER" bal:Overridable="yes"/>
+    <Variable Name="PROXY_PASSWORD" bal:Overridable="yes"/>
+
 		
     <Chain>
       <ExePackage
@@ -47,6 +52,10 @@
         <MsiProperty Name="TAGS" Value="[TAGS]"/>
         <MsiProperty Name="HOSTNAME" Value="[HOSTNAME]"/>
         <MsiProperty Name="NOTUPGRADE" Value="[NOTUPGRADE]"/>
+        <MsiProperty Name="PROXY_HOST" Value="[PROXY_HOST]"/>
+        <MsiProperty Name="PROXY_PORT" Value="[PROXY_PORT]"/>
+        <MsiProperty Name="PROXY_USER" Value="[PROXY_USER]"/>
+        <MsiProperty Name="PROXY_PASSWORD" Value="[PROXY_PASSWORD]"/>
       </MsiPackage>
 		</Chain>
 	</Bundle>
