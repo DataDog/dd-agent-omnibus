@@ -106,6 +106,7 @@ build do
     mkdir "#{app_temp_dir}/MacOS"
     command 'cd packaging/osx/gui && swiftc -O -target "x86_64-apple-macosx10.10" -static-stdlib Sources/*.swift -o gui && cd ../../..'
     copy "packaging/osx/gui/gui", "#{app_temp_dir}/MacOS/"
+    copy "packaging/osx/gui/Sources/agent.png", "#{app_temp_dir}/MacOS/"
   end
 
   unless windows?
