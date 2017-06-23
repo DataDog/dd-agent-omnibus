@@ -119,6 +119,7 @@ end
 dependency 'preparation'
 
 dependency 'mac-gui'
+dependency 'mac-agent-app'
 
 # version manifest file
 # should be built after all the other dependencies
