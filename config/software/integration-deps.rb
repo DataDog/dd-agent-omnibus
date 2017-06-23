@@ -23,7 +23,9 @@ dependency 'scandir'
 
 if not windows?
   dependency 'kafka-python'
-  dependency 'psycopg2'
+  if not osx?
+    dependency 'psycopg2'
+  end
   dependency 'python-gearman'
   dependency 'snakebite'
 else
