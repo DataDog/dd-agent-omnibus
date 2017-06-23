@@ -97,6 +97,15 @@ build do
     mkdir "#{install_dir}/etc/conf.d/auto_conf"
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
+
+    # GUI
+    app_temp_dir = "#{install_dir}/Datadog Agent.app/Contents"
+    mkdir "#{app_temp_dir}/Resources"
+    copy 'packaging/osx/app/Agent.icns', "#{app_temp_dir}/Resources/"
+
+    mkdir "#{app_temp_dir}/MacOS"
+    command 'cd packaging/osx/gui && swiftc -O -target "x86_64-apple-macosx10.10" -static-stdlib Sources/* -o gui && cd ../../..'
+    copy "packaging/osx/gui/gui", "#{app_temp_dir}/MacOS/"
   end
 
   unless windows?
