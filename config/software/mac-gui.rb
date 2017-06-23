@@ -21,7 +21,6 @@ end
 build do
   ship_license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'
 
-
   mkdir "#{install_dir}/agent"
 
   if osx?
@@ -35,14 +34,27 @@ build do
 
     # conf
     mkdir "#{install_dir}/etc"
-    mkdir "#{install_dir}/Datadog Agent.app/Contents/MacOS"
+
     copy "packaging/osx/supervisor.conf", "#{install_dir}/etc/supervisor.conf"
     copy 'datadog.conf.example', "#{install_dir}/etc/datadog.conf.example"
     mkdir "#{install_dir}/etc/conf.d/auto_conf"
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
 
+    # GUI
+    app_temp_dir = "#{install_dir}/Datadog Agent.app/Contents"
+    mkdir "#{app_temp_dir}/Resources"
+    copy 'packaging/osx/app/Agent.icns', "#{app_temp_dir}/Resources/"
+
+    block do # defer in a block to allow getting the project's build version
+      erb source: "Info.plist.erb",
+          dest: "#{app_temp_dir}/Info.plist",
+          mode: 0755,
+          vars: { version: project.build_version, year: Time.now.year, executable: "gui" }
+    end
+
+    mkdir "#{app_temp_dir}/MacOS"
     command 'cd packaging/osx/gui && swiftc -O -target "x86_64-apple-macosx10.10" -static-stdlib Sources/* -o gui && cd ../../..'
-    copy "packaging/osx/gui/gui", "#{install_dir}/Datadog Agent.app/Contents/MacOS/"
+    copy "packaging/osx/gui/gui", "#{app_temp_dir}/MacOS/"
   end
 end
