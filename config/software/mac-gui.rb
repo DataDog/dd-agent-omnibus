@@ -38,11 +38,11 @@ build do
     mkdir "#{install_dir}/Datadog Agent.app/Contents/MacOS"
     copy "packaging/osx/supervisor.conf", "#{install_dir}/etc/supervisor.conf"
     copy 'datadog.conf.example', "#{install_dir}/etc/datadog.conf.example"
-    mkdir "/etc/dd-agent/conf.d/auto_conf"
+    mkdir "#{install_dir}/etc/conf.d/auto_conf"
     command "cp -R conf.d #{install_dir}/etc/"
     copy 'packaging/osx/com.datadoghq.Agent.plist.example', "#{install_dir}/etc/"
 
-    command 'swiftc -target "x86_64-apple-macosx10.10" -static-stdlib Sources/*', cwd: "packaging/osx/gui/"
-    mv 'packaging/osx/gui/main', '#{install_dir}/Datadog Agent.app/Contents/MacOS/gui'
+    command 'cd packaging/osx/gui && swiftc -O -target "x86_64-apple-macosx10.10" -static-stdlib Sources/* -o gui && cd ../../..'
+    copy "packaging/osx/gui/gui", "#{install_dir}/Datadog Agent.app/Contents/MacOS/"
   end
 end

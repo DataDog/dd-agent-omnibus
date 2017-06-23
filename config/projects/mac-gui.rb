@@ -20,7 +20,7 @@ else
 end
 
 build_version do
-  source :git, from_dependency: 'datadog-agent'
+  source :git, from_dependency: 'mac-gui'
   output_format :dd_agent_format
 end
 
