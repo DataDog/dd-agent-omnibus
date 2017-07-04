@@ -6,10 +6,6 @@ if agent6_branch.nil? || agent6_branch.empty?
 end
 default_version agent6_branch
 
-version "master" do
-    source sha256: "71d1c070ee3c4133ae989cebd20dfc882e8d71093273bef0f9d39eef23db30d1"
-end
-
 if linux?
   dsd6 = "dogstatsd6-linux-amd64-#{version}"
 elsif windows?
