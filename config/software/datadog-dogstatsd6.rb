@@ -18,6 +18,12 @@ end
 
 source :url => "https://s3.amazonaws.com/dd-agent/dsd6/#{dsd6}"
 
+version "beta" do
+  if linux?
+    source :sha256 => "2422486aa9edb9dbfd0c7dfaf8795069f2d87b568cb2e210cffca35e5a2fcbb9"
+  end
+end
+
 build do
    ship_license "https://raw.githubusercontent.com/DataDog/datadog-agent/#{version}/LICENSE"
 
