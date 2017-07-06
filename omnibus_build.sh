@@ -44,13 +44,16 @@ fi
 # NOTE: JMX_VERSION plays no role <5.14.x (jmx bundled with agent)
 # If "current" JMX version, set it from the corresponding agent branch config.py
 if [ -n "$LOCAL_AGENT_REPO" ]; then
+  echo "IN HERE...."
   cd $LOCAL_DD_AGENT
   JMX_VERSION=$(git show $AGENT_BRANCH:config.py | grep 'JMX_VERSION' | cut -f2 -d'=' | tr -d ' "')
   cd -
 else
+  echo "GET Github version...."
   JMX_VERSION=$(curl -v $REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py 2>/dev/null | grep 'JMX_VERSION' | cut -f2 -d'=' | tr -d ' "')
 fi
 export JMX_VERSION
+echo "JMX: $JMX_VERSION"
 
 # Install the gems we need, with stubs in bin/
 bundle update # Make sure to update to the latest version of omnibus-software
