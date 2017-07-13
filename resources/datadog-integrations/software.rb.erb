@@ -63,9 +63,9 @@ build do
        manifest["package_deps"]
     }
     Omnibus.logger.info("thingy") {
-       manifest.key? "package_deps" && !manifest["package_deps"]
+       manifest.key?("package_deps") && ! manifest["package_deps"]
     }
-    unless manifest.key? "package_deps" && !manifest["package_deps"]
+    unless manifest.key?("package_deps") && ! manifest["package_deps"]
       # install requirements
       install_cmd = "install --target=#{integration_agent_folder}/lib "
       # Only apply the constraints file if one exists
