@@ -53,18 +53,6 @@ build do
   end
 
   if File.exists? "#{integration_source_folder}/requirements.txt"
-    Omnibus.logger.info("thingy") {
-      manifest
-    }
-    Omnibus.logger.info("thingy") {
-       manifest.key? "package_deps"
-    }
-    Omnibus.logger.info("thingy") {
-       manifest["package_deps"]
-    }
-    Omnibus.logger.info("thingy") {
-       manifest.key?("package_deps") && ! manifest["package_deps"]
-    }
     unless manifest.key?("package_deps") && ! manifest["package_deps"]
       # install requirements
       install_cmd = "install --target=#{integration_agent_folder}/lib "
