@@ -52,9 +52,8 @@ build do
     copy "#{integration_source_folder}/#{file}", "#{integration_agent_folder}/#{file}"
   end
 
-
-  if File.exists? "#{integration_source_folder}/requirements.txt"
-    if integrations_repo != "integrations-core"
+  <% if integrations_repo != "integrations-core" %>
+    if File.exists? "#{integration_source_folder}/requirements.txt"
       # install requirements
       install_cmd = "install --target=#{integration_agent_folder}/lib "
       # Only apply the constraints file if one exists
@@ -76,5 +75,5 @@ build do
         command "CHDIR #{install_dir} & del /Q /S *.chm"
       end
     end
-  end
+  <% end %>
 end
