@@ -72,7 +72,7 @@ namespace :agent do
   task :'build-all-integrations' do
     checks = Dir.glob("/#{ENV['INTEGRATIONS_REPO']}/*/")
     if ENV['SKIP_INTEGRATION']
-      skip_checks = ENV['SKIP_INTEGRATION'].split(',')
+      skip_checks = ENV['SKIP_INTEGRATION'].split(',').map(&:strip)
     else
       skip_checks = []
     end

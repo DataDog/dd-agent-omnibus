@@ -53,7 +53,7 @@ build do
   end
 
   if File.exists? "#{integration_source_folder}/requirements.txt"
-    unless manifest.key?("package_deps") && ! manifest["package_deps"]
+    if manifest.key?("package_deps") && manifest["package_deps"]
       # install requirements
       install_cmd = "install --target=#{integration_agent_folder}/lib "
       # Only apply the constraints file if one exists
