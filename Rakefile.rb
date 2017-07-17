@@ -103,6 +103,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   puts "building integration #{integration}"
 
   manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{integration}/manifest.json"))
+  has_check = File.exist?("/#{ENV['INTEGRATIONS_REPO']}/#{integration}/check.py")
   # The manifest should always have a version
   integration_version = manifest['version']
   if linux?
@@ -111,6 +112,11 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
     manifest['supported_os'].include?('windows') || return
   elsif osx?
     manifest['supported_os'].include?('osx') || return
+  end
+
+  unless has_check
+    puts "Integration meta-package for #{integration} nothing to build."
+    return
   end
 
   header = erb_header({
