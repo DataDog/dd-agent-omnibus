@@ -58,7 +58,8 @@ namespace :agent do
     Rake::Task["agent:clean"].invoke
     Rake::Task["env:import-rpm-key"].invoke
     Rake::Task["agent:pull-integrations"].invoke
-    if ENV['BUILD_ALL_INTEGRATIONS'] || !ENV['INTEGRATION']
+    build_all = ENV.has_key?('BUILD_ALL_INTEGRATIONS') && ENV['BUILD_ALL_INTEGRATIONS'] == '1' || !ENV.has_key?('INTEGRATION')
+    if build_all || ENV['INTEGRATION'].empty? || !ENV['INTEGRATION']
       Rake::Task["agent:build-all-integrations"].invoke
     elsif ENV['INTEGRATION']
       checks = ENV['INTEGRATION'].split(',')
