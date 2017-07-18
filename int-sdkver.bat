@@ -1,0 +1,4 @@
+set INTEGRATIONS_REPO=integrations-core
+set OMNIBUS_RUBY_BRANCH=datadog-5.5.0
+set INTEGRATION_BRANCH=5.15.x
+set BUILD_ALL_INTEGRATIONS=true

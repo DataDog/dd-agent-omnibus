@@ -1,0 +1,19 @@
+before_script:
+  - del /q c:\omnibus-ruby\pkg
+
+  
+dd-agent:
+  tags:
+    - windows-builder
+  script:
+    - call int-sdkver.bat
+    - call bundle update
+    - call bundle install
+    - call rake agent:build-integration
+  after_script:
+    - mkdir pkg
+    - copy c:\omnibus-ruby\pkg\*.msi pkg
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - pkg/
