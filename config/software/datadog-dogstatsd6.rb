@@ -24,6 +24,12 @@ version "beta" do
   end
 end
 
+version "master" do
+  if linux?
+    source :sha256 => "cd4341ecbffd270a51cb238fe95d51f23bbb8bed0c86c9b67f73961b499f532a"
+  end
+end
+
 build do
    ship_license "https://raw.githubusercontent.com/DataDog/datadog-agent/#{version}/LICENSE"
 
