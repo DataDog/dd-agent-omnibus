@@ -175,6 +175,7 @@ if windows?
 end
 if linux?
   dependency 'datadog-trace-agent'
+  dependency 'datadog-process-agent'
 end
 
 # Datadog agent
