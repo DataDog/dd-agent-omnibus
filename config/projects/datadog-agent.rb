@@ -126,7 +126,9 @@ if linux?
   # SysVInit service file
   if redhat?
     extra_package_file '/etc/rc.d/init.d/datadog-agent'
-  
+  end
+ 
+  if ! debian? 
   # Just a dummy file that need to be in the RPM package list if we don't want it to be removed
   # during RPM upgrades. (the old files from the RPM file listthat are not in the new RPM file
   # list will get removed, that's why we need this one here)
