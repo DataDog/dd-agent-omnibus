@@ -1,9 +1,0 @@
-<% md5sums.each do |path, checksum| -%>
-<% if path =~ /(.*)\/agent\/agent.py/ -%>
-<%= checksum %>  <%= path %>
-<%= checksum %> usr/bin/dd-agent
-<% elsif path=="usr/bin/dd-agent" -%>
-<% else -%>
-<%= checksum %>  <%= path %>
-<% end -%>
-<% end -%>
