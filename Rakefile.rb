@@ -17,7 +17,11 @@ end
 
 
 if windows?
-  PROJECT_DIR='c:\dd-agent-omnibus'
+  if !ENV["PROJECT_ROOT"]
+    PROJECT_DIR='c:\dd-agent-omnibus'
+  else
+    PROJECT_DIR=ENV["PROJECT_ROOT"]
+  end
   FSROOT="/c/"
 else
   PROJECT_DIR='/dd-agent-omnibus'
@@ -133,6 +137,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb"
 
   if windows?
+    puts "mkdir_p #{PROJECT_DIR}/resources/dd-check-#{integration}/msi"
     FileUtils.mkdir_p("#{PROJECT_DIR}/resources/dd-check-#{integration}/msi")
     FileUtils.cp_r("#{PROJECT_DIR}/resources/datadog-integrations/msi", "#{PROJECT_DIR}/resources/dd-check-#{integration}")
   end

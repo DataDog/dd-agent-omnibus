@@ -1,0 +1,20 @@
+before_script:
+  - rd /s/q c:\omnibus
+  - rd /s/q c:\omnibus-ruby
+  - rd /s/q c:\opt\datadog-agent
+  - call load-omnibus-toolchain.bat
+  - call int-sdkver.bat
+  - call int-sdk.bat
+  
+dd-agent:
+  tags:
+    - windows-builder
+  script:
+    - rake agent:build-integration
+  after_script:
+    - mkdir pkg
+    - copy c:\omnibus-ruby\pkg\*.msi pkg
+  artifacts:
+    expire_in: 2 weeks
+    paths:
+      - pkg/
