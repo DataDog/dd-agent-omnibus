@@ -109,9 +109,6 @@ elsif debian?
   replace 'datadog-agent-base (<< 5.0.0)'
   replace 'datadog-agent-lib (<< 5.0.0)'
   conflict 'datadog-agent-base (<< 5.0.0)'
-  # needed starting debian 9
-  runtime_dependency 'gnupg'
-  runtime_dependency 'dirmngr'
 end
 
 # ------------------------------------
