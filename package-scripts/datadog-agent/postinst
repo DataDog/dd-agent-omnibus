@@ -79,7 +79,6 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
 
   # Create symlinks to the various agent's components
   ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/dd-agent
-  chown -R dd-agent:dd-agent /usr/bin/dd-agent
   chmod 755 /usr/bin/dd-agent
 
   # The configcheck call will return zero if the config is valid, which means we
