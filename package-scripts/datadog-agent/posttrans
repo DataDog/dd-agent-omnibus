@@ -8,5 +8,21 @@ getent group dd-agent >/dev/null || groupadd -r dd-agent
 getent passwd dd-agent >/dev/null || \
     useradd -r -M -g dd-agent -d /usr/share/datadog/agent -s /bin/sh \
     -c "Datadog Agent" dd-agent
-/etc/init.d/datadog-agent restart
-exit 0
+
+# See comment in postinst script for an explanation of the logic below
+/etc/init.d/datadog-agent configcheck > /dev/null 2>&1
+RETVAL=$?
+if [ $RETVAL -eq 0 ]; then
+  echo "(Re)starting datadog-agent now..."
+  /etc/init.d/datadog-agent restart
+fi
+if [ $RETVAL -ne 0 ]; then
+  if [ $RETVAL -eq 3 ]; then
+      # No datadog.conf file is present. The user is probably following
+      # the step-by-step instructions and will add the config file next.
+      exit 0
+  else
+      echo "Invalid check configuration. Please run sudo /etc/init.d/datadog-agent configcheck for more details."
+      exit $RETVAL
+  fi
+fi

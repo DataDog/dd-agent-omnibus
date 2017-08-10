@@ -23,6 +23,11 @@ fi
 
 # Linux installation
 if [ "$DISTRIBUTION" != "Darwin" ]; then
+  # Detect distribution family once
+  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
+      DISTRIBUTION_FAMILY="Debian"
+  fi
+
   # Linus specific variables
   CONFIG_DIR=/etc/dd-agent
 
@@ -34,7 +39,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       rm /etc/supervisor/conf.d/ddagent.conf
   fi
 
-  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
+  if [ "$DISTRIBUTION_FAMILY" = "Debian" ]; then
       set -e
       case "$1" in
           configure)
@@ -82,34 +87,40 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   chown -R dd-agent:dd-agent /usr/bin/dd-agent
   chmod 755 /usr/bin/dd-agent
 
+
+  # Restart the agent here on Debian platforms.
+  # On RHEL, the restart is done in the posttrans script.
+
   # The configcheck call will return zero if the config is valid, which means we
   # can restart the agent without taking the risk to trigger an error in the
   # postinst script . If the config file doesn't exist (RETVAL=3), the user is
   # probably using the source install script so let's consider the postinst script
-  # did its job and exist zero, otherwise, if the file exists but it's wrong we
+  # did its job and exits zero, otherwise, if the file exists but it's wrong we
   # have to return a non zero exit status so that the system (and the user) are
   # notified the installation went wrong.
-  /etc/init.d/datadog-agent configcheck > /dev/null 2>&1
-  RETVAL=$?
-  if [ $RETVAL -eq 0 ]; then
-      echo "(Re)starting datadog-agent now..."
-      if command -v invoke-rc.d >/dev/null 2>&1; then
-          invoke-rc.d datadog-agent restart
-      else
-          /etc/init.d/datadog-agent restart
+  if [ "$DISTRIBUTION_FAMILY" = "Debian" ]; then
+      /etc/init.d/datadog-agent configcheck > /dev/null 2>&1
+      RETVAL=$?
+      if [ $RETVAL -eq 0 ]; then
+          echo "(Re)starting datadog-agent now..."
+          if command -v invoke-rc.d >/dev/null 2>&1; then
+              invoke-rc.d datadog-agent restart
+          else
+              /etc/init.d/datadog-agent restart
+          fi
+      fi
+      if [ $RETVAL -ne 0 ]; then
+          if [ $RETVAL -eq 3 ]; then
+              # No datadog.conf file is present. The user is probably following
+              # the step-by-step instructions and will add the config file next.
+              exit 0
+          else
+              echo "Invalid check configuration. Please run sudo /etc/init.d/datadog-agent configcheck for more details."
+              exit $RETVAL
+          fi
       fi
   fi
 
-  if [ $RETVAL -ne 0 ]; then
-      if [ $RETVAL -eq 3 ]; then
-          # No datadog.conf file is present. The user is probably following
-          # the step-by-step instructions and will add the config file next.
-          exit 0
-      else
-          echo "Invalid check configuration. Please run sudo /etc/init.d/datadog-agent configcheck for more details."
-          exit $RETVAL
-      fi
-  fi
 # OSX installation
 elif [ "$DISTRIBUTION" = "Darwin" ]; then
   # OSX specific variables
