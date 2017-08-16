@@ -123,9 +123,9 @@ if linux?
     extra_package_file '/lib/systemd/system/datadog-agent.service'
   end
 
-  # SysVInit service file
   if redhat?
     extra_package_file '/etc/rc.d/init.d/datadog-agent'
+    extra_package_file '/usr/lib/systemd/system/datadog-agent.service'
   end
 
   if suse?
