@@ -46,24 +46,25 @@ build do
   if linux?
     # Configuration files
     mkdir '/etc/dd-agent'
-    if redhat?
-      copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
-    end
 
-    if suse? || debian?
-      if debian?
-        sys_type = 'debian'
-        systemd_directory = '/lib/systemd/system'
-      elsif suse?
-        sys_type = 'suse'
-        systemd_directory = '/usr/lib/systemd/system'
-      end
-      copy "packaging/#{sys_type}/datadog-agent.init", '/etc/init.d/datadog-agent'
-      mkdir systemd_directory
-      copy 'packaging/debian/datadog-agent.service', "#{systemd_directory}/datadog-agent.service"
-      copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
-      command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+    if debian?
+      sys_type = 'debian'
+      systemd_directory = '/lib/systemd/system'
+      initd_directory = '/etc/init.d'
+    elsif redhat?
+      sys_type = 'centos'
+      systemd_directory = '/usr/lib/systemd/system'
+      initd_directory = '/etc/rc.d/init.d'
+    elsif suse?
+      sys_type = 'suse'
+      systemd_directory = '/usr/lib/systemd/system'
+      initd_directory = '/etc/init.d'
     end
+    copy "packaging/#{sys_type}/datadog-agent.init", "#{initd_directory}/datadog-agent"
+    mkdir systemd_directory
+    copy 'packaging/datadog-agent.service', "#{systemd_directory}/datadog-agent.service"
+    copy 'packaging/start_agent.sh', "#{install_dir}/bin/start_agent.sh"
+    command "chmod 755 #{install_dir}/bin/start_agent.sh"
 
     # Use a supervisor conf with go-metro on 64-bit platforms only
     if ohai['kernel']['machine'] == 'x86_64'
