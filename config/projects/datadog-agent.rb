@@ -82,10 +82,11 @@ package :msi do
   # per-user installs.  Changing upgrade code, and switching to
   # per-machine
   per_user_upgrade_code = '82210ed1-bbe4-4051-aa15-002ea31dde15'
-  
+
   # For a consistent package management, please NEVER change this code
   upgrade_code '0c50421b-aefb-4f15-a809-7af256d608a5'
   bundle_msi true
+  bundle_theme true
   wix_candle_extension 'WixUtilExtension'
   wix_light_extension 'WixUtilExtension'
   if ENV['SIGN_WINDOWS']
@@ -108,6 +109,8 @@ elsif debian?
   replace 'datadog-agent-base (<< 5.0.0)'
   replace 'datadog-agent-lib (<< 5.0.0)'
   conflict 'datadog-agent-base (<< 5.0.0)'
+  # needed starting debian 9
+  runtime_dependency 'gnupg'
 end
 
 # ------------------------------------
@@ -122,9 +125,9 @@ if linux?
     extra_package_file '/lib/systemd/system/datadog-agent.service'
   end
 
-  # SysVInit service file
   if redhat?
     extra_package_file '/etc/rc.d/init.d/datadog-agent'
+    extra_package_file '/usr/lib/systemd/system/datadog-agent.service'
   end
 
   if suse?
@@ -151,56 +154,6 @@ end
 # creates required build directories - has to be the first declared dep
 dependency 'preparation'
 
-# Linux-specific dependencies
-if linux?
-  dependency 'procps-ng'
-  dependency 'sysstat'
-end
-# Ship supervisor anywhere but on Windows
-if not windows?
-  dependency 'supervisor'
-  dependency 'zlib'
-else
-  # We use our own supervisor shipped as a py2exe-built executable on Windows...
-  # therefore we need py2exe. We also need psutil for our home-made supervisor.
-  dependency 'pywin32'
-  dependency 'py2exe'
-  dependency 'wmi'
-end
-
-# Mac and Windows
-if osx? or windows?
-  dependency 'gui'
-end
-
-# ------------------------------------
-# Dependencies
-# ------------------------------------
-
-
-# Agent dependencies
-dependency 'boto'
-dependency 'docker-py'
-dependency 'ntplib'
-dependency 'protobuf-py'
-dependency 'pycrypto'
-dependency 'pyopenssl'
-dependency 'python-consul'
-dependency 'python-etcd'
-dependency 'pyyaml'
-dependency 'simplejson'
-dependency 'tornado'
-dependency 'uptime'
-dependency 'uuid'
-dependency 'psutil'
-dependency 'requests'
-
-unless ENV["USE_INTEGRATION_SDK"] == 'true'
-  # Check dependencies
-  # psutil is required by the core agent on Windows
-  dependency 'integration-deps'
-end
-
 
 if not windows?
   # Additional software
@@ -211,7 +164,10 @@ end
 # are built last before datadog-agent since they should always be rebuilt
 # (if put above, they would dirty the cache of the dependencies below
 # and trigger a useless rebuild of many packages)
-dependency 'datadog-gohai'
+if not osx?
+  dependency 'datadog-gohai'
+end
+
 if linux? and ohai['kernel']['machine'] == 'x86_64'
   dependency 'datadog-metro'
 end
@@ -221,15 +177,21 @@ if windows?
 end
 if linux?
   dependency 'datadog-trace-agent'
+  dependency 'datadog-process-agent'
 end
 
 # Datadog agent
 dependency 'datadog-agent'
-if ENV["USE_INTEGRATION_SDK"] == 'true'
-  dependency 'datadog-agent-integrations'
+dependency 'datadog-agent-integrations'
+
+# Remove pyc/pyo files from package
+# should be built after all the other python-related software defs
+if linux?
+  dependency 'py-compiled-cleanup'
 end
 
 # version manifest file
+# should be built after all the other dependencies
 dependency 'version-manifest'
 
 exclude '\.git*'

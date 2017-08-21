@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" 
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <!-- This is how we include wxi files -->
   <?include "parameters.wxi" ?>
 
@@ -35,24 +36,34 @@
         <UpgradeVersion OnlyDetect='no'
                         Property='PREVIOUSFOUND'
                         Minimum='1.0.0' IncludeMinimum='yes'
-                        Maximum="$(var.DisplayVersionNumber)" IncludeMaximum='no'/>
+                        Maximum="99.99.99.99" IncludeMaximum='no'/>
+    </Upgrade>
+    <!-- This removes entirely the previous version -->
+    <Upgrade Id="$(var.PerUserUpgradeCode)">
+        <UpgradeVersion OnlyDetect='no'
+                        Property='PREVIOUSFOUND'
+                        Minimum='1.0.0' IncludeMinimum='yes'
+                        Maximum="99.99.99.99" IncludeMaximum='no'/>
     </Upgrade>
 
     <!-- Close application when uninstalling -->
-    <util:CloseApplication Id="CloseAgentManager"
-                           Target="agent-manager.exe"
-                           PromptToContinue="no"
-                           CloseMessage="yes"
-                           TerminateProcess="1"
-                           Description="Please close the Agent Manager"
-                           RebootPrompt="no" />
+    <util:CloseApplication Id="CloseTrayApp" 
+                          CloseMessage="yes" 
+                          Target="agent-manager.exe" 
+                          ElevatedCloseMessage="yes"
+                          TerminateProcess="1"
+                          Timeout="1"
+                          RebootPrompt="no"/>
 
     <!-- No need to restart Windows after the installation -->
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
 
-    <!-- Make sure that we get rid of any older installation of the Agent -->
+        <!-- This allows downgrades, and same-version reinstalls.  Otherwise,
+      same version gets installed "side by side" -->
+
     <MajorUpgrade
-      DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit." />
+      AllowDowngrades="yes"
+     />
 
     <Media Id="1" Cabinet="agent.cab" EmbedCab="yes" />
 
@@ -77,12 +88,21 @@
         Return="check"
         ExeCommand="[SystemFolder]cmd.exe /C start agent-manager.exe" />
 
+    <Binary Id="UpgradeHelper" SourceFile="$(var.HelperDir)\upgrade-helper.exe" />
+    <CustomAction
+        Id="CheckForOldVersion"
+        BinaryKey="UpgradeHelper"
+        ExeCommand="-oldcode={$(var.PerUserUpgradeCode)} -newcode={$(var.UpgradeCode)} -checkonly=true"
+        Execute="deferred"
+        Return="check"
+        Impersonate="no" />
+
     <!-- Delete application when uninstalling -->
     <!--
       RemoveFolderEx requires that we "remember" the path for uninstall.
-      Read the path value and set the APPLICATIONROOTDIRECTORY property with the value.
+      Read the path value and set the PROJECTLOCATION property with the value.
     -->
-    <Property Id="APPLICATIONROOTDIRECTORY">
+    <Property Id="PROJECTLOCATION">
       <RegistrySearch Key="SOFTWARE\Datadog\Datadog Agent"
                       Root="HKLM"
                       Type="raw"
@@ -90,7 +110,7 @@
                       Name="InstallPath" />
     </Property>
 
-    <DirectoryRef Id="APPLICATIONROOTDIRECTORY">
+    <DirectoryRef Id="PROJECTLOCATION">
       <Component Id="CleanupMainApplicationFolder" Guid="096249cf-3fe7-4342-a80f-77101ceed5fe">
         <!-- We need to use APPLICATIONROOTDIRECTORY variable here or RemoveFolderEx
              will not remove on "uninstall". -->
@@ -98,8 +118,8 @@
                        Key="SOFTWARE\Datadog\Datadog Agent"
                        Name="InstallPath"
                        Type="string"
-                       Value="[APPLICATIONROOTDIRECTORY]"/>
-        <util:RemoveFolderEx On="uninstall" Property="APPLICATIONROOTDIRECTORY"/>
+                       Value="[PROJECTLOCATION]"/>
+        <util:RemoveFolderEx On="uninstall" Property="PROJECTLOCATION"/>
       </Component>
       <!-- Register variables that will be used by the agent at startup -->
       <Component Id="RegisterConfVariables" Guid="e2423815-704d-4f29-af3b-9baf23ef03d6">
@@ -114,6 +134,18 @@
           <RegistryValue Name="hostname"
                          Type="string"
                          Value="[HOSTNAME]" />
+          <RegistryValue Name="proxy_host"
+                         Type="string"
+                         Value="[PROXY_HOST]" />
+          <RegistryValue Name="proxy_port"
+                         Type="string"
+                         Value="[PROXY_PORT]" />
+          <RegistryValue Name="proxy_user"
+                         Type="string"
+                         Value="[PROXY_USER]" />
+          <RegistryValue Name="proxy_password"
+                         Type="string"
+                         Value="[PROXY_PASSWORD]" />
         </RegistryKey>
       </Component>
     </DirectoryRef>
@@ -223,6 +255,12 @@
       <ComponentRef Id="RegisterConfVariables" />
     </Feature>
 
+    <InstallExecuteSequence>
+      <Custom Action="WixCloseApplications"
+          After="InstallInitialize"><![CDATA[REMOVE="ALL" OR REINSTALL]]></Custom>
+      <Custom Action="CheckForOldVersion"
+          After="InstallInitialize"><![CDATA[NOT Installed AND NOT REMOVE AND NOT NOTUPGRADE]]></Custom>
+    </InstallExecuteSequence>
     <!-- UI Stuff: 100% Omnibus Generated -->
     <Icon Id="project.ico" SourceFile="Resources\assets\project_16x16.ico"/>
     <Property Id="ARPPRODUCTICON" Value="project.ico" />
@@ -236,12 +274,15 @@
       <TextStyle Id="WixUI_Font_Bigger_White" FaceName="Tahoma" Size="12" Red="255" Green="255" Blue="255" />
       <TextStyle Id="WixUI_Font_Title_White" FaceName="Tahoma" Size="9" Bold="yes" Red="255" Green="255" Blue="255" />
       <Publish Dialog="ExitDialog"
-        Control="Finish"
-        Event="DoAction"
-        Value="LaunchApp">
-        NOT Installed
+          Control="Finish"
+          Event="DoAction"
+          Value="LaunchApp">
+          WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed
       </Publish>
     </UI>
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT"
+                  Value="!(loc.LaunchAgentManager)" />
+    
 
     <WixVariable Id="WixUILicenseRtf" Value="Resources\assets\LICENSE.rtf" />
     <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />

@@ -1,13 +1,28 @@
-require "./lib/ostools.rb"
+require './lib/ostools.rb'
 
 name 'dd-check-<%= name %>'
-maintainer 'Datadog Packages <package@datadoghq.com>'
+if windows?
+  # Windows doesn't want our e-mail address :(
+  maintainer 'Datadog Inc.'
+else
+  maintainer 'Datadog Packages <package@datadoghq.com>'
+end
 homepage 'http://www.datadoghq.com'
-install_dir '/opt/datadog-agent'
+if ohai['platform'] == "windows"
+  # Note: this is not the final install dir, not even the default one, just a convenient
+  # spaceless dir in which the agent will be built.
+  # Omnibus doesn't quote the Git commands it launches unfortunately, which makes it impossible
+  # to put a space here...
+  install_dir "C:/opt/datadog-agent/"
+  json_manifest_path "#{install_dir}/version-manifest.json"
+else
+  install_dir '/opt/datadog-agent'
+  json_manifest_path "#{install_dir}/integrations/<%= name %>/version-manifest.json"
+end
 
 build_version '<%= version %>'
 build_iteration <%= build_iteration %>
-json_manifest_path "#{install_dir}/integrations/<%= name %>/version-manifest.json"
+
 
 description '<%= name %> Integration for Datadog Monitoring Agent
  The Datadog Monitoring Agent is a lightweight process that monitors system
@@ -26,6 +41,7 @@ description '<%= name %> Integration for Datadog Monitoring Agent
 # .deb specific flags
 package :deb do
   vendor 'Datadog <info@datadoghq.com>'
+  epoch 1
   license 'Simplified BSD License'
   section 'utils'
   priority 'extra'
@@ -34,6 +50,8 @@ end
 # .rpm specific flags
 package :rpm do
   vendor 'Datadog <package@datadoghq.com>'
+  epoch 1
+  dist_tag ''
   license 'Simplified BSD License'
   category 'System Environment/Daemons'
   priority 'extra'
@@ -42,13 +60,32 @@ package :rpm do
   end
 end
 
+# Windows .msi specific flags
+package :msi do
+  # For a consistent package management, please NEVER change this code
+  upgrade_code '<%= guid %>'
+  wix_candle_extension 'WixUtilExtension'
+  wix_light_extension 'WixUtilExtension'
+  if ENV['SIGN_WINDOWS']
+    signing_identity "ECCDAE36FDCB654D2CBAB3E8975AA55469F96E4C", machine_store: true, algorithm: "SHA256"
+  end
+  parameters({
+    'InstallDir' => install_dir,
+    'PackageName' => "DataDog <%= name %> Integration",
+    'IntegrationName' => "<%= name %>",
+    'Description' => " <%= description %>"
+  })
+end
 dependency 'preparation'  # creates required build directories
 dependency 'dd-check-<%= name %>-software'
 
 # Checks should require the datadog agent
 runtime_dependency 'datadog-agent'
 
-extends_packages('datadog-agent', 'datadog')
+unless ohai['platform'] == "windows"
+  #extends_packages not supported by Omnibus on Windows
+  extends_packages('datadog-agent', 'datadog')
+end
 
 license_file_path "licenses/dd-check-<%= name %>"
 

@@ -7,13 +7,31 @@
             Manufacturer="Datadog Inc." 
             UpgradeCode="$(var.UpgradeCode)" >
 		
-        <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
+         <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense" >
+          
           <bal:WixStandardBootstrapperApplication
           LicenseFile="Resources\assets\license.rtf" 
+          ThemeFile="bundle_theme.xml"
+          LogoSideFile="Resources\assets\dd_logo_side.png"
+          LogoFile="Resources\assets\dd_logo_side.png"
+          LocalizationFile="localization-en-us.wxl" 
           />
         </BootstrapperApplicationRef>
 
-		<Chain>
+    <WixVariable Id="WixUIDialogBmp" Value="Resources\assets\dialog_background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Resources\assets\banner_background.bmp" />
+
+    <Variable Name="APIKEY" bal:Overridable="yes"/>
+    <Variable Name="TAGS" bal:Overridable="yes"/>
+    <Variable Name="HOSTNAME" bal:Overridable="yes"/>
+    <Variable Name="NOTUPGRADE" bal:Overridable="yes"/>
+    <Variable Name="PROXY_HOST" bal:Overridable="yes"/>
+    <Variable Name="PROXY_PORT" bal:Overridable="yes"/>
+    <Variable Name="PROXY_USER" bal:Overridable="yes"/>
+    <Variable Name="PROXY_PASSWORD" bal:Overridable="yes"/>
+
+		
+    <Chain>
       <ExePackage
         SourceFile="$(var.HelperDir)\upgrade-helper.exe"
         PerMachine="yes"
@@ -29,7 +47,16 @@
         <ExitCode Value="-1" Behavior="error"/> 
         <!-- All other values error -->
       </ExePackage>
-      <MsiPackage SourceFile="$(var.PackageMsi)"/>
+      <MsiPackage SourceFile="$(var.PackageMsi)">
+        <MsiProperty Name="APIKEY" Value="[APIKEY]"/>
+        <MsiProperty Name="TAGS" Value="[TAGS]"/>
+        <MsiProperty Name="HOSTNAME" Value="[HOSTNAME]"/>
+        <MsiProperty Name="NOTUPGRADE" Value="[NOTUPGRADE]"/>
+        <MsiProperty Name="PROXY_HOST" Value="[PROXY_HOST]"/>
+        <MsiProperty Name="PROXY_PORT" Value="[PROXY_PORT]"/>
+        <MsiProperty Name="PROXY_USER" Value="[PROXY_USER]"/>
+        <MsiProperty Name="PROXY_PASSWORD" Value="[PROXY_PASSWORD]"/>
+      </MsiPackage>
 		</Chain>
 	</Bundle>
 </Wix>

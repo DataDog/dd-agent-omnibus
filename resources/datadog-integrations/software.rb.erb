@@ -1,13 +1,23 @@
-require "./lib/ostools.rb"
+require './lib/ostools.rb'
 require 'json'
 
 name "dd-check-<%= name %>-software"
 default_version "0.0.1"
 
-require_relative "<%= PROJECT_DIR %>/resources/datadog-integrations/validate_manifest"
-integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
-integration_agent_folder = "#{install_dir}/integrations/<%= name %>"
+if windows?
+  require_relative "../../resources/datadog-integrations/validate_manifest"
+else
+  require_relative "<%= project_dir %>/resources/datadog-integrations/validate_manifest"
+  whitelist_file /\/opt\/datadog-agent\/embedded\/.+\.so.+/
+end
+
 is_core_integration = <%= core %>
+integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
+if windows?
+  integration_agent_folder = install_dir
+else
+  integration_agent_folder = "#{install_dir}/integrations/<%= name %>"
+end
 
 build do
   # validate manifest.json
@@ -32,30 +42,44 @@ build do
   copy "#{integration_source_folder}/conf.yaml.example", "#{conf_directory}/examples/<%= name %>.yaml.example"
   copy "#{integration_source_folder}/conf.yaml.default", "#{conf_directory}/examples/<%= name %>.yaml.default"
 
+  if not windows?
+    command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
+  end
+
   # We need to move all the important stuff over
   # The manifest and the readme are important to move over
   for file in ["check.py", "manifest.json", "requirements.txt", "README.md"]
     copy "#{integration_source_folder}/#{file}", "#{integration_agent_folder}/#{file}"
   end
 
-
   unless is_core_integration
     command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
 
     if File.exists? "#{integration_source_folder}/requirements.txt"
-      # install requirements
-      install_cmd = "install --target=#{integration_agent_folder}/lib "
-      # Only apply the constraints file if one exists
-      if File.exists? "#{install_dir}/agent/requirements.txt"
-        install_cmd += " -c #{install_dir}/agent/requirements.txt "
-      end
-      install_cmd += " -r #{integration_source_folder}/requirements.txt"
+      if manifest.key?("package_deps") && manifest["package_deps"]
+        # install requirements
+        install_cmd = "install --target=#{integration_agent_folder}/lib "
+        # Only apply the constraints file if one exists
+        if File.exists? "#{install_dir}/agent/requirements.txt"
+          install_cmd += " -c #{install_dir}/agent/requirements.txt "
+        end
+        install_cmd += " -r #{integration_source_folder}/requirements.txt"
 
-      build_env = {
-        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-        "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
-      }
-      command "pip #{install_cmd}", env => build_env
+        build_env = {
+          "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+          "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
+        }
+        command "pip #{install_cmd}", env => build_env
+
+        if not windows?
+          command "pip #{install_cmd}", :env => build_env
+        else
+          install_cmd = '"C:\Program Files\Datadog\Datadog Agent\embedded\python.exe"' + ' -m pip ' + install_cmd
+          command install_cmd
+          command "CHDIR #{install_dir} & del /Q /S *.pyc"
+          command "CHDIR #{install_dir} & del /Q /S *.chm"
+        end
+      end
     end
   end
 end

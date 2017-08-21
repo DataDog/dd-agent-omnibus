@@ -4,11 +4,12 @@ INSTALL_DIR=/opt/datadog-agent
 LOG_DIR=/var/log/datadog
 mkdir -p $LOG_DIR
 
-DISTRIBUTION=$(grep -Eo "(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon|SUSE)" /etc/issue 2>/dev/null || uname -s)
+KNOWN_DISTRIBUTION="(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon|Arista|SUSE)"
+DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  || grep -Eo $KNOWN_DISTRIBUTION /etc/issue 2>/dev/null || grep -Eo $KNOWN_DISTRIBUTION /etc/Eos-release 2>/dev/null || uname -s)
 
 # Linux installation
 if [ "$DISTRIBUTION" != "Darwin" ]; then
-  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" == "Debian" ] || [ "$DISTRIBUTION" == "Ubuntu" ]; then
+  if [ -f "/etc/debian_version" ] || [ "$DISTRIBUTION" = "Debian" ] || [ "$DISTRIBUTION" = "Ubuntu" ]; then
     set -e
     if [ -f "/etc/init.d/datadog-agent" ]; then
       if command -v invoke-rc.d >/dev/null 2>&1; then
@@ -34,13 +35,19 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
 
     # Prepare the GPG keys rotation:
     # Add the new one to the list of trusted APT keys.
+    # Some servers are on severely restricted networks.
+    # Check if key already exists.
     echo "Prepare Datadog Agent keys rotation"
     echo -n "  Add the new 'Datadog, Inc <package@datadoghq.com>' key to the list of APT trusted keys."
-    apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" || echo " ... failed"
-
+    if $( apt-key finger | grep -q 'A292 3DFF 56ED A6E7 6E55  E492 D3A8 0E30 382E 94DE' ); then
+        echo "... key already installed"
+    else
+        apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 382E94DE >/dev/null 2>&1 && echo " ... OK" \
+            ||  printf " ... failed\nWARNING: If you are running Debian 9, the \"dirmngr\" package is needed to install the new APT key required by future versions of the Agent.\nIf this package is not installed, please install it and then re-install the agent. The agent installation may break in the future if the new APT key is not installed on your system\n"
+    fi
     #DEBHELPER#
 
-  elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ "$DISTRIBUTION" == "RedHat" ] || [ "$DISTRIBUTION" == "CentOS" ] || [ "$DISTRIBUTION" == "openSUSE" ] || [ "$DISTRIBUTION" == "Amazon" ] || [ "$DISTRIBUTION" == "SUSE" ]; then
+  elif [ -f "/etc/redhat-release" ] || [ -f "/etc/system-release" ] || [ -f "/etc/SuSE-release" ] || [ "$DISTRIBUTION" = "RedHat" ] || [ "$DISTRIBUTION" = "CentOS" ] || [ "$DISTRIBUTION" = "openSUSE" ] || [ "$DISTRIBUTION" = "Amazon" ] || [ "$DISTRIBUTION" = "SUSE" ] || [ "$DISTRIBUTION" = "Arista" ]; then
     getent group dd-agent >/dev/null || groupadd -r dd-agent
     getent passwd dd-agent >/dev/null || \
       useradd -r -M -g dd-agent -d $INSTALL_DIR -s /bin/sh \
@@ -65,7 +72,7 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   # of https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html)
   # It is also here because version < 5.4 didn't delete .pyc,
   # so we need to be sure to clean them here (if a file is deleted for instance)
-  find $INSTALL_DIR/agent -name '*.py[co]' -type f -delete || true
+  find $INSTALL_DIR/agent -name '*.py[co]' -type f -delete >/dev/null 2>&1 || true
 
   # FIXME: remove when CentOS5 support is dropped (03/31/2017) or when everybody
   # has stopped using dd-agent 5.3 (and older versions ofc)

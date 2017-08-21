@@ -5,7 +5,7 @@ always_build true
 
 local_agent_repo = ENV['LOCAL_AGENT_REPO']
 if local_agent_repo.nil? || local_agent_repo.empty?
-  source git: 'https://github.com/DataDog/dd-agent.git'
+  source git: 'https://github.com/DataDog/dd-agent.git', always_fetch_tags: true
 else
   # For local development
   source path: ENV['LOCAL_AGENT_REPO']
@@ -19,6 +19,8 @@ else
 end
 
 relative_path 'dd-agent'
+
+dependency 'agent-deps'
 
 build do
   ship_license 'https://raw.githubusercontent.com/DataDog/dd-agent/master/LICENSE'
@@ -44,24 +46,25 @@ build do
   if linux?
     # Configuration files
     mkdir '/etc/dd-agent'
-    if redhat?
-      copy 'packaging/centos/datadog-agent.init', '/etc/rc.d/init.d/datadog-agent'
-    end
 
-    if suse? || debian?
-      if debian?
-        sys_type = 'debian'
-        systemd_directory = '/lib/systemd/system'
-      elsif suse?
-        sys_type = 'suse'
-        systemd_directory = '/usr/lib/systemd/system'
-      end
-      copy "packaging/#{sys_type}/datadog-agent.init", '/etc/init.d/datadog-agent'
-      mkdir systemd_directory
-      copy 'packaging/debian/datadog-agent.service', "#{systemd_directory}/datadog-agent.service"
-      copy 'packaging/debian/start_agent.sh', '/opt/datadog-agent/bin/start_agent.sh'
-      command 'chmod 755 /opt/datadog-agent/bin/start_agent.sh'
+    if debian?
+      sys_type = 'debian'
+      systemd_directory = '/lib/systemd/system'
+      initd_directory = '/etc/init.d'
+    elsif redhat?
+      sys_type = 'centos'
+      systemd_directory = '/usr/lib/systemd/system'
+      initd_directory = '/etc/rc.d/init.d'
+    elsif suse?
+      sys_type = 'suse'
+      systemd_directory = '/usr/lib/systemd/system'
+      initd_directory = '/etc/init.d'
     end
+    copy "packaging/#{sys_type}/datadog-agent.init", "#{initd_directory}/datadog-agent"
+    mkdir systemd_directory
+    copy 'packaging/datadog-agent.service', "#{systemd_directory}/datadog-agent.service"
+    copy 'packaging/start_agent.sh', "#{install_dir}/bin/start_agent.sh"
+    command "chmod 755 #{install_dir}/bin/start_agent.sh"
 
     # Use a supervisor conf with go-metro on 64-bit platforms only
     if ohai['kernel']['machine'] == 'x86_64'
@@ -76,11 +79,6 @@ build do
     mkdir '/etc/dd-agent/checks.d/'
     command 'chmod 755 /etc/init.d/datadog-agent'
     touch '/usr/bin/dd-agent'
-
-    # Remove the .pyc and .pyo files from the package and list them in a file
-    # so that the prerm script knows which compiled files to remove
-    command "echo '# DO NOT REMOVE/MODIFY - used by package removal tasks' > #{install_dir}/embedded/.py_compiled_files.txt"
-    command "find #{install_dir}/embedded '(' -name '*.pyc' -o -name '*.pyo' ')' -type f -delete -print >> #{install_dir}/embedded/.py_compiled_files.txt"
   end
 
   if osx?
@@ -186,6 +184,13 @@ build do
     delete "#{install_dir}/dist/ddagent.exe"
     # The GUI also needs to have the certificate in its folder to send flares
     copy "datadog-cert.pem", "#{install_dir}/dist/datadog-cert.pem"
+
+    #make (yet another) copy of the the microsoft DLLS in the embedded DLLS
+    # directory. For some reason, it's not using the correct binary search
+    # path, and the compiled DLLs fail to load.  Appears to only be a problem
+    # on Win2k8, on later OSes that CRT is part of the OS'
+    copy "#{install_dir}/dist/msvc*.dll", "#{install_dir}/embedded/DLLs"
+    copy "#{install_dir}/dist/Microsoft*.manifest", "#{install_dir}/embedded/DLLs"
 
     # Special directories, which won't be installed at the same place than others (ProgramData)
     mkdir "../../extra_package_files"

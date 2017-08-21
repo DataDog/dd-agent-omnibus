@@ -1,19 +1,41 @@
 require 'json'
 require 'ohai'
 
-PROJECT_DIR='/dd-agent-omnibus'
 CORE_REPOS = ['integrations-core']
 
 @ohai = Ohai::System.new.tap { |o| o.all_plugins(%w{platform}) }.data
+
+def linux?()
+  %w(rhel debian fedora suse gentoo slackware arch exherbo).include? @ohai['platform_family']
+end
+
+def osx?()
+  @ohai['platform_family'] == 'mac_os_x'
+end
+
+def windows?()
+  @ohai['platform_family'] == 'windows'
+end
+
+
+if windows?
+  PROJECT_DIR='c:\dd-agent-omnibus'
+  FSROOT="/c/"
+else
+  PROJECT_DIR='/dd-agent-omnibus'
+  FSROOT="/"
+end
 
 namespace :agent do
   desc 'Cleanup generated files'
   task :clean do |t|
     puts "Clean up generated files"
-    sh "rm -rf /var/cache/omnibus/pkg/*"
-    sh "rm -f /etc/init.d/datadog-agent"
-    sh "rm -rf /etc/dd-agent"
-    sh "rm -rf /opt/datadog-agent"
+    unless windows?
+      sh "rm -rf #{FSROOT}var/cache/omnibus/pkg/*"
+      sh "rm -f #{FSROOT}etc/init.d/datadog-agent"
+      sh "rm -rf #{FSROOT}etc/dd-agent"
+    end
+    sh "rm -rf #{FSROOT}opt/datadog-agent"
     t.reenable
   end
 
@@ -21,11 +43,15 @@ namespace :agent do
   task :'pull-integrations' do
     integration_branch = ENV['INTEGRATION_BRANCH'] || 'master'
 
-    sh "rm -rf /#{ENV['INTEGRATIONS_REPO']}"
+    # FSROOT is "/" on linux, "c:\" on windows.  Let's not clobber the filesystem
+    # if someone forgets to set INTEGRATIONS_REPO
+    raise 'INTEGRATIONS_REPO not set!' unless ENV['INTEGRATIONS_REPO']
+    sh "rm -rf #{FSROOT}#{ENV['INTEGRATIONS_REPO']}"
+
     sh "git clone https://github.com/DataDog/#{ENV['INTEGRATIONS_REPO']}.git /#{ENV['INTEGRATIONS_REPO']} || true"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git fetch --all"
-    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout master"
+    sh "cd /#{ENV['INTEGRATIONS_REPO']} && git checkout dd-check-#{ENV['INTEGRATION']}-#{integration_branch} || git checkout #{integration_branch}"
     sh "cd /#{ENV['INTEGRATIONS_REPO']} && git reset --hard"
   end
 
@@ -36,25 +62,29 @@ namespace :agent do
     Rake::Task["agent:pull-integrations"].invoke
     if ENV['BUILD_ALL_INTEGRATIONS'] || !ENV['INTEGRATION']
       Rake::Task["agent:build-all-integrations"].invoke
-    elsif ENV['INTEGRATIONS']
-      checks = ENV['INTEGRATIONS'].split(',')
+    elsif ENV['INTEGRATION']
+      checks = ENV['INTEGRATION'].split(',')
       checks.each do |check|
-        ENV['INTEGRATION'] = check
         prepare_and_execute_build(check)
       end
-    else
-      prepare_and_execute_build(check)
     end
   end
 
   desc 'Build all integrations'
   task :'build-all-integrations' do
     checks = Dir.glob("/#{ENV['INTEGRATIONS_REPO']}/*/")
+    if ENV['SKIP_INTEGRATION']
+      skip_checks = ENV['SKIP_INTEGRATION'].split(',').map(&:strip)
+    else
+      skip_checks = []
+    end
     checks.each do |check|
       check.slice! "/#{ENV['INTEGRATIONS_REPO']}/"
       check.slice! "/"
-      prepare_and_execute_build(check)
-      Rake::Task["agent:clean"].invoke
+      unless skip_checks.include? check
+        prepare_and_execute_build(check)
+        Rake::Task["agent:clean"].invoke
+      end
     end
   end
 end
@@ -63,7 +93,9 @@ namespace :env do
   desc 'Import signing RPM key'
   task :'import-rpm-key' do
     # If an RPM_SIGNING_PASSPHRASE has been passed, let's import the signing key
-    sh "if [ \"$RPM_SIGNING_PASSPHRASE\" ]; then gpg --import /keys/RPM-SIGNING-KEY.private; fi"
+    if ENV.has_key?('RPM_SIGNING_PASSPHRASE') and not ENV['RPM_SIGNING_PASSPHRASE'].empty?
+      sh "if [ \"$RPM_SIGNING_PASSPHRASE\" ]; then gpg --import /keys/RPM-SIGNING-KEY.private; fi"
+    end
   end
 end
 
@@ -86,22 +118,36 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   header = erb_header({
     'name' => "#{integration}",
     'version' => "#{integration_version}",
-    'build_iteration' => ENV['BUILD_ITERATION'],
-    'integrations_repo' => ENV['INTEGRATIONS_REPO']
+    'build_iteration' => "#{ENV['BUILD_ITERATION']}",
+    'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}",
+    'guid' => "#{manifest['guid']}",
+    'description' => "#{manifest['description']}"
   })
 
-  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{ENV['INTEGRATION']}.rb"
+  #`(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb`
+  sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/project.rb.erb) | erb > #{PROJECT_DIR}/config/projects/dd-check-#{integration}.rb"
 
   header = erb_header({
     'name' => "#{integration}",
-    'PROJECT_DIR' => PROJECT_DIR,
+    'project_dir' => "#{PROJECT_DIR}",
     'integrations_repo' => ENV['INTEGRATIONS_REPO'],
     'core' => is_core
   })
 
-  sh "(echo '#{header}' && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{ENV['INTEGRATION']}-software.rb"
+  sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb"
 
-  build_cmd = "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{integration} --output_manifest=false"
+  if windows?
+    FileUtils.mkdir_p("#{PROJECT_DIR}/resources/dd-check-#{integration}/msi")
+    FileUtils.cp_r("#{PROJECT_DIR}/resources/datadog-integrations/msi", "#{PROJECT_DIR}/resources/dd-check-#{integration}")
+  end
+
+  if windows?
+    sh "cd #{PROJECT_DIR} && bundle exec omnibus --version"
+    build_cmd = "cd #{PROJECT_DIR} && bundle exec omnibus build --log-level debug dd-check-#{integration}"
+  else
+    sh "cd #{PROJECT_DIR} && omnibus --version"
+    build_cmd = "cd #{PROJECT_DIR} && bin/omnibus build dd-check-#{integration} --output_manifest=false"
+  end
 
   if dont_error_on_build
     build_cmd += " || true"
@@ -114,19 +160,7 @@ def erb_header(variables)
   # this method generates a header usable by a ERB file
   out = ""
   variables.each do |key, value|
-    out += "<% #{key}=\"#{value}\" %>"
+    out += "<% #{key}='#{value}' %>"
   end
   out
-end
-
-def linux?
-  %w(rhel debian fedora suse gentoo slackware arch exherbo).include? @ohai['platform_family']
-end
-
-def osx?
-  @ohai['platform_family'] == 'mac_os_x'
-end
-
-def windows?
-  @ohai['platform_family'] == 'windows'
 end
