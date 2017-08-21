@@ -4,6 +4,7 @@ name 'integration-deps'
 
 # These are the deps for the integrations that are shipped with the agent
 # we may also put any other C deps here that other integrations need
+dependency 'cx_Oracle'
 dependency 'adodbapi'
 dependency 'beautifulsoup4'
 dependency 'dnspython'
