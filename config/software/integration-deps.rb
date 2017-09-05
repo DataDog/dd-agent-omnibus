@@ -29,3 +29,7 @@ if not windows?
 else
   dependency 'pyodbc'
 end
+
+if linux?
+  dependency 'nfsiostat'
+end
