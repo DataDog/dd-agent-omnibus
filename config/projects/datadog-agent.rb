@@ -179,6 +179,7 @@ end
 if linux?
   dependency 'datadog-trace-agent'
   dependency 'datadog-process-agent'
+  dependency 'datadog-logs-agent'
 end
 
 # Datadog agent
