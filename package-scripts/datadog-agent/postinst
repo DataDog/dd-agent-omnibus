@@ -7,6 +7,8 @@ RUN_DIR=$INSTALL_DIR/run
 KNOWN_DISTRIBUTION="(Debian|Ubuntu|RedHat|CentOS|openSUSE|Amazon|Arista|SUSE)"
 DISTRIBUTION=$(lsb_release -d 2>/dev/null | grep -Eo $KNOWN_DISTRIBUTION  || grep -Eo $KNOWN_DISTRIBUTION /etc/issue 2>/dev/null || grep -Eo $KNOWN_DISTRIBUTION /etc/Eos-release 2>/dev/null || uname -s)
 
+SERVICE_NAME=datadog-agent
+
 error_exit()
 {
   echo "${PROGNAME}: ${1:-"Unknown Error"}" 1>&2
@@ -81,6 +83,9 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
   if command -v chkconfig >/dev/null 2>&1; then
       chkconfig --add datadog-agent
   fi
+
+  if command -v systemctl >/dev/null 2>&1; then
+      systemctl enable $SERVICE_NAME
 
   # Create symlinks to the various agent's components
   ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/dd-agent
