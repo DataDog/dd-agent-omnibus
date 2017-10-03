@@ -82,6 +82,10 @@ if [ "$DISTRIBUTION" != "Darwin" ]; then
       chkconfig --add datadog-agent
   fi
 
+  if command -v systemctl >/dev/null 2>&1; then
+      systemctl enable datadog-agent
+  fi
+
   # Create symlinks to the various agent's components
   ln -sf $INSTALL_DIR/agent/agent.py /usr/bin/dd-agent
   chmod 755 /usr/bin/dd-agent
