@@ -58,6 +58,10 @@
     <!-- No need to restart Windows after the installation -->
     <Property Id="MSIRESTARTMANAGERCONTROL" Value="Disable" />
 
+    <PropertyRef Id="WIX_ACCOUNT_ADMINISTRATORS" />
+    <PropertyRef Id="WIX_ACCOUNT_LOCALSYSTEM" />
+    <PropertyRef Id="WIX_ACCOUNT_USERS" />
+    
         <!-- This allows downgrades, and same-version reinstalls.  Otherwise,
       same version gets installed "side by side" -->
 
@@ -203,6 +207,7 @@
     </DirectoryRef>
 
     <DirectoryRef Id="APPLICATIONDATADIRECTORY">
+
       <Component Id="datadog.conf"
                  Guid="83461594-01AC-11E2-BE35-37EC6088709B"
                  NeverOverwrite="yes"
@@ -210,6 +215,11 @@
         <File Id="datadog.conf"
               Name="datadog.conf"
               Source="$(var.InstallFiles)\datadog_win32.conf"/>
+        <CreateFolder>
+          <util:PermissionEx User="[WIX_ACCOUNT_ADMINISTRATORS]" GenericAll="yes" ChangePermission="yes"/>
+          <util:PermissionEx User="[WIX_ACCOUNT_LOCALSYSTEM]" GenericAll="yes" ChangePermission="yes"/>
+          <util:PermissionEx User="[WIX_ACCOUNT_USERS]" GenericAll="no" ChangePermission="yes"/>
+        </CreateFolder>
       </Component>
 
       <Directory Id="checks.d" Name="checks.d">
@@ -226,7 +236,6 @@
                    Permanent="yes"
                    Location="either"
                    NeverOverwrite="yes">
-          <CreateFolder/>
         </Component>
       </Directory>
 
