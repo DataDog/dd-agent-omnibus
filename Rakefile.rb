@@ -28,6 +28,8 @@ else
   FSROOT="/"
 end
 
+default_skip_checks = ['docs']
+
 namespace :agent do
   desc 'Cleanup generated files'
   task :clean do |t|
@@ -80,6 +82,7 @@ namespace :agent do
     else
       skip_checks = []
     end
+    skip_checks += default_skip_checks
     checks.each do |check|
       check.slice! "/#{ENV['INTEGRATIONS_REPO']}/"
       check.slice! "/"
