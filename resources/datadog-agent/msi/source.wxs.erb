@@ -78,7 +78,15 @@
         </Directory>
       </Directory>
       <Directory Id="CommonAppDataFolder" SourceName="CommonAppData">
-        <Directory Id="APPLICATIONDATADIRECTORY" Name="Datadog"/>
+        <Directory Id="APPLICATIONDATADIRECTORY" Name="Datadog">
+          <Component Id="conffolder" Guid="e540d2db-f443-4a98-bd72-7ab2654f4ffb">
+            <CreateFolder>
+              <Permission User="[WIX_ACCOUNT_ADMINISTRATORS]" GenericAll="yes" ChangePermission="yes"/>
+              <Permission User="[WIX_ACCOUNT_LOCALSYSTEM]" GenericAll="yes" ChangePermission="yes"/>
+              <Permission User="[WIX_ACCOUNT_USERS]" GenericAll="no" ChangePermission="yes"/>
+            </CreateFolder>
+          </Component>
+        </Directory>
       </Directory>
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="Datadog"/>
@@ -215,11 +223,6 @@
         <File Id="datadog.conf"
               Name="datadog.conf"
               Source="$(var.InstallFiles)\datadog_win32.conf"/>
-        <CreateFolder>
-          <util:PermissionEx User="[WIX_ACCOUNT_ADMINISTRATORS]" GenericAll="yes" ChangePermission="yes"/>
-          <util:PermissionEx User="[WIX_ACCOUNT_LOCALSYSTEM]" GenericAll="yes" ChangePermission="yes"/>
-          <util:PermissionEx User="[WIX_ACCOUNT_USERS]" GenericAll="no" ChangePermission="yes"/>
-        </CreateFolder>
       </Component>
 
       <Directory Id="checks.d" Name="checks.d">
@@ -236,6 +239,11 @@
                    Permanent="yes"
                    Location="either"
                    NeverOverwrite="yes">
+          <CreateFolder>
+              <Permission User="[WIX_ACCOUNT_ADMINISTRATORS]" GenericAll="yes" ChangePermission="yes"/>
+              <Permission User="[WIX_ACCOUNT_LOCALSYSTEM]" GenericAll="yes" ChangePermission="yes"/>
+              <Permission User="[WIX_ACCOUNT_USERS]" GenericAll="no" ChangePermission="yes"/>
+          </CreateFolder>
         </Component>
       </Directory>
 
@@ -254,6 +262,7 @@
     <Feature Id="MainApplication" Title="Datadog Agent" Level="1" ConfigurableDirectory="APPLICATIONROOTDIRECTORY">
       <ComponentGroupRef Id="ProjectDir" />
       <ComponentRef Id="datadog.conf" />
+      <ComponentRef Id="conffolder" />
       <ComponentRef Id="logs" />
       <ComponentRef Id="conf.d" />
       <ComponentRef Id="checks.d" />
