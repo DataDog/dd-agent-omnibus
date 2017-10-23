@@ -176,8 +176,10 @@ end
 if windows?
   dependency 'datadog-upgrade-helper'
 end
+
+dependency 'datadog-trace-agent'
+
 if linux?
-  dependency 'datadog-trace-agent'
   dependency 'datadog-process-agent'
 end
 
