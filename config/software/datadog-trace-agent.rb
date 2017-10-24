@@ -1,6 +1,7 @@
-require "./lib/ostools.rb"
-
 name "datadog-trace-agent"
+
+require "./lib/ostools.rb"
+require 'pathname'
 
 source git: 'https://github.com/DataDog/datadog-trace-agent.git'
 
@@ -17,6 +18,7 @@ end
 
 dd_agent_version = ENV['AGENT_VERSION']
 
+
 if windows?
   trace_agent_bin = "trace-agent.exe"
   gourl = "https://storage.googleapis.com/golang/go1.8.1.windows-amd64.zip"
@@ -28,7 +30,6 @@ if windows?
   agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
   agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
-
 
 else
   trace_agent_bin = "trace-agent"
@@ -57,15 +58,22 @@ build do
 
    # download go
    command "curl #{gourl} -o #{goout}"
+
+   delete godir
    mkdir godir
+
    if windows? 
-    command "7z x -o #{godir} #{goout} "
-   command "tar zxfv #{goout} -C #{godir}"
+    command "7z x -o#{godir} #{goout} "
+   else
+    command "tar zxfv #{goout} -C #{godir}"
+   end
+   delete goout
 
    # Put datadog-trace-agent into a valid GOPATH
    mkdir "#{gopath}/src/github.com/DataDog/"
    delete "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
-   move agent_source_dir, "#{gopath}/src/github.com/DataDog/"
+   mkdir "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
+   move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
 
    # Checkout datadog-trace-agent's build dependencies
    command "#{gobin} get -d github.com/Masterminds/glide", :env => env, :cwd => agent_cache_dir
@@ -75,7 +83,7 @@ build do
    command "#{gobin} install github.com/Masterminds/glide", :env => env, :cwd => glide_cache_dir
 
    # Build datadog-trace-agent
-   command "$GOPATH/bin/glide install", :env => env, :cwd => agent_cache_dir
+   command "#{gopath}/bin/glide install", :env => env, :cwd => agent_cache_dir
    if rhel? # temporary workaround for RHEL 5 build issue with the regular `build -a` command
      command "rake install", :env => env, :cwd => agent_cache_dir
      command "mv $GOPATH/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
@@ -83,4 +91,6 @@ build do
      command "rake build", :env => env, :cwd => agent_cache_dir
      command "mv ./#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    end
+   # clean up extra go compiler
+   delete godir
 end
