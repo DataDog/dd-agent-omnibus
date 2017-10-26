@@ -12,6 +12,7 @@ dd-agent:
   script:
     - rake agent:build-integration
   after_script:
+    - if exist pkg rd /s/q pkg
     - mkdir pkg
     - copy c:\omnibus-ruby\pkg\*.msi pkg
   artifacts:
