@@ -27,6 +27,7 @@ else
   PROJECT_DIR='/dd-agent-omnibus'
   FSROOT="/"
 end
+default_skip_checks=['docs']
 
 namespace :agent do
   desc 'Cleanup generated files'
@@ -83,7 +84,7 @@ namespace :agent do
     checks.each do |check|
       check.slice! "/#{ENV['INTEGRATIONS_REPO']}/"
       check.slice! "/"
-      unless skip_checks.include? check
+      unless ((skip_checks.include? check) || (default_skip_checks.include? check))
         prepare_and_execute_build(check)
         Rake::Task["agent:clean"].invoke
       end
