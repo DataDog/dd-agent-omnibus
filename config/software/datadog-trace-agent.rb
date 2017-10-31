@@ -87,6 +87,9 @@ build do
    if rhel? # temporary workaround for RHEL 5 build issue with the regular `build -a` command
      command "rake install", :env => env, :cwd => agent_cache_dir
      command "mv $GOPATH/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
+   elsif windows?
+    command "rake build windres=true", :env => env, :cwd => agent_cache_dir
+    command "mv ./#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    else
      command "rake build", :env => env, :cwd => agent_cache_dir
      command "mv ./#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
