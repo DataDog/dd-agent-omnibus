@@ -220,6 +220,12 @@
                             Stop="both"
                             Remove="uninstall"
                             Wait="no" />
+            <!-- The "Name" field must match the argument to eventlog.Open() -->
+            <util:EventSource Log="Application" Name="datadog-trace-agent"
+                  EventMessageFile="[BIN]trace-agent.exe"
+                  SupportsErrors="yes"
+                  SupportsInformationals="yes"
+                  SupportsWarnings="yes"/>
         </Component>
       </Directory>
     </DirectoryRef>
