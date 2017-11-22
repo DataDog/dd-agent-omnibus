@@ -11,8 +11,8 @@ else
   whitelist_file /\/opt\/datadog-agent\/embedded\/.+\.so.+/
 end
 
+is_core_integration = <%= core %>
 integration_source_folder = '/<%= integrations_repo %>/<%= name %>'
-
 if windows?
   integration_agent_folder = install_dir
 else
@@ -52,27 +52,33 @@ build do
     copy "#{integration_source_folder}/#{file}", "#{integration_agent_folder}/#{file}"
   end
 
-  if File.exists? "#{integration_source_folder}/requirements.txt"
-    if manifest.key?("package_deps") && manifest["package_deps"]
-      # install requirements
-      install_cmd = "install --target=#{integration_agent_folder}/lib "
-      # Only apply the constraints file if one exists
-      if File.exists? "#{install_dir}/agent/requirements.txt"
-        install_cmd += " -c #{install_dir}/agent/requirements.txt "
-      end
-      install_cmd += " -r #{integration_source_folder}/requirements.txt"
+  unless is_core_integration
+    command "echo \"#{integration_agent_folder}/lib\" > #{install_dir}/embedded/lib/python2.7/site-packages/#{name}.pth"
 
-      build_env = {
-        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-        "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
-      }
-      if not windows?
-        command "pip #{install_cmd}", :env => build_env
-      else
-        install_cmd = '"C:\Program Files\Datadog\Datadog Agent\embedded\python.exe"' + ' -m pip ' + install_cmd
-        command install_cmd
-        command "CHDIR #{install_dir} & del /Q /S *.pyc"
-        command "CHDIR #{install_dir} & del /Q /S *.chm"
+    if File.exists? "#{integration_source_folder}/requirements.txt"
+      if manifest.key?("package_deps") && manifest["package_deps"]
+        # install requirements
+        install_cmd = "install --target=#{integration_agent_folder}/lib "
+        # Only apply the constraints file if one exists
+        if File.exists? "#{install_dir}/agent/requirements.txt"
+          install_cmd += " -c #{install_dir}/agent/requirements.txt "
+        end
+        install_cmd += " -r #{integration_source_folder}/requirements.txt"
+
+        build_env = {
+          "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+          "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
+        }
+        command "pip #{install_cmd}", env => build_env
+
+        if not windows?
+          command "pip #{install_cmd}", :env => build_env
+        else
+          install_cmd = '"C:\Program Files\Datadog\Datadog Agent\embedded\python.exe"' + ' -m pip ' + install_cmd
+          command install_cmd
+          command "CHDIR #{install_dir} & del /Q /S *.pyc"
+          command "CHDIR #{install_dir} & del /Q /S *.chm"
+        end
       end
     end
   end

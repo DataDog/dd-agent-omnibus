@@ -1,6 +1,8 @@
 require 'json'
 require 'ohai'
 
+CORE_REPOS = ['integrations-core']
+
 @ohai = Ohai::System.new.tap { |o| o.all_plugins(%w{platform}) }.data
 
 def linux?()
@@ -109,6 +111,7 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   sh "cd #{PROJECT_DIR} && bundle update"
   puts "building integration #{integration}"
 
+  is_core = CORE_REPOS.include? ENV['INTEGRATIONS_REPO']
   manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{integration}/manifest.json"))
   # The manifest should always have a version
   integration_version = manifest['version']
@@ -135,7 +138,8 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   header = erb_header({
     'name' => "#{integration}",
     'project_dir' => "#{PROJECT_DIR}",
-    'integrations_repo' => "#{ENV['INTEGRATIONS_REPO']}"
+    'integrations_repo' => ENV['INTEGRATIONS_REPO'],
+    'core' => is_core
   })
 
   sh "(echo \"#{header}\" && cat #{PROJECT_DIR}/resources/datadog-integrations/software.rb.erb) | erb > #{PROJECT_DIR}/config/software/dd-check-#{integration}-software.rb"
