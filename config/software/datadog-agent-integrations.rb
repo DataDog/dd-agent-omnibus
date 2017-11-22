@@ -40,14 +40,12 @@ build do
 
     # Open the concatenated checks requirements file
     # We're going to store it with the agent install
-    all_reqs_file_path = "/check_requirements.txt"
+    all_reqs_file_path = "#{install_dir}/agent/check_requirements.txt"
     if File.exist?(all_reqs_file_path)
       all_reqs_file = File.open(all_reqs_file_path, 'w+')
     else
       all_reqs_file = File.new(all_reqs_file_path, 'w+')
     end
-
-    # all_reqs_file = File.open("#{install_dir}/agent/check_requirements.txt", 'w+')
 
     # The conf directory is different on every system
     if linux?
@@ -119,8 +117,6 @@ build do
       "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
       "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
     }
-    pip "install -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt", env: build_env
-
-    copy '/check_requirements.txt', "#{install_dir}/agent/"
+    pip "install -c #{install_dir}/agent/requirements.txt -r #{install_dir}/agent/check_requirements.txt", env: build_env
   end
 end

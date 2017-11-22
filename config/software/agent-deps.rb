@@ -18,8 +18,8 @@ else
   dependency 'wmi'
 end
 
-# Mac and Windows
-if osx? or windows?
+# Windows
+if windows?
   dependency 'gui'
 end
 

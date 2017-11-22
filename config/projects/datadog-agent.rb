@@ -187,6 +187,10 @@ end
 dependency 'datadog-agent'
 dependency 'datadog-agent-integrations'
 
+if osx?
+  dependency 'datadog-agent-mac-app'
+end
+
 # Remove pyc/pyo files from package
 # should be built after all the other python-related software defs
 if linux?
