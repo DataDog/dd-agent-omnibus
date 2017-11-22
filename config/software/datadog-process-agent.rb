@@ -12,7 +12,8 @@ build do
   # FIXME (conor): Add ship_license once repo is open source
   binary = "process-agent-amd64-#{version}"
   url = "https://s3.amazonaws.com/datad0g-process-agent/#{binary}"
-  command "curl #{url} -o #{binary}"
+  # -f will make the failure noisy
+  command "curl -f #{url} -o #{binary}"
   command "chmod +x #{binary}"
   command "mv #{binary} #{install_dir}/bin/process-agent"
-end 
+end
