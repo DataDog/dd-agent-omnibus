@@ -23,7 +23,7 @@ dd_agent_version = ENV['AGENT_VERSION']
 
 if windows?
   trace_agent_bin = "trace-agent.exe"
-  gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
+  gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}"
 
   agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"

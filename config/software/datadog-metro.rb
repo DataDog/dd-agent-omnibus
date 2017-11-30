@@ -12,7 +12,7 @@ always_build true
 go_version = "1.9.1"
 
 srcdir = "#{Omnibus::Config.source_dir}/#{name}"
-gopath = "#{Omnibus::Config.cache_dir}/src/#{name}",
+gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}",
 
 build do
   ship_license "https://raw.githubusercontent.com/DataDog/go-metro/master/LICENSE"
