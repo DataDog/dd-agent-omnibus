@@ -4,6 +4,8 @@ require "./lib/gosetup.rb"
 
 dependency "libpcap"
 
+source git: 'https://github.com/DataDog/go-metro.git'
+
 default_version "last-stable"
 always_build true
 
@@ -23,9 +25,17 @@ build do
     "PATH" => "#{godir}/go/bin:#{ENV["PATH"]}",
   }
 
+  # Put go-metro into the GOPATH
+  mkdir "#{gopath}/src/github.com/DataDog/"
+  delete "#{gopath}/src/github.com/DataDog/go-metro"
+  mkdir "#{gopath}/src/github.com/DataDog/go-metro"
+
+  command "git checkout #{version} && git pull", :env => env, :cwd => "#{Omnibus::Config.source_dir}/#{name}"
+  copy "#{Omnibus::Config.source_dir}/#{name}/*", "#{gopath}/src/github.com/DataDog/go-metro"
+
   command "mkdir -p #{gopath}/src/github.com/DataDog", :env => env
   command "#{gobin} get -v -d github.com/DataDog/go-metro", :env => env, :cwd => "#{gopath}"
-  command "git checkout #{default_version} && git pull", :env => env, :cwd => "#{gopath}/src/github.com/DataDog/go-metro"
+  command "git checkout #{version} && git pull", :env => env, :cwd => "#{gopath}/src/github.com/DataDog/go-metro"
   command "#{gobin} get -v -d github.com/cihub/seelog", :env => env, :cwd => "#{gopath}"
   command "#{gobin} get -v -d github.com/google/gopacket", :env => env, :cwd => "#{gopath}"
   command "#{gobin} get -v -d github.com/DataDog/datadog-go/statsd", :env => env, :cwd => "#{gopath}"
