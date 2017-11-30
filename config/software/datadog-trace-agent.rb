@@ -1,8 +1,8 @@
 name "datadog-trace-agent"
 
-require "./lib/ostools.rb"
-require "./lib/gosetup.rb"  # provided by omnibus-software
 require 'pathname'
+
+require "./lib/gosetup.rb"  # provided by omnibus-software
 
 source git: 'https://github.com/DataDog/datadog-trace-agent.git'
 

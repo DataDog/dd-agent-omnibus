@@ -2,6 +2,8 @@
 # Go-setup helper functions
 # ------------------------------------
 #
+require "./ostools.rb"
+
 def go_setup(version)
   if windows?
     gourl = "https://storage.googleapis.com/golang/go#{version}.windows-amd64.zip"
@@ -28,5 +30,5 @@ def go_setup(version)
   end
   delete goout
 
-  return godir
+  godir
 end
