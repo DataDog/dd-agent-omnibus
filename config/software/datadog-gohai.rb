@@ -14,10 +14,7 @@ build do
   ship_license "https://raw.githubusercontent.com/DataDog/gohai/#{version}/THIRD_PARTY_LICENSES.md"
 
   block do
-    cache_dir = Omnibus::Config.cache_dir
-    if cache_dir.kind_of?(Array)
-      cache_dir = cache_dir[0]
-    end
+    cache_dir = Omnibus::Config.cache_dir(0)
 
     srcdir = "#{Omnibus::Config.source_dir}/#{name}"
     gopath = "#{cache_dir}/go/src/#{name}",
