@@ -11,13 +11,15 @@ always_build true
 
 go_version = "1.9.1"
 
+srcdir = "#{Omnibus::Config.source_dir}/#{name}"
+gopath = "#{Omnibus::Config.cache_dir}/src/#{name}",
+
 build do
   ship_license "https://raw.githubusercontent.com/DataDog/go-metro/master/LICENSE"
   ship_license "https://raw.githubusercontent.com/DataDog/go-metro/master/THIRD_PARTY_LICENSES.md"
 
   godir = go_setup(go_version)
   gobin = "#{godir}/go/bin/go"
-  gopath = "#{Omnibus::Config.cache_dir}/src/#{name}",
 
   env = {
     "GOPATH" => gopath,
@@ -30,8 +32,8 @@ build do
   delete "#{gopath}/src/github.com/DataDog/go-metro"
   mkdir "#{gopath}/src/github.com/DataDog/go-metro"
 
-  command "git checkout #{version} && git pull", :env => env, :cwd => "#{Omnibus::Config.source_dir}/#{name}"
-  copy "#{Omnibus::Config.source_dir}/#{name}/*", "#{gopath}/src/github.com/DataDog/go-metro"
+  command "git checkout #{version} && git pull", :env => env, :cwd => srcdir
+  copy "#{srcdir}/*", "#{gopath}/src/github.com/DataDog/go-metro"
 
   command "mkdir -p #{gopath}/src/github.com/DataDog", :env => env
   command "#{gobin} get -v -d github.com/DataDog/go-metro", :env => env, :cwd => "#{gopath}"

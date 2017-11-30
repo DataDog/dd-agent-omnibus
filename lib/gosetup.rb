@@ -28,5 +28,5 @@ def go_setup(version)
   end
   delete goout
 
-  godir
+  return godir
 end
