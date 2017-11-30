@@ -2,6 +2,8 @@ name "datadog-gohai"
 
 require "./lib/gosetup.rb"
 
+source git: 'https://github.com/DataDog/gohai.git'
+
 default_version "last-stable"
 always_build true
 
@@ -20,6 +22,14 @@ build do
     "GOROOT" => "#{godir}/go",
     "PATH" => "#{godir}/go/bin:#{ENV["PATH"]}",
   }
+
+  # Put gohai into the GOPATH
+  mkdir "#{gopath}/src/github.com/DataDog/"
+  delete "#{gopath}/src/github.com/DataDog/gohai"
+  mkdir "#{gopath}/src/github.com/DataDog/gohai"
+
+  command "git checkout #{version} && git pull", :env => env, :cwd => "#{Omnibus::Config.source_dir}/#{name}"
+  copy "#{Omnibus::Config.source_dir}/#{name}/*", "#{gopath}/src/github.com/DataDog/gohai"
 
   # Checkout gohai's deps
   command "#{gobin} get -u github.com/shirou/gopsutil", :env => env
