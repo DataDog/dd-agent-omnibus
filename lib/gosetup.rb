@@ -2,7 +2,7 @@
 # Go-setup helper functions
 # ------------------------------------
 #
-require "./ostools.rb"
+require "ostools.rb"
 
 def go_setup(version)
   if windows?
