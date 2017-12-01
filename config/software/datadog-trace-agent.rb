@@ -43,8 +43,7 @@ build do
   ship_license "https://raw.githubusercontent.com/DataDog/datadog-trace-agent/#{version}/LICENSE"
 
   # download go
-  godir = go_setup(go_version) 
-  gobin = "#{godir}/go/bin/go"
+  godir, gobin = go_setup(go_version)
   
   env = {
     "GOPATH" => gopath,
