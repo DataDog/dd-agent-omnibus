@@ -55,6 +55,7 @@ build do
       command "git reset --hard v0.12.3", :env => env, :cwd => glide_cache_dir
       command "#{gobin} install github.com/Masterminds/glide", :env => env, :cwd => glide_cache_dir
 
+      command "glide install", :env => env, :cwd => agent_cache_dir
       command "rake build", :env => env, :cwd => agent_cache_dir
       command "mv ./#{process_agent_bin} #{install_dir}/bin/#{process_agent_bin}", :env => env, :cwd => agent_cache_dir
     end
