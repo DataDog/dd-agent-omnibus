@@ -7,7 +7,7 @@ source git: 'https://github.com/DataDog/gohai.git'
 default_version "last-stable"
 always_build true
 
-go_version = "1.9.1"
+go_version = "1.3.3"
 
 build do
   ship_license "https://raw.githubusercontent.com/DataDog/gohai/#{version}/LICENSE"
