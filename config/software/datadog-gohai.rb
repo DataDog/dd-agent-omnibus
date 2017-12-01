@@ -16,7 +16,7 @@ build do
   block do
     srcdir = "#{Omnibus::Config.source_dir}/#{name}"
     gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}"
-    godir = go_setup(go_version)
+    godir, gobin = go_setup(go_version)
     gobin = "#{godir}/go/bin/go"
 
     env = {
@@ -48,6 +48,6 @@ build do
     command "cd #{gopath}/src/github.com/DataDog/gohai && #{gobin} run make.go #{gobin} && mv gohai #{install_dir}/bin/gohai", :env => env
 
     # clean up extra go compiler
-    delete godir
+    delete godir if go_version != DEFAULT_GO_VERSION
   end
 end

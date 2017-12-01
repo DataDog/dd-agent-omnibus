@@ -9,7 +9,7 @@ source git: 'https://github.com/DataDog/go-metro.git'
 default_version "last-stable"
 always_build true
 
-go_version = "1.9.1"
+go_version = "1.3.3"
 
 build do
   ship_license "https://raw.githubusercontent.com/DataDog/go-metro/master/LICENSE"
@@ -18,8 +18,7 @@ build do
   block do
     srcdir = "#{Omnibus::Config.source_dir}/#{name}"
     gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}"
-    godir = go_setup(go_version)
-    gobin = "#{godir}/go/bin/go"
+    godir, gobin = go_setup(go_version)
 
     env = {
       "GOPATH" => gopath,
@@ -49,6 +48,6 @@ build do
     command "#{gobin} build -o #{install_dir}/bin/go-metro github.com/DataDog/go-metro", :env => env, :cwd => "#{gopath}"
 
     # clean up extra go compiler
-    delete godir
+    delete godir if go_version != DEFAULT_GO_VERSION
   end
 end
