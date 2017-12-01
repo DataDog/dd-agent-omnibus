@@ -28,7 +28,7 @@ else
   trace_agent_bin = "trace-agent"
 end
 
-gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}"
+gopath = "#{Omnibus::Config.cache_dir}/go"
 agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
 glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
 agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"

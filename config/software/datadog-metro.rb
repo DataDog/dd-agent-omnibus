@@ -17,7 +17,7 @@ build do
 
   block do
     srcdir = "#{Omnibus::Config.source_dir}/#{name}"
-    gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}"
+    gopath = "#{Omnibus::Config.cache_dir}/go"
     godir, gobin = go_setup(go_version)
 
     env = {
