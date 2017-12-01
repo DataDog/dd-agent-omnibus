@@ -13,6 +13,10 @@ if process_agent_branch.nil? || process_agent_branch.empty?
 end
 default_version process_agent_branch
 
+if from_source
+  source git: 'https://github.com/DataDog/datadog-process-agent.git'
+end
+
 go_version = "1.9.1"
 
 if windows?
