@@ -37,5 +37,5 @@ def go_setup(version)
   end
   delete goout
 
-  godir, gobin
+  return godir, gobin
 end
