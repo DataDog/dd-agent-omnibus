@@ -2,7 +2,8 @@ name "datadog-trace-agent"
 
 require 'pathname'
 
-require "./lib/gosetup.rb"  # provided by omnibus-software
+require "./lib/ostools.rb"
+require "./lib/gosetup.rb"
 
 source git: 'https://github.com/DataDog/datadog-trace-agent.git'
 
@@ -23,21 +24,14 @@ dd_agent_version = ENV['AGENT_VERSION']
 
 if windows?
   trace_agent_bin = "trace-agent.exe"
-  gopath = "#{Omnibus::Config.cache_dir[0]}/go/src/#{name}"
-
-  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-  glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
-
 else
   trace_agent_bin = "trace-agent"
-  gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
-
-  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-  glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
-
 end
+
+gopath = "#{Omnibus::Config.cache_dir}/go/src/#{name}"
+agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
+glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
+agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
 
 build do
   ship_license "https://raw.githubusercontent.com/DataDog/datadog-trace-agent/#{version}/LICENSE"
