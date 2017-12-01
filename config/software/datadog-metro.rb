@@ -44,7 +44,7 @@ build do
     command "#{gobin} get -v -d gopkg.in/yaml.v2", :env => env, :cwd => "#{gopath}"
     patch :source => "libpcap-static-link.patch", :plevel => 1,
           :acceptable_output => "Reversed (or previously applied) patch detected",
-          :target => "/var/cache/omnibus/src/datadog-metro/src/github.com/google/gopacket/pcap/pcap.go"
+          :target => "#{gopath}/src/github.com/google/gopacket/pcap/pcap.go"
     command "#{gobin} build -o #{install_dir}/bin/go-metro github.com/DataDog/go-metro", :env => env, :cwd => "#{gopath}"
 
     # clean up extra go compiler
