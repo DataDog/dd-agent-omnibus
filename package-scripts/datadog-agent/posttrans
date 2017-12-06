@@ -7,7 +7,8 @@
 getent group dd-agent >/dev/null || groupadd -r dd-agent
 getent passwd dd-agent >/dev/null || \
     useradd -r -M -g dd-agent -d /usr/share/datadog/agent -s /bin/sh \
-    -c "Datadog Agent" dd-agent
+    -c "Datadog Agent" dd-agent && \
+    usermod -L dd-agent
 
 # See comment in postinst script for an explanation of the logic below
 /etc/init.d/datadog-agent configcheck > /dev/null 2>&1
