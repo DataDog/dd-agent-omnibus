@@ -1,4 +1,4 @@
 rem set INTEGRATION_BRANCH=5.15.x
-set BUILD_ALL_INTEGRATIONS=true
-rem set INTEGRATION=activemq
+rem set BUILD_ALL_INTEGRATIONS=true
+set INTEGRATION="aspdotnet exchange_server dotnetclr"
 @echo done setting versions
