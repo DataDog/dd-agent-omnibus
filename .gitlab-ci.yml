@@ -5,10 +5,9 @@ before_script:
   - call load-omnibus-toolchain.bat
   - call int-sdkver.bat
   - call int-sdk.bat
-  
+
 dd-agent:
-  tags:
-    - windows-builder
+  tags: [ "runner:windows-agent5" ]
   script:
     - rake agent:build-integration
   after_script:
