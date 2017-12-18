@@ -6,7 +6,14 @@ def validate_manifest(manifest_hash)
   puts "manifest is valid"
 end
 
-def validate_manifest_0_1_0(manifest_hash)
+def validate_manifest_0_1_1(manifest_hash)
+  mandatory_fields = [
+    "type",
+  ]
+  validate_manifest_0_1_0(manifest_hash, extra_fields=mandatory_fields)
+end
+
+def validate_manifest_0_1_0(manifest_hash, extra_fields=nil)
   mandatory_fields = [
     "maintainer",
     "manifest_version",
@@ -18,6 +25,9 @@ def validate_manifest_0_1_0(manifest_hash)
     "version",
     "guid",
   ]
+  if extra_fields != nil
+    mandatory_fields += extra_fields
+  end
   validate_manifest_loop(manifest_hash, mandatory_fields)
 end
 
