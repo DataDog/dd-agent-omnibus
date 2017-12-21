@@ -9,12 +9,6 @@
 PROJECT_DIR=dd-agent-omnibus
 PROJECT_NAME=datadog-agent
 LOG_LEVEL=${LOG_LEVEL:-"info"}
-export AGENT_BRANCH=${AGENT_BRANCH:-"master"}
-export OMNIBUS_BRANCH=${OMNIBUS_BRANCH:-"master"}
-export OMNIBUS_SOFTWARE_BRANCH=${OMNIBUS_SOFTWARE_BRANCH:-"master"}
-export OMNIBUS_RUBY_BRANCH=${OMNIBUS_RUBY_BRANCH:-"datadog-5.5.0"}
-export INTEGRATIONS_CORE_BRANCH=${INTEGRATIONS_CORE_BRANCH:-"master"}
-
 REMOTE_AGENT_REPO_RAW="https://raw.githubusercontent.com/DataDog/dd-agent"
 LOCAL_DD_AGENT="/dd-agent-repo"
 
@@ -29,6 +23,28 @@ rm -rf /etc/dd-agent
 rm -rf /opt/$PROJECT_NAME/*
 
 builtin cd $PROJECT_DIR
+
+# make sure we can run the ruby script with the default ruby branch
+bundle update
+
+# Loading release information from release.json
+vars=$(bundle exec ruby load_realease.rb)
+
+if [ -z "$vars" ]; then
+  echo "Error: could not load release info"
+  exit 1
+fi
+
+# Export variables from the release.json
+IFS_DEFAULT=$IFS
+IFS=$'\n'; for line in $vars
+do
+  key=`echo $line | cut -d ' ' -f 1`
+  value=`echo $line | cut -d ' ' -f 2`
+  echo "setting $key => $value"
+  export "$key=$value"
+done
+IFS=$IFS_DEFAULT
 
 # If an RPM_SIGNING_PASSPHRASE has been passed, let's import the signing key
 if [ -n "$RPM_SIGNING_PASSPHRASE" ]; then
@@ -46,6 +62,7 @@ else
 fi
 export JMX_VERSION
 
-# Install the gems we need, with stubs in bin/
+# update ruby omnibus package
 bundle update # Make sure to update to the latest version of omnibus-software
+
 bin/omnibus build -l=$LOG_LEVEL $PROJECT_NAME
