@@ -90,6 +90,13 @@ package :msi do
   wix_candle_extension 'WixUtilExtension'
   wix_light_extension 'WixUtilExtension'
   extra_package_dir "#{Omnibus::Config.source_dir()}\\extra_package_files"
+  additional_sign_files [
+      "#{install_dir}\\bin\\gohai.exe",
+      "#{install_dir}\\bin\\trace-agent.exe",
+      "#{install_dir}\\dist\\shell.exe",
+      "#{install_dir}\\dist\\agent-manager.exe",
+      "#{Omnibus::Config.source_dir()}\\datadog-agent\\dd-agent\\dist\\ddagent.exe"
+  ]
   if ENV['SIGN_WINDOWS']
     signing_identity "ECCDAE36FDCB654D2CBAB3E8975AA55469F96E4C", machine_store: true, algorithm: "SHA256"
   end
