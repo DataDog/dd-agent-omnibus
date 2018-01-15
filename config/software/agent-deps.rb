@@ -47,7 +47,3 @@ dependency 'simplejson'
 dependency 'tornado'
 dependency 'uptime'
 dependency 'uuid'
-
-# Check dependencies
-# psutil is required by the core agent on Windows
-dependency 'integration-deps'

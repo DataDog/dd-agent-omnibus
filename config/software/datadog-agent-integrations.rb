@@ -4,7 +4,8 @@ name 'datadog-agent-integrations'
 
 dependency 'pip'
 dependency 'datadog-agent'
-dependency 'integration-deps'
+
+dependency 'unixodbc'
 
 relative_path 'integrations-core'
 
@@ -29,6 +30,9 @@ blacklist = [
   'datadog-checks-base',  # namespacing package for wheels (NOT AN INTEGRATION)
 ]
 
+python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
+whitelist_file "#{python_lib_path}"
+
 build do
   # Agent code
   mkdir  "#{install_dir}/agent/checks.d"
@@ -51,11 +55,33 @@ build do
       conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
     end
 
+    all_reqs_file = File.open("#{project_dir}/check_requirements.txt", 'w+')
+    # Manually add "core" dependencies that are not listed in the checks requirements
+    # FIX THIS these dependencies have to be grabbed from somewhere
+    all_reqs_file.puts "wheel==0.30.0 --hash=sha256:e721e53864f084f956f40f96124a74da0631ac13fbbd1ba99e8e2b5e9cafdf64"\
+        " --hash=sha256:9515fe0a94e823fd90b08d22de45d7bde57c90edce705b22f5e1ecf7e1b653c8"
+
+    all_reqs_file.close
+
+    # Install all the requirements
+    if windows?
+      pip "install -r #{project_dir}/check_requirements.txt"
+    else
+      build_env = {
+        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+        "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
+      }
+      pip "install -r #{project_dir}/check_requirements.txt", :env => build_env
+    end
+
+    # Set frozen requirements
+    pip "freeze > #{install_dir}/agent_requirements.txt"
+
     if windows?
       pip "wheel --no-deps .", :cwd => "#{project_dir}/datadog-checks-base"
       Dir.glob("#{project_dir}\\datadog-base\\*.whl").each do |wheel_path|
         whl_file = wheel_path.split('/').last
-        pip "install #{whl_file}", :cwd => "#{project_dir}/datadog-checks-base"
+        pip "install #{whl_file} -c #{install_dir}/agent_requirements.txt", :cwd => "#{project_dir}/datadog-checks-base"
       end
     else
       build_env = {
@@ -63,7 +89,7 @@ build do
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
       pip "wheel --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog-checks-base"
-      pip "install *.whl", :env => build_env, :cwd => "#{project_dir}/datadog-checks-base"
+      pip "install -c #{install_dir}/agent_requirements.txt *.whl", :env => build_env, :cwd => "#{project_dir}/datadog-checks-base"
     end
 
     # loop through them
@@ -89,11 +115,6 @@ build do
         manifest['supported_os'].include?('mac_os') || next
       end
 
-      # Copy the checks over
-      if File.exists? "#{project_dir}/#{check}/check.py"
-        copy "#{project_dir}/#{check}/check.py", "#{install_dir}/agent/checks.d/#{check}.py"
-      end
-
       # Copy the check config to the conf directories
       if File.exists? "#{project_dir}/#{check}/conf.yaml.example"
         copy "#{project_dir}/#{check}/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
@@ -110,12 +131,12 @@ build do
         end
       end
 
-      File.file?("#{check_dir}/setup.py") || next
+      File.file?("#{project_dir}/#{check}/setup.py") || next
       if windows?
         pip "wheel --no-deps .", :cwd => "#{project_dir}/#{check}"
         Dir.glob("#{project_dir}\\#{check}\\*.whl").each do |wheel_path|
           whl_file = wheel_path.split('/').last
-          pip "install #{whl_file}", :cwd => "#{project_dir}/#{check}"
+          pip "install -c #{install_dir}/agent_requirements.txt #{whl_file}", :cwd => "#{project_dir}/#{check}"
         end
       else
         build_env = {
@@ -123,28 +144,8 @@ build do
           "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
         }
         pip "wheel --no-deps .", :env => build_env, :cwd => "#{project_dir}/#{check}"
-        pip "install *.whl", :env => build_env, :cwd => "#{project_dir}/#{check}"
+        pip "install -c #{install_dir}/agent_requirements.txt *.whl", :env => build_env, :cwd => "#{project_dir}/#{check}"
       end
-
-      # if File.exists?("#{project_dir}/#{check}/requirements.txt") && !manifest['use_omnibus_reqs']
-      #   reqs = File.open("#{project_dir}/#{check}/requirements.txt", 'r').read
-      #   reqs.each_line do |line|
-      #     if line[0] != '#'
-      #       all_reqs_file.puts line
-      #     end
-      #   end
-      # end
     end
-
-    # Close the checks requirements file
-    # all_reqs_file.close
-
-    # build_env = {
-    #   "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-    #   "PATH" => "/#{install_dir}/embedded/bin:#{ENV['PATH']}",
-    # }
-    # pip "install -c #{install_dir}/agent/requirements.txt -r /check_requirements.txt", env: build_env
-
-    # copy '/check_requirements.txt', "#{install_dir}/agent/"
   end
 end
