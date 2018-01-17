@@ -19,7 +19,7 @@
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "master",
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
-		"OMNIBUS_SOFTWARE_BRANCH": "jaime/unixodbc"
+		"OMNIBUS_SOFTWARE_BRANCH": "jaime/unixodbc_lite"
 	},
 	"5.21.0": {
 		"AGENT_VERSION": "5.21.0",
