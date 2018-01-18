@@ -10,7 +10,7 @@
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
-	"5.22.0-wheels": {
+	"5.22.0-wheels-lite": {
 		"AGENT_VERSION": "5.22.0~wheels",
 		"AGENT_BRANCH": "master",
 		"AGENT6_BRANCH": "master",
