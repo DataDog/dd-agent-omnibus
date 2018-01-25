@@ -20,14 +20,13 @@ dependency 'python-redis'
 dependency 'python-rrdtool'
 dependency 'pyvmomi'
 dependency 'scandir'
+dependency 'pyodbc'
 
 if not windows?
   dependency 'kafka-python'
   dependency 'psycopg2'
   dependency 'python-gearman'
   dependency 'snakebite'
-else
-  dependency 'pyodbc'
 end
 
 if linux?
