@@ -27,8 +27,10 @@ if not windows?
   dependency 'python-gearman'
   dependency 'snakebite'
 else
-  dependency 'pyodbc'
+  dependency 'unixodbc'
 end
+
+dependency 'pyodbc'
 
 if linux?
   dependency 'nfsiostat'
