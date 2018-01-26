@@ -109,7 +109,13 @@ def prepare_and_execute_build(integration, dont_error_on_build: false)
   sh "cd #{PROJECT_DIR} && bundle update"
   puts "building integration #{integration}"
 
-  manifest = JSON.parse(File.read("/#{ENV['INTEGRATIONS_REPO']}/#{integration}/manifest.json"))
+  manifest_file_path = "/#{ENV['INTEGRATIONS_REPO']}/#{integration}/manifest.json"
+
+  # If there is no manifest file, then we should assume the folder does not
+  # contain a working check and move onto the next
+  File.exist?(manifest_file_path) || return
+
+  manifest = JSON.parse(File.read(manifest_file_path))
   # The manifest should always have a version
   integration_version = manifest['version']
   if linux?
