@@ -79,6 +79,7 @@ build do
     # Set frozen requirements
     pip "freeze > #{install_dir}/agent_requirements.txt"
 
+    # setup toolkit
     if windows?
       pip "wheel --no-deps .", :cwd => "#{project_dir}/datadog-checks-base"
       Dir.glob("#{project_dir}\\datadog-base\\*.whl").each do |wheel_path|
