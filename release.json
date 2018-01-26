@@ -10,17 +10,6 @@
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
-	"5.22.0-wheels": {
-		"AGENT_VERSION": "5.22.0~wheels",
-		"AGENT_BRANCH": "master",
-		"AGENT6_BRANCH": "master",
-		"INTEGRATIONS_CORE_BRANCH": "master",
-		"TRACE_AGENT_BRANCH": "master",
-		"TRACE_AGENT_ADD_BUILD_VARS": "true",
-		"PROCESS_AGENT_BRANCH": "master",
-		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
-		"OMNIBUS_SOFTWARE_BRANCH": "jaime/unixodbc"
-	},
 	"5.21.0": {
 		"AGENT_VERSION": "5.21.0",
 		"AGENT_BRANCH": "5.21.x",
