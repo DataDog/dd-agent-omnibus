@@ -34,6 +34,7 @@ dependency 'docker-py'
 dependency 'jmxfetch'
 dependency 'jmxterm'
 
+dependency 'kazoo'
 dependency 'ntplib'
 dependency 'protobuf-py'
 dependency 'psutil'
