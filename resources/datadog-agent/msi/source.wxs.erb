@@ -9,7 +9,7 @@
     Name is made of localized product name and version number.
   -->
   <Product Id="*"
-           Name="Datadog Agent"
+           Name="!(loc.ProductName)"
            Language="1033"
            Version="$(var.VersionNumber)"
            Manufacturer="!(loc.ManufacturerName)"
@@ -21,14 +21,14 @@
       The install should be done for the whole machine not just the current user
     -->
     <Package Id="*"
-             Keywords="Installer"
-             Comments="Copyright 2015 Datadog, Inc."
-             Description="Datadog Agent v$(var.DisplayVersionNumber)"
-             Manufacturer="!(loc.ManufacturerName)"
-             InstallScope="perMachine"
-             InstallerVersion="400"
-             Languages="1033"
-             InstallPrivileges="elevated"
+            Keywords="Installer"
+            Comments="!(loc.InstallerComment)"
+            Description="!(loc.ProductName) $(var.DisplayVersionNumber)"
+            Manufacturer="!(loc.ManufacturerName)"
+            InstallScope="perMachine"
+            InstallerVersion="400"
+            Languages="1033"
+            InstallPrivileges="elevated"
              Compressed="yes" />
 
     <!-- This removes entirely the previous version -->
@@ -174,16 +174,22 @@
                 DiskId="1"
                 Source="$(var.DistFiles)/ddagent.exe"/>
           <ServiceInstall Id="DatadogServiceInstaller"
-                          DisplayName="Datadog Agent"
-                          Description="Send metrics to Datadog"
-                          Name="DatadogAgent"
-                          ErrorControl="ignore"
-                          Start="auto"
-                          Type="ownProcess"
-                          Vital="yes"
-                          Interactive="no"
+                            DisplayName="!(loc.ServiceDisplayName)"
+                            Description="!(loc.ServiceDescription)"
+                            Name="DatadogAgent"
+                            ErrorControl="ignore"
+                            Start="auto"
+                            Type="ownProcess"
+                            Vital="yes"
+                            Interactive="no"
                           Account="LocalSystem">
-              <ServiceDependency Id="winmgmt" />
+            <util:ServiceConfig
+                FirstFailureActionType='restart'
+                SecondFailureActionType='restart'
+                ThirdFailureActionType='restart'            
+                RestartServiceDelayInSeconds='30'
+                ResetPeriodInDays='1'/>
+            <ServiceDependency Id="winmgmt" />
           </ServiceInstall>
           <ServiceControl Id="DatadogStartService"
                           Name="DatadogAgent"
@@ -204,16 +210,22 @@
               DiskId="1"
               Source="$(var.InstallDir)/bin/trace-agent.exe"/>
             <ServiceInstall Id="DatadogAPMServiceInstaller"
-                            DisplayName="Datadog Trace Agent"
-                            Description="Send metrics to Datadog"
+                            DisplayName="!(loc.ServiceApmDisplayName)"
+                            Description="!(loc.ServiceApmDescription)"
                             Name="datadog-trace-agent"
                             ErrorControl="ignore"
-                            Start="demand"
+                            Start="auto"
                             Type="ownProcess"
                             Vital="yes"
                             Interactive="no"
                             Account="LocalSystem">
-                <ServiceDependency Id="datadogagent" />
+              <util:ServiceConfig
+                FirstFailureActionType='restart'
+                SecondFailureActionType='restart'
+                ThirdFailureActionType='restart'            
+                RestartServiceDelayInSeconds='30'
+                ResetPeriodInDays='1'/>
+              <ServiceDependency Id="datadogagent" />
             </ServiceInstall>
             <ServiceControl Id="DatadogAPMStartService"
                             Name="datadog-trace-agent"
@@ -227,6 +239,44 @@
                   SupportsInformationals="yes"
                   SupportsWarnings="yes"/>
         </Component>
+        <!-- Windows service declaration for Process agent -->
+          <Component Id="DATADOGPROCESSSERVICE" Guid="3b119795-ddf8-44eb-9d53-301f7186e2f3">
+            <File Id="process_agent.exe"
+                Name="process-agent.exe"
+                Vital="yes"
+                KeyPath="yes"
+                DiskId="1"
+                Source="$(var.InstallDir)/bin/process-agent.exe"/>
+            <ServiceInstall Id="DatadogProcessServiceInstaller"
+                            DisplayName="!(loc.ServiceProcessDisplayName)"
+                            Description="!(loc.ServiceProcessDescription)"
+                            Name="datadog-process-agent"
+                            ErrorControl="ignore"
+                            Start="auto"
+                            Type="ownProcess"
+                            Vital="yes"
+                            Interactive="no"
+                            Account="LocalSystem">
+              <util:ServiceConfig
+                FirstFailureActionType='restart'
+                SecondFailureActionType='restart'
+                ThirdFailureActionType='restart'            
+                RestartServiceDelayInSeconds='30'
+                ResetPeriodInDays='1'/>
+              <ServiceDependency Id="datadogagent" />
+            </ServiceInstall>
+            <ServiceControl Id="DatadogProcessStartService"
+                            Name="datadog-process-agent"
+                            Stop="both"
+                            Remove="uninstall"
+                            Wait="no" />
+            <!-- The "Name" field must match the argument to eventlog.Open() -->
+            <util:EventSource Log="Application" Name="datadog-process-agent"
+                    EventMessageFile="[AGENT]process-agent.exe"
+                    SupportsErrors="yes"
+                    SupportsInformationals="yes"
+                    SupportsWarnings="yes"/>
+          </Component>
       </Directory>
     </DirectoryRef>
 
@@ -303,6 +353,7 @@
       <ComponentRef Id="ApplicationShortcut" />
       <ComponentRef Id="DATADOGAGENTSERVICE" />
       <ComponentRef Id="DATADOGAPMSERVICE" />
+      <ComponentRef Id="DATADOGPROCESSSERVICE" />
       <ComponentGroupRef Id="ExtraEXAMPLECONFSLOCATION" />
       <ComponentRef Id="CleanupMainApplicationFolder" />
       <ComponentRef Id="RegisterConfVariables" />

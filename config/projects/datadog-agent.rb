@@ -186,7 +186,7 @@ end
 
 dependency 'datadog-trace-agent'
 
-if linux?
+if not osx?
   dependency 'datadog-process-agent'
 end
 
