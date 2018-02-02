@@ -114,6 +114,8 @@
     <Property Id="ARPHELPLINK" Value="https://datadoghq.com/" />
     <Property Id="WIXUI_INSTALLDIR" Value="<%= wix_install_dir %>" />
 
+    <Property Id="ShortCompanyName" Value="!(loc.CompanyNameShort)" />
+    
     <UIRef Id="ProjectUI_InstallDir"/>
     <UI Id="ProjectUI_InstallDir">
       <UIRef Id="WixUI_Minimal"/>
