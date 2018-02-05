@@ -6,6 +6,7 @@ dependency 'pip'
 dependency 'datadog-agent'
 
 if !windows?
+  dependency 'libtool'
   dependency 'unixodbc'
 end
 
