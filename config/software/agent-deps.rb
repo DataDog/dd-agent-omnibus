@@ -8,6 +8,7 @@ if linux?
 end
 # Ship supervisor anywhere but on Windows
 if not windows?
+  dependency 'libtool'
   dependency 'supervisor'
   dependency 'zlib'
 else
