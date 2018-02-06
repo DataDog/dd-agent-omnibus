@@ -12,7 +12,7 @@
 	},
 	"5.22.0-rc.3": {
 		"AGENT_VERSION": "5.22.0-rc.3",
-		"AGENT_BRANCH": "5.22.0-rc.2",
+		"AGENT_BRANCH": "5.22.0-rc.3",
 		"AGENT6_BRANCH": "6.0.0-beta.7",
 		"INTEGRATIONS_CORE_BRANCH": "5.22.0-rc.3",
 		"TRACE_AGENT_BRANCH": "5.21.1",
