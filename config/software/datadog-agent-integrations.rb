@@ -5,10 +5,6 @@ name 'datadog-agent-integrations'
 dependency 'pip'
 dependency 'datadog-agent'
 
-if !windows?
-  dependency 'unixodbc'
-end
-
 relative_path 'integrations-core'
 
 # The only integrations that will be packaged with the agent
