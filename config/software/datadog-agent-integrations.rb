@@ -75,12 +75,13 @@ build do
     # Set frozen requirements
     pip "freeze > #{install_dir}/agent_requirements.txt"
 
+    # Windows pip workaround to support globs
+    python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
+    python_pip = "\"import pip, glob; pip.main(['install', '-c', '#{install_dir}/agent_requirements.txt'] + glob.glob('*.whl'))\""
+
     if windows?
       pip "wheel --no-deps .", :cwd => "#{project_dir}/datadog-checks-base"
-      Dir.glob("#{project_dir}\\datadog-base\\*.whl").each do |wheel_path|
-        whl_file = wheel_path.split('/').last
-        pip "install #{whl_file} -c #{install_dir}/agent_requirements.txt", :cwd => "#{project_dir}/datadog-checks-base"
-      end
+      command("#{python_bin} -c #{python_pip}", cwd: "#{project_dir}/datadog-checks-base")
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
@@ -132,10 +133,7 @@ build do
       File.file?("#{project_dir}/#{check}/setup.py") || next
       if windows?
         pip "wheel --no-deps .", :cwd => "#{project_dir}/#{check}"
-        Dir.glob("#{project_dir}\\#{check}\\*.whl").each do |wheel_path|
-          whl_file = wheel_path.split('/').last
-          pip "install -c #{install_dir}/agent_requirements.txt #{whl_file}", :cwd => "#{project_dir}/#{check}"
-        end
+        command("#{python_bin} -c #{python_pip}", cwd: "#{project_dir}/#{check}")
       else
         build_env = {
           "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
