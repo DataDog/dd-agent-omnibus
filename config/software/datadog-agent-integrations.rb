@@ -32,9 +32,6 @@ python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-p
 whitelist_file "#{python_lib_path}"
 
 build do
-  # Agent code
-  mkdir  "#{install_dir}/agent/checks.d"
-
   checks = []
 
   # build do cannot have fully dynamic actions in it

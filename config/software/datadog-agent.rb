@@ -28,9 +28,6 @@ build do
   mkdir  "#{install_dir}/agent/"
 
   # Agent code
-  mkdir "#{install_dir}/agent/checks.d"
-  copy 'checks.d', "#{install_dir}/agent/"
-
   copy 'checks', "#{install_dir}/agent/"
   copy 'dogstream', "#{install_dir}/agent/"
   copy 'utils', "#{install_dir}/agent/"
