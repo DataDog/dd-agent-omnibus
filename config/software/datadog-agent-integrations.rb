@@ -132,8 +132,21 @@ build do
       File.file?("#{project_dir}/#{check}/setup.py") || next
       if windows?
         pip "wheel --no-deps .", :cwd => "#{project_dir}/#{check}"
-        Dir.glob("#{project_dir}\\#{check}\\*.whl").each do |wheel_path|
+        command "echo wheel path #{project_dir}/#{check}/*.whl"
+
+        check_dir_glob = Dir.glob("#{project_dir}/#{check}")
+        command "echo wheel glob #{check_dir_glob}"
+
+        check_dir_glob_all = Dir.glob("#{project_dir}/#{check}/*")
+        command "echo wheel globall #{check_dir_glob_all}"
+
+        wheels = Dir.glob("#{project_dir}/#{check}/*.whl")
+        command "echo wheel glob #{wheels}"
+        
+        Dir.glob("#{project_dir}/#{check}/*whl").each do |wheel_path|
+          command "echo installing wheel"
           whl_file = wheel_path.split('/').last
+          command "echo install -c #{install_dir}/agent_requirements.txt #{whl_file}", :cwd => "#{project_dir}/#{check}"
           pip "install -c #{install_dir}/agent_requirements.txt #{whl_file}", :cwd => "#{project_dir}/#{check}"
         end
       else
