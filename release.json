@@ -11,7 +11,7 @@
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
 	"nick_test_removing_deps": {
-		"AGENT_VERSION": "nightly",
+		"AGENT_VERSION": "master",
 		"AGENT_BRANCH": "master",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
