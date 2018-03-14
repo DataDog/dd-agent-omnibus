@@ -29,6 +29,7 @@ end
 
 # Agent dependencies
 dependency 'boto'
+dependency 'cacerts'
 dependency 'docker-py'
 
 dependency 'jmxfetch'
