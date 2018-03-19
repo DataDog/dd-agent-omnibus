@@ -5,6 +5,7 @@ name 'agent-deps'
 if linux?
   dependency 'procps-ng'
   dependency 'sysstat'
+  dependency 'nfsiostat'
 end
 # Ship supervisor anywhere but on Windows
 if not windows?
