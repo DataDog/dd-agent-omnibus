@@ -140,5 +140,9 @@ build do
         pip "install -c #{install_dir}/agent_requirements.txt *.whl", :env => build_env, :cwd => "#{project_dir}/#{check}"
       end
     end
+    if windows?
+        command "CHDIR #{install_dir} & del /Q /S *.pyc"
+        command "CHDIR #{install_dir} & del /Q /S *.chm"
+    end
   end
 end
