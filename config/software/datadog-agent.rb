@@ -41,6 +41,9 @@ build do
   mkdir "#{install_dir}/bin/"
 
   if linux?
+    # Updating the agent_version
+    command "sed -i 's/AGENT_VERSION = \"5.0.0\"/AGENT_VERSION = \"#{ENV['AGENT_VERSION']}\"/' #{install_dir}/agent/config.py"
+
     # Configuration files
     mkdir '/etc/dd-agent'
 
@@ -79,6 +82,9 @@ build do
   end
 
   if osx?
+    # Updating the agent_version
+    command "sed -i 's/AGENT_VERSION = \"5.0.0\"/AGENT_VERSION = \"#{ENV['AGENT_VERSION']}\"/' #{install_dir}/agent/config.py"
+
     env = {
       'PATH' => "#{install_dir}/embedded/bin/:#{ENV['PATH']}"
     }
