@@ -190,6 +190,7 @@ end
 
 # Datadog agent
 dependency 'datadog-agent'
+dependency 'datadog-pip'
 dependency 'datadog-agent-integrations'
 
 # Remove pyc/pyo files from package
