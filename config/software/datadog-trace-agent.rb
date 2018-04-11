@@ -16,8 +16,6 @@ if ENV.has_key?('TRACE_AGENT_ADD_BUILD_VARS') && ENV['TRACE_AGENT_ADD_BUILD_VARS
   trace_agent_add_build_vars = false
 end
 
-dd_agent_version = ENV['AGENT_VERSION']
-
 
 if windows?
   trace_agent_bin = "trace-agent.exe"
@@ -49,7 +47,7 @@ env = {
   "GOPATH" => gopath,
   "GOROOT" => "#{godir}/go",
   "PATH" => "#{godir}/go/bin:#{ENV["PATH"]}",
-  "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
+  "TRACE_AGENT_VERSION" => version, # used by 'make' in the trace-agent
   "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
 }
 
