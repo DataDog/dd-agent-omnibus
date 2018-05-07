@@ -9,8 +9,19 @@
 		"PROCESS_AGENT_BRANCH": "master",
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
-    },
-    "5.24.0-rc.3": {
+	},
+	"5.24.0-rc.4": {
+		"AGENT_VERSION": "5.24.0",
+		"AGENT_BRANCH": "5.24.0-rc.4",
+		"AGENT6_BRANCH": "6.2.0-rc.4",
+		"INTEGRATIONS_CORE_BRANCH": "6.2.x",
+		"TRACE_AGENT_BRANCH": "6.2.0-rc.1",
+		"TRACE_AGENT_ADD_BUILD_VARS": "true",
+		"PROCESS_AGENT_BRANCH": "6.2.0",
+		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
+		"OMNIBUS_SOFTWARE_BRANCH": "6.2.x"
+	},
+	"5.24.0-rc.3": {
 		"AGENT_VERSION": "5.24.0",
 		"AGENT_BRANCH": "5.24.0-rc.3",
 		"AGENT6_BRANCH": "6.2.0-rc.3",
