@@ -1,6 +1,6 @@
 {
 	"nightly": {
-		"AGENT_VERSION": "5.24.0",
+		"AGENT_VERSION": "5.25.0",
 		"AGENT_BRANCH": "master",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
