@@ -58,6 +58,10 @@ build do
 
     all_reqs_file.close
 
+    # Add TUF metadata
+    copy "#{project_dir}/.public-tuf-config.json", "#{install_dir}/public-tuf-config.json"
+    File.chmod(0644, "#{install_dir}/public-tuf-config.json")
+
     # Install all the requirements
     if windows?
       pip "install -r #{project_dir}/check_requirements.txt"
