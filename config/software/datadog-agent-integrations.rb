@@ -60,6 +60,7 @@ build do
 
     # Add TUF metadata
     copy "#{project_dir}/.public-tuf-config.json", "#{install_dir}/public-tuf-config.json"
+    copy "#{project_dir}/.tuf-root.json", "#{install_dir}/root.json"
     # File.chmod(0644, "#{install_dir}/public-tuf-config.json")
 
     # Install all the requirements
