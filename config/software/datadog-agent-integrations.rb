@@ -74,11 +74,10 @@ build do
 
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
-    python_pip = "\"import pip, glob; pip.main(['install', '-c', '#{install_dir}/agent_requirements.txt'] + glob.glob('*.whl'))\""
+    python_pip = "pip install -c #{windows_safe_path(install_dir)}\\agent_requirements.txt #{windows_safe_path(project_dir)}"
 
     if windows?
-      pip "wheel --no-deps .", :cwd => "#{project_dir}/datadog_checks_base"
-      command("#{python_bin} -c #{python_pip}", cwd: "#{project_dir}/datadog_checks_base")
+      command("#{python_bin} -m #{python_pip}\\datadog_checks_base")
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
@@ -129,8 +128,7 @@ build do
 
       File.file?("#{project_dir}/#{check}/setup.py") || next
       if windows?
-        pip "wheel --no-deps .", :cwd => "#{project_dir}/#{check}"
-        command("#{python_bin} -c #{python_pip}", cwd: "#{project_dir}/#{check}")
+        command("#{python_bin} -m #{python_pip}\\#{check}")
       else
         build_env = {
           "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
