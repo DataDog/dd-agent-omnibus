@@ -21,9 +21,9 @@ dd_agent_version = ENV['AGENT_VERSION']
 
 if windows?
   trace_agent_bin = "trace-agent.exe"
-  gourl = "https://storage.googleapis.com/golang/go1.9.4.windows-amd64.zip"
+  gourl = "https://storage.googleapis.com/golang/go1.10.3.windows-amd64.zip"
   goout = "go.zip"
-  godir = "c:/go18"
+  godir = "c:/go110"
   gobin = "#{godir}/go/bin/go"
   gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
 
@@ -33,9 +33,9 @@ if windows?
 
 else
   trace_agent_bin = "trace-agent"
-  gourl = "https://storage.googleapis.com/golang/go1.9.4.linux-amd64.tar.gz"
+  gourl = "https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz"
   goout = "go.tar.gz"
-  godir = "/usr/local/go18"
+  godir = "/usr/local/go110"
   gobin = "#{godir}/go/bin/go"
   gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
 
