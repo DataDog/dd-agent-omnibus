@@ -1,7 +1,7 @@
 {
 	"nightly": {
 		"AGENT_VERSION": "5.26.0",
-		"AGENT_BRANCH": "master",
+		"AGENT_BRANCH": "nick/remove_redundant_libs",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
 		"TRACE_AGENT_BRANCH": "master",
