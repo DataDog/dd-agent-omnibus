@@ -26,6 +26,7 @@ end
 
 blacklist = [
   'datadog_checks_base',  # namespacing package for wheels (NOT AN INTEGRATION)
+  'datadog_checks_dev',   # developer tooling for working on integrations (NOT AN INTEGRATION)
 ]
 
 python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
@@ -111,18 +112,18 @@ build do
       end
 
       # Copy the check config to the conf directories
-      if File.exists? "#{project_dir}/#{check}/conf.yaml.example"
-        copy "#{project_dir}/#{check}/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
+      if File.exists? "#{project_dir}/#{check}/datadog_checks/#{check}/data/conf.yaml.example"
+        copy "#{project_dir}/#{check}/data/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
       end
       # Copy the default config, if it exists
-      if File.exists? "#{project_dir}/#{check}/conf.yaml.default"
-        copy "#{project_dir}/#{check}/conf.yaml.default", "#{conf_directory}/#{check}.yaml.default"
+      if File.exists? "#{project_dir}/#{check}/datadog_checks/#{check}/data/conf.yaml.default"
+        copy "#{project_dir}/#{check}/datadog_checks/#{check}/data/conf.yaml.default", "#{conf_directory}/#{check}.yaml.default"
       end
 
       # We don't have auto_conf on windows yet
       unless windows?
-        if File.exists? "#{project_dir}/#{check}/auto_conf.yaml"
-          copy "#{project_dir}/#{check}/auto_conf.yaml", "#{conf_directory}/auto_conf/#{check}.yaml"
+        if File.exists? "#{project_dir}/#{check}/datadog_checks/#{check}/data/auto_conf.yaml"
+          copy "#{project_dir}/#{check}/datadog_checks/#{check}/data/auto_conf.yaml", "#{conf_directory}/auto_conf/#{check}.yaml"
         end
       end
 
