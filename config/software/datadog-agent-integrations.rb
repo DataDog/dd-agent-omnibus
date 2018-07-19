@@ -73,8 +73,7 @@ build do
     # loop through checks and install each without their dependencies
     # we rely on a static Agent environment that was built above. 
     checks.each do |check|
-      if blacklist.include?(check):
-        next
+      next if blacklist.include?(check)
 
       # Only use the parts of the filename we need
       check.slice! "#{project_dir}/"
