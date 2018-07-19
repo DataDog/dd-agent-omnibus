@@ -56,18 +56,21 @@ build do
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
     python_pip_reqs = "pip install --require-hashes -r #{windows_safe_path(project_dir)}"
+    python_pip_compile = "pip-compile #{windows_safe_path(project_dir)}"
 
     # Install the static environment requirements that the Agent and all checks will use
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
-      command("#{python_bin} -m #{python_pip_reqs}\\datadog_checks_base\\datadog_checks\\data\\agent_requirements.txt")
+      command("#{pip_compile}\\datadog_checks_base\\requirements.in > #{windows_safe_path(project_dir)}\\agent_requirements.txt"
+      command("#{python_bin} -m #{python_pip_reqs}\\agent_requirements.txt")
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
       pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      pip "install --require-hashes -r #{project_dir}/datadog_checks_base/datadog_checks/data/agent_requirements.txt"
+      pip "compile #{windows_safe_path(project_dir)}/agent_requirements.txt"
+      pip "install --require-hashes -r #{project_dir}/agent_requirements.txt"
     end
     
     # loop through checks and install each without their dependencies
