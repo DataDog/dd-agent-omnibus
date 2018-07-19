@@ -24,6 +24,7 @@ else
   default_version integrations_core_branch
 end
 
+# Skip installing checks that aren't consumer facing
 blacklist = [
   'datadog_checks_base',  # namespacing package for wheels (NOT AN INTEGRATION)
   'datadog_checks_dev',   # developer tooling for working on integrations (NOT AN INTEGRATION)
@@ -51,22 +52,12 @@ build do
       conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
     end
 
-    # Install build requirement(s)
-    if windows?
-      pip "install wheel==0.30.0"
-    else
-      build_env = {
-        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-        "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
-      }
-      pip "install wheel==0.30.0", :env => build_env
-    end
-
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
     python_pip_reqs = "pip install --require-hashes -r #{windows_safe_path(project_dir)}"
 
+    # Install the static environment requirements that the Agent and all checks will use
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
       command("#{python_bin} -m #{python_pip_reqs}\\datadog_checks_base\\datadog_checks\\data\\agent_requirements.txt")
@@ -78,8 +69,9 @@ build do
       pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
       pip "install --require-hashes -r #{project_dir}/datadog_checks_base/datadog_checks/data/agent_requirements.txt"
     end
-
-    # loop through them
+    
+    # loop through checks and install each without their dependencies
+    # we rely on a static Agent environment that was built above. 
     checks.each do |check|
       if blacklist.include? check:
         next
