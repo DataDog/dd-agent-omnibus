@@ -51,45 +51,39 @@ build do
       conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
     end
 
-    all_reqs_file = File.open("#{project_dir}/check_requirements.txt", 'w+')
-    # Manually add "core" dependencies that are not listed in the checks requirements
-    # FIX THIS these dependencies have to be grabbed from somewhere
-    all_reqs_file.puts "wheel==0.30.0 --hash=sha256:e721e53864f084f956f40f96124a74da0631ac13fbbd1ba99e8e2b5e9cafdf64"\
-        " --hash=sha256:9515fe0a94e823fd90b08d22de45d7bde57c90edce705b22f5e1ecf7e1b653c8"
-
-    all_reqs_file.close
-
-    # Install all the requirements
+    # Install build requirement(s)
     if windows?
-      pip "install -r #{project_dir}/check_requirements.txt"
+      pip "install wheel==0.30.0"
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
-      pip "install -r #{project_dir}/check_requirements.txt", :env => build_env
+      pip "install wheel==0.30.0", :env => build_env
     end
-
-    # Set frozen requirements
-    pip "freeze > #{install_dir}/agent_requirements.txt"
 
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
-    python_pip = "pip install -c #{windows_safe_path(install_dir)}\\agent_requirements.txt #{windows_safe_path(project_dir)}"
+    python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
+    python_pip_reqs = "pip install --require-hashes -r #{windows_safe_path(project_dir)}"
 
     if windows?
-      command("#{python_bin} -m #{python_pip}\\datadog_checks_base")
+      command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
+      command("#{python_bin} -m #{python_pip_reqs}\\datadog_checks_base\\datadog_checks\\data\\agent_requirements.txt")
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
-      pip "wheel --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      pip "install -c #{install_dir}/agent_requirements.txt *.whl", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
+      pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
+      pip "install --require-hashes -r #{project_dir}/datadog_checks_base/datadog_checks/data/agent_requirements.txt"
     end
 
     # loop through them
     checks.each do |check|
+      if blacklist.include? check:
+        next
+
       # Only use the parts of the filename we need
       check.slice! "#{project_dir}/"
       check.slice! "/"
@@ -129,14 +123,13 @@ build do
 
       File.file?("#{project_dir}/#{check}/setup.py") || next
       if windows?
-        command("#{python_bin} -m #{python_pip}\\#{check}")
+        command("#{python_bin} -m #{python_pip_no_deps}\\#{check}")
       else
         build_env = {
           "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
           "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
         }
-        pip "wheel --no-deps .", :env => build_env, :cwd => "#{project_dir}/#{check}"
-        pip "install -c #{install_dir}/agent_requirements.txt *.whl", :env => build_env, :cwd => "#{project_dir}/#{check}"
+        pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/#{check}"
       end
     end
     if windows?
