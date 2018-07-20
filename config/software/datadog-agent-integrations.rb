@@ -80,7 +80,7 @@ build do
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
       pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      command("python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/requirements.in")
+      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/requirements.in")
       pip "install --require-hashes -r #{project_dir}/static_requirements.txt"
     end
     
