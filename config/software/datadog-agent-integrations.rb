@@ -72,7 +72,7 @@ build do
     # Install the static environment requirements that the Agent and all checks will use
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
-      command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\requirements.in")
+      command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\agent_requirements.in")
       command("#{python_bin} -m #{python_pip_reqs}\\static_requirements.txt")
     else
       build_env = {
@@ -80,7 +80,7 @@ build do
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
       pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/requirements.in")
+      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/agent_requirements.in")
       pip "install --require-hashes -r #{project_dir}/static_requirements.txt"
     end
     
@@ -112,7 +112,7 @@ build do
 
       # Copy the check config to the conf directories
       if File.exists? "#{project_dir}/#{check}/datadog_checks/#{check}/data/conf.yaml.example"
-        copy "#{project_dir}/#{check}/data/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
+        copy "#{project_dir}/#{check}/datadog_checks/#{check}/data/conf.yaml.example", "#{conf_directory}/#{check}.yaml.example"
       end
       # Copy the default config, if it exists
       if File.exists? "#{project_dir}/#{check}/datadog_checks/#{check}/data/conf.yaml.default"
