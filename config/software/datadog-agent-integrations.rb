@@ -64,7 +64,7 @@ build do
     # Install the static environment requirements that the Agent and all checks will use
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
-      command("#{pip_compile}\\datadog_checks_base\\requirements.in > #{windows_safe_path(project_dir)}\\agent_requirements.txt"
+      command("#{python_pip_compile}\\datadog_checks_base\\requirements.in > #{windows_safe_path(project_dir)}\\agent_requirements.txt"
       command("#{python_bin} -m #{python_pip_reqs}\\agent_requirements.txt")
     else
       build_env = {
