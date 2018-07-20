@@ -52,6 +52,17 @@ build do
       conf_directory = "../../extra_package_files/EXAMPLECONFSLOCATION"
     end
 
+  # Install all the requirements
+  if windows?
+    pip "install pip-tools==2.0.2"
+  else
+    build_env = {
+      "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+      "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
+    }
+    pip "install pip-tools==2.0.2", :env => build_env
+  end
+
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
@@ -72,8 +83,8 @@ build do
         "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
       }
       pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      pip "compile #{windows_safe_path(project_dir)}/agent_requirements.txt"
-      pip "install --require-hashes -r #{project_dir}/agent_requirements.txt"
+      command("pip-compile #{project_dir}/agent_requirements.txt > static_requirements.txt")
+      pip "install --require-hashes -r #{project_dir}/static_requirements.txt"
     end
     
     # loop through checks and install each without their dependencies
