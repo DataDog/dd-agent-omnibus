@@ -56,6 +56,9 @@ build do
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
     python_pip_reqs = "pip install --require-hashes -r #{windows_safe_path(project_dir)}"
+
+    # Need to keep the environment markers from the .in file so we will compile this here
+    # since the compiled .txt file will only have platform specific deps
     python_pip_compile = "pip-compile #{windows_safe_path(project_dir)}"
 
     # Install the static environment requirements that the Agent and all checks will use
