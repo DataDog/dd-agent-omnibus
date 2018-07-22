@@ -63,6 +63,9 @@ build do
         " --hash=sha256:9515fe0a94e823fd90b08d22de45d7bde57c90edce705b22f5e1ecf7e1b653c8"
     all_reqs_file.close
 
+    # Set frozen requirements
+    pip "freeze > #{install_dir}/agent_requirements.txt"
+
     # Install all the requirements
     if windows?
       pip "install pip-tools==#{PIPTOOLS_VERSION}"
@@ -75,9 +78,6 @@ build do
       pip "install pip-tools==#{PIPTOOLS_VERSION}", :env => build_env
       pip "install -r #{project_dir}/check_requirements.txt", :env => build_env
     end
-
-    # Set frozen requirements
-    pip "freeze > #{install_dir}/agent_requirements.txt"
 
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
