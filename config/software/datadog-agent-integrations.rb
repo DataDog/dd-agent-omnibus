@@ -9,7 +9,7 @@ relative_path 'integrations-core'
 
 PIPTOOLS_VERSION = "2.0.2"
 WHEELS_VERSION = "0.30.0"
-UNINSTALL_PIPTOOLS_DEPS = ['pip-tools']
+UNINSTALL_PIPTOOLS_DEPS = ['click', 'first', 'pip-tools']
 
 # The only integrations that will be packaged with the agent
 # are the ones that are officiallly supported.
@@ -90,9 +90,12 @@ build do
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
       command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\datadog_checks\\data\\agent_requirements.in")
 
-      # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
-      for dep in UNINSTALL_PIPTOOLS_DEPS
-        command("#{python_bin} -m #{python_pip_uninstall} #{dep}")
+      # Uninstall pip
+      freeze_file = File.read("#{windows_safe_path(project_dir)}\\agent_requirements.txt")
+      UNINSTALL_PIPTOOLS_DEPS.each do |dep|
+        if not freeze_file.include? dep
+          pip "uninstall -y #{dep}"
+        end
       end
 
       command("#{python_bin} -m #{python_pip_reqs} #{windows_safe_path(project_dir)}\\static_requirements.txt")
@@ -105,8 +108,11 @@ build do
       command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/datadog_checks/data/agent_requirements.in")
 
       # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
-      for dep in UNINSTALL_PIPTOOLS_DEPS
-        pip "uninstall -y #{dep}"
+      freeze_file = File.read("#{project_dir}/agent_requirements.txt")
+      UNINSTALL_PIPTOOLS_DEPS.each do |dep|
+        if not freeze_file.include? dep
+           pip "uninstall -y #{dep}"
+        end
       end
       
       pip "install -c #{install_dir}/agent_requirements.txt --require-hashes -r #{project_dir}/static_requirements.txt"
