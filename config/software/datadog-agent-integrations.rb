@@ -9,7 +9,7 @@ relative_path 'integrations-core'
 
 PIPTOOLS_VERSION = "2.0.2"
 WHEELS_VERSION = "0.30.0"
-UNINSTALL_PIPTOOLS_DEPS = ['first', 'click', 'pip-tools']
+UNINSTALL_PIPTOOLS_DEPS = ['pip-tools']
 
 # The only integrations that will be packaged with the agent
 # are the ones that are officiallly supported.
@@ -82,7 +82,7 @@ build do
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
-    python_pip_reqs = "pip install -c #{windows_safe_path(install_dir)}\\agent_requirements.txt --require-hashes -r #{windows_safe_path(project_dir)}"
+    python_pip_reqs = "pip install -c #{windows_safe_path(install_dir)}\\agent_requirements.txt --require-hashes -r"
     python_pip_uninstall = "pip uninstall -y"
 
     # Install the static environment requirements that the Agent and all checks will use
@@ -95,7 +95,7 @@ build do
         command("#{python_bin} -m #{python_pip_uninstall} #{dep}")
       end
 
-      command("#{python_bin} -m #{python_pip_reqs}\\static_requirements.txt")
+      command("#{python_bin} -m #{python_pip_reqs} #{windows_safe_path(project_dir)}\\static_requirements.txt")
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
@@ -155,6 +155,10 @@ build do
       end
 
       File.file?("#{project_dir}/#{check}/setup.py") || next
+
+      # Installing each integration with no deps because each integration depends
+      # only datadog_checks_base. All integrations-core requirements are now in requirements.in in the repo
+      # We won't install deps here to help ensure that no new dependencies sneak into the setup.py during the PR review process. 
       if windows?
         command("#{python_bin} -m #{python_pip_no_deps}\\#{check}")
       else
