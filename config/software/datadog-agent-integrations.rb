@@ -92,7 +92,7 @@ build do
 
       # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
       for dep in UNINSTALL_PIPTOOLS_DEPS
-        command("#{python_pip_uninstall} #{dep}")
+        command("#{python_bin} -m #{python_pip_uninstall} #{dep}")
       end
 
       command("#{python_bin} -m #{python_pip_reqs} #{windows_safe_path(project_dir)}\\static_requirements.txt")
