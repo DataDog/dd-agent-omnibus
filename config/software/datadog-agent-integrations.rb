@@ -9,7 +9,9 @@ relative_path 'integrations-core'
 
 PIPTOOLS_VERSION = "2.0.2"
 WHEELS_VERSION = "0.30.0"
-UNINSTALL_PIPTOOLS_DEPS = ['click', 'first', 'pip-tools']
+# dependencies for pip-tools. If any of these is an agent requirement
+# they will not be uninstalled (ie. six). But keeping the list exhaustive.
+UNINSTALL_PIPTOOLS_DEPS = ['six', 'click', 'first', 'pip-tools']
 
 # The only integrations that will be packaged with the agent
 # are the ones that are officiallly supported.
