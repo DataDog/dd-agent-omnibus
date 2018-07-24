@@ -111,7 +111,8 @@ build do
 
     # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
     UNINSTALL_PIPTOOLS_DEPS.each do |dep|
-      if not frozen_agent_reqs.include? "#{dep}=="
+      re = Regexp.new("^#{dep}==").freeze
+      if not re.match frozen_agent_reqs
         if windows?
           command("#{python_bin} -m #{python_pip_uninstall} #{dep}")
         else
