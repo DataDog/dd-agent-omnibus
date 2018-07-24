@@ -9,7 +9,9 @@ relative_path 'integrations-core'
 
 PIPTOOLS_VERSION = "2.0.2"
 WHEELS_VERSION = "0.30.0"
-UNINSTALL_PIPTOOLS_DEPS = ['click', 'first', 'pip-tools']
+# dependencies for pip-tools. If any of these is an agent requirement
+# they will not be uninstalled (ie. six). But keeping the list exhaustive.
+UNINSTALL_PIPTOOLS_DEPS = ['six', 'click', 'first', 'pip-tools']
 
 # The only integrations that will be packaged with the agent
 # are the ones that are officiallly supported.
@@ -43,7 +45,7 @@ build do
   # build do cannot have fully dynamic actions in it
   # Dynamic actions must be put inside of "block do"
   # since most of this is dynamic, I'll wrap the whole thing in `block do`
-  block do
+  block 'prepare python environment + integrations' do
     # Grab all the checks
     checks = Dir.glob("#{project_dir}/*/")
 
@@ -63,7 +65,16 @@ build do
         " --hash=sha256:9515fe0a94e823fd90b08d22de45d7bde57c90edce705b22f5e1ecf7e1b653c8"
     all_reqs_file.close
 
-    # Set frozen requirements
+    # Set frozen requirements (save to var, and to file)
+    # HACK: we need to do this like this due to the well known issues with omnibus 
+    # runtime requirements.  
+    if windows?
+      freeze_mixin = shellout!("#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe freeze")
+      frozen_agent_reqs = freeze_mixin.stdout
+    else
+      freeze_mixin = shellout!("#{install_dir}/embedded/bin/pip freeze")
+      frozen_agent_reqs = freeze_mixin.stdout
+    end
     pip "freeze > #{install_dir}/agent_requirements.txt"
 
     # Install all the requirements
@@ -89,13 +100,6 @@ build do
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
       command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\datadog_checks\\data\\agent_requirements.in")
-
-      # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
-      for dep in UNINSTALL_PIPTOOLS_DEPS
-        command("#{python_bin} -m #{python_pip_uninstall} #{dep}")
-      end
-
-      command("#{python_bin} -m #{python_pip_reqs} #{windows_safe_path(project_dir)}\\static_requirements.txt")
     else
       build_env = {
         "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
@@ -103,14 +107,27 @@ build do
       }
       pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
       command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/datadog_checks/data/agent_requirements.in")
+    end
 
-      # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
-      for dep in UNINSTALL_PIPTOOLS_DEPS
-        pip "uninstall -y #{dep}"
+    # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
+    UNINSTALL_PIPTOOLS_DEPS.each do |dep|
+      re = Regexp.new("^#{dep}==").freeze
+      if not re.match frozen_agent_reqs
+        if windows?
+          command("#{python_bin} -m #{python_pip_uninstall} #{dep}")
+        else
+          pip "uninstall -y #{dep}"
+        end
       end
-      
+    end
+
+    # install static-environment requirements
+    if windows?
+      command("#{python_bin} -m #{python_pip_reqs} #{windows_safe_path(project_dir)}\\static_requirements.txt")
+    else
       pip "install -c #{install_dir}/agent_requirements.txt --require-hashes -r #{project_dir}/static_requirements.txt"
     end
+
 
     # loop through checks and install each without their dependencies
     # we rely on a static Agent environment that was built above. 
