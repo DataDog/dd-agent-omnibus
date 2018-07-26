@@ -32,8 +32,9 @@ end
 
 # Skip installing checks that aren't consumer facing
 blacklist = [
-  'datadog_checks_base',  # namespacing package for wheels (NOT AN INTEGRATION)
-  'datadog_checks_dev',   # developer tooling for working on integrations (NOT AN INTEGRATION)
+  'datadog_checks_base',           # namespacing package for wheels (NOT AN INTEGRATION)
+  'datadog_checks_dev',            # developer tooling for working on integrations (NOT AN INTEGRATION)
+  'datadog_checks_tests_helper',   # Testing and Development package, (NOT AN INTEGRATION)
 ]
 
 python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
