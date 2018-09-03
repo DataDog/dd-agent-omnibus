@@ -1,6 +1,6 @@
 {
 	"nightly": {
-		"AGENT_VERSION": "5.26.0",
+		"AGENT_VERSION": "5.27.0",
 		"AGENT_BRANCH": "master",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
@@ -9,6 +9,17 @@
 		"PROCESS_AGENT_BRANCH": "master",
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
+	},
+	"5.27.0-rc.1": {
+		"AGENT_VERSION": "5.27.0",
+		"AGENT_BRANCH": "5.27.0-rc.1",
+		"AGENT6_BRANCH": "6.5.0-rc.1",
+		"INTEGRATIONS_CORE_BRANCH": "6.5.x",
+		"TRACE_AGENT_BRANCH": "6.5.0.rc1",
+		"TRACE_AGENT_ADD_BUILD_VARS": "true",
+		"PROCESS_AGENT_BRANCH": "5.27.0",
+		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
+		"OMNIBUS_SOFTWARE_BRANCH": "5.27.0-rc.1"
 	},
 	"5.26.0-rc.4": {
 		"AGENT_VERSION": "5.26.0",
