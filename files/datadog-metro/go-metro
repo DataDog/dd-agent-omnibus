@@ -1,0 +1,14 @@
+#!/bin/sh
+
+SCRIPT_PATH="$( cd "$(dirname "$0")" ; pwd -P )"
+
+if [ -e /etc/redhat-release ]; then
+    major_version=$(rpm -q --queryformat '%{RELEASE}' rpm | grep -o [[:digit:]]*\$)
+    if [ $major_version -eq "5" ]; then
+        echo "RHEL-based distros <=5 do not support go-metro."
+        sleep 2
+        exit 0
+    fi
+fi
+
+$SCRIPT_PATH/go-metro.bin $@
