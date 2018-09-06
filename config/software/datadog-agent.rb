@@ -66,6 +66,8 @@ build do
     # Use a supervisor conf with go-metro on 64-bit platforms only
     if ohai['kernel']['machine'] == 'x86_64'
       copy 'packaging/supervisor.conf', '/etc/dd-agent/supervisor.conf'
+      copy "#{project.files_path}/datadog-metro/go-metro", "#{install_dir}/bin/go-metro"
+      command "chmod ug+x #{install_dir}/bin/go-metro"
     else
       copy 'packaging/supervisor_32.conf', '/etc/dd-agent/supervisor.conf'
     end
