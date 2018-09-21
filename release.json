@@ -10,9 +10,9 @@
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
-	"5.28.0-beta.2": {
+	"5.28.0-beta.3": {
 		"AGENT_VERSION": "5.28.0",
-		"AGENT_BRANCH": "5.28.0-beta.2",
+		"AGENT_BRANCH": "5.28.0-beta.3",
 		"AGENT6_BRANCH": "6.5.1",
 		"INTEGRATIONS_CORE_BRANCH": "5.27.0",
 		"TRACE_AGENT_BRANCH": "6.5.0",
