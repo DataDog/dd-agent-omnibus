@@ -175,7 +175,7 @@ build do
     end
 
     # Let's "compile" the GUI and the service
-    command "#{install_dir}/embedded/python setup.py py2exe"
+    command "#{install_dir}/embedded/python setup.py py2exe --includes win32"
 
     copy "dist", "#{install_dir}"
     copy "win32/status.html", "#{install_dir}/dist/status.html"
