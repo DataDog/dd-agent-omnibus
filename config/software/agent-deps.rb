@@ -14,7 +14,6 @@ if not windows?
 else
   # We use our own supervisor shipped as a py2exe-built executable on Windows...
   # therefore we need py2exe. We also need psutil for our home-made supervisor.
-  dependency 'pywin32'
   dependency 'py2exe'
   dependency 'wmi'
 end
