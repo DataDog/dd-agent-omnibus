@@ -10,9 +10,9 @@
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
-	"5.28.99-dockertest-rc.1": {
-		"AGENT_VERSION": "5.28.0",
-		"AGENT_BRANCH": "5.28.0-rc.2",
+	"5.28.99-dockertest.rc.1": {
+		"AGENT_VERSION": "5.28.99",
+		"AGENT_BRANCH": "5.28.99-dockertest.rc.1",
 		"AGENT6_BRANCH": "6.6.0-rc.2",
 		"INTEGRATIONS_CORE_BRANCH": "6.6.x",
 		"TRACE_AGENT_BRANCH": "6.6.0-rc.1",
