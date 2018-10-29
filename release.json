@@ -11,8 +11,8 @@
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
 	"5.28.1-rc.1": {
-		"AGENT_VERSION": "5.28.0",
-		"AGENT_BRANCH": "5.28.0",
+		"AGENT_VERSION": "5.28.1-rc.1",
+		"AGENT_BRANCH": "5.28.1-rc.1",
 		"AGENT6_BRANCH": "6.6.0",
 		"INTEGRATIONS_CORE_BRANCH": "5.28.1-rc.1",
 		"TRACE_AGENT_BRANCH": "6.6.0",
