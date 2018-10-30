@@ -1,7 +1,7 @@
 {
 	"nightly": {
 		"AGENT_VERSION": "5.29.0",
-		"AGENT_BRANCH": "master",
+		"AGENT_BRANCH": "db/fix_core_cpucheck",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
 		"TRACE_AGENT_BRANCH": "master",
