@@ -5,6 +5,10 @@ name 'datadog-agent-integrations'
 dependency 'pip'
 dependency 'datadog-agent'
 
+unless windows?
+  dependency 'libkrb5'
+end
+
 relative_path 'integrations-core'
 
 PIPTOOLS_VERSION = "2.0.2"
@@ -50,6 +54,15 @@ build do
     # Grab all the checks
     checks = Dir.glob("#{project_dir}/*/")
 
+    # Unix build environment
+    unix_build_env = {
+      "CFLAGS" => "-I#{install_dir}/embedded/include",
+      "CXXFLAGS" => "-I#{install_dir}/embedded/include",
+      "LDFLAGS" => "-L#{install_dir}/embedded/lib",
+      "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
+      "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
+    }
+
     # The conf directory is different on every system
     if linux?
       conf_directory = "/etc/dd-agent/conf.d"
@@ -83,12 +96,8 @@ build do
       pip "install pip-tools==#{PIPTOOLS_VERSION}"
       pip "install -r #{project_dir}/check_requirements.txt"
     else
-      build_env = {
-        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-        "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
-      }
-      pip "install pip-tools==#{PIPTOOLS_VERSION}", :env => build_env
-      pip "install -r #{project_dir}/check_requirements.txt", :env => build_env
+      pip "install pip-tools==#{PIPTOOLS_VERSION}", :env => unix_build_env
+      pip "install -vvv -r #{project_dir}/check_requirements.txt", :env => unix_build_env
     end
 
     # Windows pip workaround to support globs
@@ -102,11 +111,7 @@ build do
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
       command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\datadog_checks\\base\\data\\agent_requirements.in")
     else
-      build_env = {
-        "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-        "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
-      }
-      pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/datadog_checks_base"
+      pip "install -vvv --no-deps .", :env => unix_build_env, :cwd => "#{project_dir}/datadog_checks_base"
       command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
     end
 
@@ -126,7 +131,7 @@ build do
     if windows?
       command("#{python_bin} -m #{python_pip_reqs} #{windows_safe_path(project_dir)}\\static_requirements.txt")
     else
-      pip "install -c #{install_dir}/agent_requirements.txt --require-hashes -r #{project_dir}/static_requirements.txt"
+      pip "install -vvv -c #{install_dir}/agent_requirements.txt --require-hashes -r #{project_dir}/static_requirements.txt", :env => unix_build_env
     end
 
 
@@ -180,11 +185,7 @@ build do
       if windows?
         command("#{python_bin} -m #{python_pip_no_deps}\\#{check}")
       else
-        build_env = {
-          "LD_RUN_PATH" => "#{install_dir}/embedded/lib",
-          "PATH" => "#{install_dir}/embedded/bin:#{ENV['PATH']}",
-        }
-        pip "install --no-deps .", :env => build_env, :cwd => "#{project_dir}/#{check}"
+        pip "install --no-deps .", :env => unix_build_env, :cwd => "#{project_dir}/#{check}"
       end
     end
     if windows?
