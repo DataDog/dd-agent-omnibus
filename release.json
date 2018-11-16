@@ -12,8 +12,8 @@
 	},
 	"5.29.0-rc.1": {
 		"AGENT_VERSION": "5.29.0",
-		"AGENT_BRANCH": "5.29.0",
-		"AGENT6_BRANCH": "6.7.0",
+		"AGENT_BRANCH": "5.29.0-rc.1",
+		"AGENT6_BRANCH": "6.7.0-rc.1",
 		"INTEGRATIONS_CORE_BRANCH": "5.28.1",
 		"TRACE_AGENT_BRANCH": "6.7.0-rc.1",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
