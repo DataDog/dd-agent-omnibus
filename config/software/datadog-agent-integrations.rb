@@ -5,6 +5,10 @@ name 'datadog-agent-integrations'
 dependency 'pip'
 dependency 'datadog-agent'
 
+if linux?
+  dependency 'unixodbc'
+end
+
 unless windows?
   dependency 'libkrb5'
 end
