@@ -44,6 +44,7 @@ blacklist = [
   'datadog_checks_dev',            # developer tooling for working on integrations (NOT AN INTEGRATION)
   'datadog_checks_tests_helper',   # Testing and Development package, (NOT AN INTEGRATION)
   'openstack_controller',          # Check currently under active development and in beta
+  'ibm_mq',                        # only supported on agent 6 because of binary dependencies
 ]
 
 python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
@@ -85,8 +86,8 @@ build do
     all_reqs_file.close
 
     # Set frozen requirements (save to var, and to file)
-    # HACK: we need to do this like this due to the well known issues with omnibus 
-    # runtime requirements.  
+    # HACK: we need to do this like this due to the well known issues with omnibus
+    # runtime requirements.
     if windows?
       freeze_mixin = shellout!("#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe freeze")
       frozen_agent_reqs = freeze_mixin.stdout
@@ -141,7 +142,7 @@ build do
 
 
     # loop through checks and install each without their dependencies
-    # we rely on a static Agent environment that was built above. 
+    # we rely on a static Agent environment that was built above.
     checks.each do |check|
       next if blacklist.include?(check)
 
@@ -186,7 +187,7 @@ build do
 
       # Installing each integration with no deps because each integration depends
       # only datadog_checks_base. All integrations-core requirements are now in requirements.in in the repo
-      # We won't install deps here to help ensure that no new dependencies sneak into the setup.py during the PR review process. 
+      # We won't install deps here to help ensure that no new dependencies sneak into the setup.py during the PR review process.
       if windows?
         command("#{python_bin} -m #{python_pip_no_deps}\\#{check}")
       else
