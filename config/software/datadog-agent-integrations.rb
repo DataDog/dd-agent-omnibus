@@ -113,10 +113,10 @@ build do
     # We do this because we do not want some requirements that are included in agent6 to be included in agent5
     if windows?
       agent_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
-      agent_5_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
+      agent_5_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements_5.in")
     else
       agent_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in"
-      agent_5_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in"
+      agent_5_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements_5.in"
     end
 
     a5_reqs_file = File.open(agent_5_requirements_file, "w+")
