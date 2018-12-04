@@ -47,6 +47,10 @@ blacklist = [
   'ibm_mq',                        # only supported on agent 6 because of binary dependencies
 ]
 
+blacklist_requirements = [
+  "pymqi"
+]
+
 python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
 whitelist_file "#{python_lib_path}"
 
@@ -106,6 +110,24 @@ build do
       pip "install -vvv -r #{project_dir}/check_requirements.txt", :env => unix_build_env
     end
 
+    if windows?
+      agent_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
+      agent_5_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
+    else
+      agent_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in"
+      agent_5_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in"
+    end
+
+    a5_reqs_file = File.open(agent_5_requirements_file, "w+")
+
+    File.open(agent_requirements_file).each do |line|
+      unless blacklist_requirements.any? { |req| line.include?(req) }
+        a5_reqs_file.puts line
+      end
+    end
+
+    a5_reqs_file.close
+
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
@@ -115,10 +137,10 @@ build do
     # Install the static environment requirements that the Agent and all checks will use
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
-      command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\datadog_checks\\base\\data\\agent_requirements.in")
+      command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{agent_5_requirements_file}")
     else
       pip "install -vvv --no-deps .", :env => unix_build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
+      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{agent_5_requirements_file}")
     end
 
     # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
