@@ -110,6 +110,7 @@ build do
       pip "install -vvv -r #{project_dir}/check_requirements.txt", :env => unix_build_env
     end
 
+    # We do this because we do not want some requirements that are included in agent6 to be included in agent5
     if windows?
       agent_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
       agent_5_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
