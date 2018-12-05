@@ -44,6 +44,11 @@ blacklist = [
   'datadog_checks_dev',            # developer tooling for working on integrations (NOT AN INTEGRATION)
   'datadog_checks_tests_helper',   # Testing and Development package, (NOT AN INTEGRATION)
   'openstack_controller',          # Check currently under active development and in beta
+  'ibm_mq',                        # only supported on agent 6 because of binary dependencies
+]
+
+blacklist_requirements = [
+  "pymqi"
 ]
 
 python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
@@ -85,8 +90,8 @@ build do
     all_reqs_file.close
 
     # Set frozen requirements (save to var, and to file)
-    # HACK: we need to do this like this due to the well known issues with omnibus 
-    # runtime requirements.  
+    # HACK: we need to do this like this due to the well known issues with omnibus
+    # runtime requirements.
     if windows?
       freeze_mixin = shellout!("#{windows_safe_path(install_dir)}\\embedded\\Scripts\\pip.exe freeze")
       frozen_agent_reqs = freeze_mixin.stdout
@@ -105,6 +110,25 @@ build do
       pip "install -vvv -r #{project_dir}/check_requirements.txt", :env => unix_build_env
     end
 
+    # We do this because we do not want some requirements that are included in agent6 to be included in agent5
+    if windows?
+      agent_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
+      agent_5_requirements_file = windows_safe_path("#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements_5.in")
+    else
+      agent_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in"
+      agent_5_requirements_file = "#{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements_5.in"
+    end
+
+    a5_reqs_file = File.open(agent_5_requirements_file, "w+")
+
+    File.open(agent_requirements_file).each do |line|
+      unless blacklist_requirements.any? { |req| line.include?(req) }
+        a5_reqs_file.puts line
+      end
+    end
+
+    a5_reqs_file.close
+
     # Windows pip workaround to support globs
     python_bin = "\"#{windows_safe_path(install_dir)}\\embedded\\python.exe\""
     python_pip_no_deps = "pip install --no-deps #{windows_safe_path(project_dir)}"
@@ -114,10 +138,10 @@ build do
     # Install the static environment requirements that the Agent and all checks will use
     if windows?
       command("#{python_bin} -m #{python_pip_no_deps}\\datadog_checks_base")
-      command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{windows_safe_path(project_dir)}\\datadog_checks_base\\datadog_checks\\base\\data\\agent_requirements.in")
+      command("#{python_bin} -m piptools compile --generate-hashes --output-file #{windows_safe_path(project_dir)}\\static_requirements.txt #{agent_5_requirements_file}")
     else
       pip "install -vvv --no-deps .", :env => unix_build_env, :cwd => "#{project_dir}/datadog_checks_base"
-      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{project_dir}/datadog_checks_base/datadog_checks/base/data/agent_requirements.in")
+      command("#{install_dir}/embedded/bin/python -m piptools compile --generate-hashes --output-file #{project_dir}/static_requirements.txt #{agent_5_requirements_file}")
     end
 
     # Uninstall the deps that pip-compile installs so we don't include them in the final artifact
@@ -141,7 +165,7 @@ build do
 
 
     # loop through checks and install each without their dependencies
-    # we rely on a static Agent environment that was built above. 
+    # we rely on a static Agent environment that was built above.
     checks.each do |check|
       next if blacklist.include?(check)
 
@@ -186,7 +210,7 @@ build do
 
       # Installing each integration with no deps because each integration depends
       # only datadog_checks_base. All integrations-core requirements are now in requirements.in in the repo
-      # We won't install deps here to help ensure that no new dependencies sneak into the setup.py during the PR review process. 
+      # We won't install deps here to help ensure that no new dependencies sneak into the setup.py during the PR review process.
       if windows?
         command("#{python_bin} -m #{python_pip_no_deps}\\#{check}")
       else
