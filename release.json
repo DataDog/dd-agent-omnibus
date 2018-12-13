@@ -7,7 +7,7 @@
 		"TRACE_AGENT_BRANCH": "master",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "master",
-		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
+		"OMNIBUS_RUBY_BRANCH": "db/dont_accept_errors",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
 	"5.30.0": {
