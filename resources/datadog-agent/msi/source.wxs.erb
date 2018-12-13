@@ -41,7 +41,7 @@
     <!-- This removes entirely the previous version -->
     <Upgrade Id="$(var.PerUserUpgradeCode)">
         <UpgradeVersion OnlyDetect='no'
-                        Property='PREVIOUSFOUND'
+                        Property='PERUSERPREVIOUSFOUND'
                         Minimum='1.0.0' IncludeMinimum='yes'
                         Maximum="99.99.99.99" IncludeMaximum='no'/>
     </Upgrade>
@@ -208,7 +208,7 @@
               Vital="yes"
               KeyPath="yes"
               DiskId="1"
-              Source="$(var.InstallDir)/bin/trace-agent.exe"/>
+              Source="$(var.DistFiles)/trace-agent.exe"/>
             <ServiceInstall Id="DatadogAPMServiceInstaller"
                             DisplayName="!(loc.ServiceApmDisplayName)"
                             Description="!(loc.ServiceApmDescription)"
@@ -247,7 +247,7 @@
                 Vital="yes"
                 KeyPath="yes"
                 DiskId="1"
-                Source="$(var.InstallDir)/bin/process-agent.exe"/>
+                Source="$(var.DistFiles)/process-agent.exe"/>
             <ServiceInstall Id="DatadogProcessServiceInstaller"
                             DisplayName="!(loc.ServiceProcessDisplayName)"
                             Description="!(loc.ServiceProcessDescription)"
