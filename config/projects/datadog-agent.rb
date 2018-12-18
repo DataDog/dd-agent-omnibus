@@ -92,7 +92,7 @@ package :msi do
   extra_package_dir "#{Omnibus::Config.source_dir()}\\extra_package_files"
   additional_sign_files [
       "#{install_dir}\\bin\\gohai.exe",
-      "#{install_dir}\\bin\\trace-agent.exe",
+      "#{Omnibus::Config.source_dir()}\\datadog-agent\\dd-agent\\dist\\trace-agent.exe",
       "#{install_dir}\\dist\\shell.exe",
       "#{install_dir}\\dist\\agent-manager.exe",
       "#{Omnibus::Config.source_dir()}\\datadog-agent\\dd-agent\\dist\\ddagent.exe"
