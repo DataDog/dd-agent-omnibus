@@ -3,7 +3,7 @@ name "datadog-trace-agent"
 require "./lib/ostools.rb"
 require 'pathname'
 
-source git: 'https://github.com/DataDog/datadog-trace-agent.git'
+source git: 'https://github.com/DataDog/datadog-agent.git'
 
 trace_agent_branch = ENV['TRACE_AGENT_BRANCH']
 if trace_agent_branch.nil? || trace_agent_branch.empty?
@@ -28,9 +28,9 @@ if windows?
   gobin = "c:\\go110\\go\\bin\\go"
   gopath = "#{Omnibus::Config.cache_dir}\\src\\#{name}"
 
-  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
+  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
+  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
   env = {
     "GOPATH" => gopath,
     "GOROOT" => "#{godirwin}\\go",
@@ -47,9 +47,9 @@ else
   gobin = "#{godir}/go/bin/go"
   gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
 
-  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
+  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
+  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
  
   env = {
     "GOPATH" => gopath,
@@ -64,8 +64,6 @@ end
 
 
 build do
-   ship_license "https://raw.githubusercontent.com/DataDog/datadog-trace-agent/#{version}/LICENSE"
-
    # download go
    command "curl #{gourl} -o #{goout}"
 
@@ -79,26 +77,22 @@ build do
    end
    delete goout
 
-   # Put datadog-trace-agent into a valid GOPATH
+   # Put datadog-agent into a valid GOPATH
    mkdir "#{gopath}/src/github.com/DataDog/"
-   delete "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
-   mkdir "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
-   move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-trace-agent"
+   delete "#{gopath}/src/github.com/DataDog/datadog-agent"
+   mkdir "#{gopath}/src/github.com/DataDog/datadog-agent"
+   move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-agent"
 
-   if windows?
-     # build windows resources
-     command "make windows", :env => env, :cwd => agent_cache_dir
-   end
-
-   # build datadog-trace-agent
-   command "make install", :env => env, :cwd => agent_cache_dir
+   # build datadog-agent
+   command "invoke deps", :env => env, :cwd => agent_cache_dir
+   command "invoke trace-agent.build", :env => env, :cwd => agent_cache_dir
 
    if rhel? # temporary workaround for RHEL 5 build issue with the regular `build -a` command
-     command "mv $GOPATH/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
+     command "mv bin/trace-agent/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    elsif windows?
-     command "mv #{gopath}/bin/#{trace_agent_bin} #{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
+     command "mv bin/trace-agent/#{trace_agent_bin} #{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    else
-     command "mv #{gopath}/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
+     command "mv bin/trace-agent/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    end
    # clean up extra go compiler
    delete godir
