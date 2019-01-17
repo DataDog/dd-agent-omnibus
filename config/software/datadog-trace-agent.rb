@@ -34,7 +34,7 @@ if windows?
   env = {
     "GOPATH" => gopath,
     "GOROOT" => "#{godirwin}\\go",
-    "PATH" => "#{godirwin}\\go\\bin;#{ENV["PATH"]}",
+    "PATH" => "#{gopath}\\bin;#{godirwin}\\go\\bin;#{ENV["PATH"]}",
     "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
     "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
   }
@@ -54,7 +54,7 @@ else
   env = {
     "GOPATH" => gopath,
     "GOROOT" => "#{godir}/go",
-    "PATH" => "#{godir}/go/bin:#{ENV["PATH"]}",
+    "PATH" => "#{gopath}/bin:#{godir}/go/bin:#{ENV["PATH"]}",
     "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
     "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
   }
@@ -84,6 +84,15 @@ build do
    delete "#{gopath}/src/github.com/DataDog/datadog-agent"
    mkdir "#{gopath}/src/github.com/DataDog/datadog-agent"
    move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-agent"
+
+   if windows?
+    mkdir "#{gopath}/bin"
+    command "curl -sSL https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe -o #{gopath}/bin/dep.exe"
+    command "#{gopath}/bin/dep.exe ensure", :env => env, :cwd => agent_cache_dir
+   else
+    command "go get -u github.com/golang/dep/cmd/dep", :env => env, :cwd => agent_cache_dir
+    command "dep ensure", :env => env, :cwd => agent_cache_dir
+   end
 
    if windows?
      # build windows resources
