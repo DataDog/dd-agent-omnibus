@@ -26,7 +26,8 @@ if windows?
   godir = "c:/go110"
   godirwin = "c:\\go110"
   gobin = "c:\\go110\\go\\bin\\go"
-  gopath = "#{Omnibus::Config.cache_dir}\\src\\#{name}"
+  #gopath = "#{Omnibus::Config.cache_dir}\\src\\#{name}"
+  gopath = "c:\\gotmp"
 
   agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
@@ -106,6 +107,7 @@ build do
      command "mv $GOPATH/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    elsif windows?
      command "mv #{gopath}/bin/#{trace_agent_bin} #{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
+     delete gopath
    else
      command "mv #{gopath}/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    end
