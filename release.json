@@ -4,7 +4,7 @@
 		"AGENT_BRANCH": "master",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
-		"TRACE_AGENT_BRANCH": "gbbr/hurray",
+		"TRACE_AGENT_BRANCH": "master",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "master",
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
