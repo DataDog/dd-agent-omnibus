@@ -39,15 +39,6 @@ else
   default_version integrations_core_branch
 end
 
-# Skip installing checks that aren't consumer facing/in beta
-blacklist = [
-  'datadog_checks_base',           # namespacing package for wheels (NOT AN INTEGRATION)
-  'datadog_checks_dev',            # developer tooling for working on integrations (NOT AN INTEGRATION)
-  'datadog_checks_tests_helper',   # Testing and Development package, (NOT AN INTEGRATION)
-  'openstack_controller',          # Check currently under active development and in beta
-  'ibm_mq',                        # only supported on agent 6 because of binary dependencies
-]
-
 blacklist_requirements = [
   "pymqi"
 ]

@@ -17,8 +17,8 @@ integration_whitelist = [
   'couch',
   'couchbase',
   'crio',
-  'datadog_checks_base',
-  'datadog_checks_dev',
+  # 'datadog_checks_base',   namespacing package for wheels (NOT AN INTEGRATION)
+  # 'datadog_checks_dev',      developer tooling for working on integrations (NOT AN INTEGRATION)
   'directory',
   'disk',
   'dns_check',
@@ -41,7 +41,7 @@ integration_whitelist = [
   'hdfs_namenode',
   'http_check',
   'hyperv',
-  'ibm_mq',
+  # 'ibm_mq',        only supported on agent 6 because of binary dependencies
   'iis',
   'istio',
   'kafka',
