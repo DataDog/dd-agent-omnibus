@@ -1,5 +1,5 @@
 require './lib/ostools.rb'
-require_relative "../../resources/datadog-integrations/validate_manifest"
+require './lib/integration_whitelist.rb'
 
 name 'datadog-agent-integrations'
 
@@ -159,7 +159,7 @@ build do
     # loop through checks and install each without their dependencies
     # we rely on a static Agent environment that was built above.
     checks.each do |check|
-      next unless integration_whitelist.include?(check)
+      next unless INTEGRATION_WHITELIST.include?(check)
 
       # Only use the parts of the filename we need
       check.slice! "#{project_dir}/"

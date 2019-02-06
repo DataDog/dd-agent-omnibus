@@ -1,4 +1,4 @@
-integration_whitelist = [
+INTEGRATION_WHITELIST = [
   'active_directory',
   'activemq',
   'activemq_xml',
