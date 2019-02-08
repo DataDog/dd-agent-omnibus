@@ -73,7 +73,6 @@ INTEGRATION_WHITELIST = [
   'openldap',
   'openmetrics',
   'openstack',
-  'openstack_controller',
   'oracle',
   'pdh_check',
   'pgbouncer',
