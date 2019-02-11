@@ -1,4 +1,5 @@
 require './lib/ostools.rb'
+require './lib/integration_whitelist.rb'
 
 name 'datadog-agent-integrations'
 
@@ -37,15 +38,6 @@ if integrations_core_branch.nil? || integrations_core_branch.empty?
 else
   default_version integrations_core_branch
 end
-
-# Skip installing checks that aren't consumer facing/in beta
-blacklist = [
-  'datadog_checks_base',           # namespacing package for wheels (NOT AN INTEGRATION)
-  'datadog_checks_dev',            # developer tooling for working on integrations (NOT AN INTEGRATION)
-  'datadog_checks_tests_helper',   # Testing and Development package, (NOT AN INTEGRATION)
-  'openstack_controller',          # Check currently under active development and in beta
-  'ibm_mq',                        # only supported on agent 6 because of binary dependencies
-]
 
 blacklist_requirements = [
   "pymqi"
@@ -167,7 +159,7 @@ build do
     # loop through checks and install each without their dependencies
     # we rely on a static Agent environment that was built above.
     checks.each do |check|
-      next if blacklist.include?(check)
+      next unless INTEGRATION_WHITELIST.include?(check)
 
       # Only use the parts of the filename we need
       check.slice! "#{project_dir}/"
