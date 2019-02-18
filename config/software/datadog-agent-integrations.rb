@@ -40,7 +40,8 @@ else
 end
 
 blacklist_requirements = [
-  "pymqi"
+  "pymqi",
+  "aerospike"
 ]
 
 python_lib_path = File.join(install_dir, "embedded", "lib", "python2.7", "site-packages")
