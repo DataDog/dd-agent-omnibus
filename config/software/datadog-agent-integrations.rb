@@ -160,11 +160,11 @@ build do
     # loop through checks and install each without their dependencies
     # we rely on a static Agent environment that was built above.
     checks.each do |check|
-      next unless INTEGRATION_WHITELIST.include?(check)
-
       # Only use the parts of the filename we need
       check.slice! "#{project_dir}/"
       check.slice! "/"
+
+      next unless INTEGRATION_WHITELIST.include?(check)
 
       # Check the manifest to be sure that this check is enabled on this system
       # or skip this iteration
