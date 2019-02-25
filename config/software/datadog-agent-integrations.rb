@@ -6,6 +6,9 @@ name 'datadog-agent-integrations'
 dependency 'pip'
 dependency 'datadog-agent'
 
+# Agent 5-only integrations
+dependency 'datadog-vsphere'
+
 if linux?
   dependency 'unixodbc'
 end
