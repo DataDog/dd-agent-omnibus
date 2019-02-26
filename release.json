@@ -10,17 +10,6 @@
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
 		"OMNIBUS_SOFTWARE_BRANCH": "master"
 	},
-	"datadog-vsphere-rc.1": {
-		"AGENT_VERSION": "5.32.0",
-		"AGENT_BRANCH": "master",
-		"AGENT6_BRANCH": "master",
-		"INTEGRATIONS_CORE_BRANCH": "master",
-		"TRACE_AGENT_BRANCH": "master",
-		"TRACE_AGENT_ADD_BUILD_VARS": "true",
-		"PROCESS_AGENT_BRANCH": "master",
-		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
-		"OMNIBUS_SOFTWARE_BRANCH": "ofek/vsphere"
-	},
 	"5.32.0-rc.3": {
 		"AGENT_VERSION": "5.32.0-rc.3",
 		"AGENT_BRANCH": "5.32.0-rc.3",
