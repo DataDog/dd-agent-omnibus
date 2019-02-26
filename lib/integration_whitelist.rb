@@ -103,7 +103,6 @@ INTEGRATION_WHITELIST = [
   'twemproxy',
   'varnish',
   'vault',
-  'vsphere',
   'win32_event_log',
   'windows_service',
   'wmi_check',
