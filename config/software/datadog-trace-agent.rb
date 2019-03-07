@@ -22,7 +22,7 @@ dd_agent_version = ENV['AGENT_VERSION']
 build do
    ship_license "https://raw.githubusercontent.com/DataDog/datadog-agent/LICENSE"
 
-    agent_source_dir = windows_safe_path("#{Omnibus::Config.source_dir}/datadog-trace-agent")
+    agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
     if windows?
       trace_agent_bin = "trace-agent.exe"
       gourl = "https://storage.googleapis.com/golang/go1.10.3.windows-amd64.zip"
@@ -76,7 +76,7 @@ build do
    # Put datadog-agent into a valid GOPATH
    mkdir agent_cache_dir  # will also create parent dirs
    delete agent_cache_dir, :force => true
-   move agent_source_dir, agent_cache_dir, :force => true, :verbose => true
+   move "#{agent_source_dir}/*", agent_cache_dir, :force => true
 
    if windows?
     mkdir windows_safe_path("#{gopath}/bin")
