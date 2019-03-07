@@ -78,7 +78,7 @@ build do
    mkdir windows_safe_path("#{gopath}/src/github.com/DataDog/")
    delete windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
    mkdir windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
-   move windows_safe_path("#{agent_source_dir}/*"), agent_cache_dir), :force => true, :verbose => true
+   move windows_safe_path("#{agent_source_dir}/*"), agent_cache_dir, :force => true, :verbose => true
 
    if windows?
     mkdir windows_safe_path("#{gopath}/bin")
