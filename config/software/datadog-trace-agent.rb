@@ -69,7 +69,7 @@ build do
    mkdir godir
 
    if windows?
-    command "7z x -o#{godir} #{goout} "
+    command "7z x -aoa -o#{godir} #{goout} "
    else
     command "tar zxfv #{goout} -C #{godir}"
    end
