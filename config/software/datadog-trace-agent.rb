@@ -31,8 +31,8 @@ build do
       gopath = "c:\\gotmp"
 
       agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-      glide_cache_dir = windows_safe_path("#{gopath}/src/github.com/Masterminds/glide")
       agent_cache_dir = windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
+
       env = {
         "GOPATH" => gopath,
         "GOROOT" => windows_safe_path("#{godir}/go"),
@@ -50,8 +50,7 @@ build do
       gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
 
       agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-      glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-      agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
+      agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent/"
 
       env = {
         "GOPATH" => gopath,
@@ -79,12 +78,12 @@ build do
    mkdir windows_safe_path("#{gopath}/src/github.com/DataDog/")
    delete windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
    mkdir windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
-   move windows_safe_path("#{agent_source_dir}/*"), windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent"), :force => true
+   move windows_safe_path("#{agent_source_dir}/*"), agent_cache_dir), :force => true, :verbose => true
 
    if windows?
-    mkdir "#{gopath}/bin"
-    command "curl -sSL https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe -o #{gopath}/bin/dep.exe"
+    mkdir windows_safe_path("#{gopath}/bin")
     dep = windows_safe_path("#{gopath}/bin/dep.exe")
+    command "curl -sSL https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe -o #{dep}"
     command "#{dep} ensure", :env => env, :cwd => agent_cache_dir
    else
     command "go get -u github.com/golang/dep/cmd/dep", :env => env, :cwd => agent_cache_dir
