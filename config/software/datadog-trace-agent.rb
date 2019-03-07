@@ -23,20 +23,17 @@ if windows?
   trace_agent_bin = "trace-agent.exe"
   gourl = "https://storage.googleapis.com/golang/go1.10.3.windows-amd64.zip"
   goout = "go.zip"
-  godir = "c:/go110"
-  godirwin = "c:\\go110"
-  gobin = "c:\\go110\\go\\bin\\go"
-  #gopath = "#{Omnibus::Config.cache_dir}\\src\\#{name}"
+  godir = windows_safe_path("c:/go110")
+  gobin = windows_safe_path("#{godir}/go/bin/go")
   gopath = "c:\\gotmp"
-  gopathslash = "c:/gotmp"
 
   agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-  glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
+  glide_cache_dir = windows_safe_path("#{gopath}/src/github.com/Masterminds/glide")
+  agent_cache_dir = windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
   env = {
     "GOPATH" => gopath,
-    "GOROOT" => "#{godirwin}\\go",
-    "PATH" => "#{gopath}\\bin;#{godirwin}\\go\\bin;#{ENV["PATH"]}",
+    "GOROOT" => windows_safe_path("#{godir}/go"),
+    "PATH" => "#{gopath}\\bin;#{godir}\\go\\bin;#{ENV["PATH"]}",
     "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
     "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
   }
@@ -52,7 +49,7 @@ else
   agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
   agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
- 
+
   env = {
     "GOPATH" => gopath,
     "GOROOT" => "#{godir}/go",
@@ -74,7 +71,7 @@ build do
    delete godir
    mkdir godir
 
-   if windows? 
+   if windows?
     command "7z x -o#{godir} #{goout} "
    else
     command "tar zxfv #{goout} -C #{godir}"
@@ -82,15 +79,16 @@ build do
    delete goout
 
    # Put datadog-agent into a valid GOPATH
-   mkdir "#{gopath}/src/github.com/DataDog/"
-   delete "#{gopath}/src/github.com/DataDog/datadog-agent"
-   mkdir "#{gopath}/src/github.com/DataDog/datadog-agent"
-   move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-agent"
+   mkdir windows_safe_path("#{gopath}/src/github.com/DataDog/")
+   delete windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
+   mkdir windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
+   move windows_safe_path("#{agent_source_dir}/*"), windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent"), :force => true
 
    if windows?
     mkdir "#{gopath}/bin"
     command "curl -sSL https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe -o #{gopath}/bin/dep.exe"
-    command "#{gopath}/bin/dep.exe ensure", :env => env, :cwd => agent_cache_dir
+    dep = windows_safe_path("#{gopath}/bin/dep.exe")
+    command "#{dep} ensure", :env => env, :cwd => agent_cache_dir
    else
     command "go get -u github.com/golang/dep/cmd/dep", :env => env, :cwd => agent_cache_dir
     command "dep ensure", :env => env, :cwd => agent_cache_dir
@@ -108,7 +106,6 @@ build do
      command "mv $GOPATH/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    elsif windows?
      command "mv #{gopath}/bin/#{trace_agent_bin} #{Omnibus::Config.source_dir()}/datadog-agent/dd-agent/dist/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
-     delete gopathslash
    else
      command "mv #{gopath}/bin/#{trace_agent_bin} #{install_dir}/bin/#{trace_agent_bin}", :env => env, :cwd => agent_cache_dir
    end
