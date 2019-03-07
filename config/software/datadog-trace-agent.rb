@@ -19,51 +19,48 @@ end
 dd_agent_version = ENV['AGENT_VERSION']
 
 
-if windows?
-  trace_agent_bin = "trace-agent.exe"
-  gourl = "https://storage.googleapis.com/golang/go1.10.3.windows-amd64.zip"
-  goout = "go.zip"
-  godir = windows_safe_path("c:/go110")
-  gobin = windows_safe_path("#{godir}/go/bin/go")
-  gopath = "c:\\gotmp"
-
-  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-  glide_cache_dir = windows_safe_path("#{gopath}/src/github.com/Masterminds/glide")
-  agent_cache_dir = windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
-  env = {
-    "GOPATH" => gopath,
-    "GOROOT" => windows_safe_path("#{godir}/go"),
-    "PATH" => "#{gopath}\\bin;#{godir}\\go\\bin;#{ENV["PATH"]}",
-    "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
-    "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
-  }
-
-else
-  trace_agent_bin = "trace-agent"
-  gourl = "https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz"
-  goout = "go.tar.gz"
-  godir = "/usr/local/go110"
-  gobin = "#{godir}/go/bin/go"
-  gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
-
-  agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
-  glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
-  agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
-
-  env = {
-    "GOPATH" => gopath,
-    "GOROOT" => "#{godir}/go",
-    "PATH" => "#{gopath}/bin:#{godir}/go/bin:#{ENV["PATH"]}",
-    "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
-    "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
-  }
-
-end
-
-
-
 build do
    ship_license "https://raw.githubusercontent.com/DataDog/datadog-agent/LICENSE"
+
+    if windows?
+      trace_agent_bin = "trace-agent.exe"
+      gourl = "https://storage.googleapis.com/golang/go1.10.3.windows-amd64.zip"
+      goout = "go.zip"
+      godir = windows_safe_path("c:/go110")
+      gobin = windows_safe_path("#{godir}/go/bin/go")
+      gopath = "c:\\gotmp"
+
+      agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
+      glide_cache_dir = windows_safe_path("#{gopath}/src/github.com/Masterminds/glide")
+      agent_cache_dir = windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
+      env = {
+        "GOPATH" => gopath,
+        "GOROOT" => windows_safe_path("#{godir}/go"),
+        "PATH" => "#{gopath}\\bin;#{godir}\\go\\bin;#{ENV["PATH"]}",
+        "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
+        "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
+      }
+
+    else
+      trace_agent_bin = "trace-agent"
+      gourl = "https://storage.googleapis.com/golang/go1.10.3.linux-amd64.tar.gz"
+      goout = "go.tar.gz"
+      godir = "/usr/local/go110"
+      gobin = "#{godir}/go/bin/go"
+      gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
+
+      agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
+      glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
+      agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
+
+      env = {
+        "GOPATH" => gopath,
+        "GOROOT" => "#{godir}/go",
+        "PATH" => "#{gopath}/bin:#{godir}/go/bin:#{ENV["PATH"]}",
+        "TRACE_AGENT_VERSION" => dd_agent_version, # used by 'make' in the trace-agent
+        "TRACE_AGENT_ADD_BUILD_VARS" => trace_agent_add_build_vars.to_s(),
+      }
+    end
 
    # download go
    command "curl #{gourl} -o #{goout}"
