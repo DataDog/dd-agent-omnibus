@@ -75,7 +75,7 @@ build do
 
    # Put datadog-agent into a valid GOPATH
    mkdir agent_cache_dir  # will also create parent dirs
-   delete windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
+   delete agent_cache_dir, :force => true
    move agent_source_dir, agent_cache_dir, :force => true, :verbose => true
 
    if windows?
