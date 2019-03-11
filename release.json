@@ -1,14 +1,14 @@
 {
 	"nightly": {
 		"AGENT_VERSION": "5.33.0",
-		"AGENT_BRANCH": "master",
+		"AGENT_BRANCH": "ofek-patch-2",
 		"AGENT6_BRANCH": "master",
 		"INTEGRATIONS_CORE_BRANCH": "master",
 		"TRACE_AGENT_BRANCH": "master",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "master",
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
-		"OMNIBUS_SOFTWARE_BRANCH": "master"
+		"OMNIBUS_SOFTWARE_BRANCH": "ofek/ud"
 	},
 	"5.32.0": {
 		"AGENT_VERSION": "5.32.0",
