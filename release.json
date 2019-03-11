@@ -7,8 +7,8 @@
 		"TRACE_AGENT_BRANCH": "master",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "master",
-		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
-		"OMNIBUS_SOFTWARE_BRANCH": "master"
+		"OMNIBUS_RUBY_BRANCH": "olivielpeau/local-license-file",
+		"OMNIBUS_SOFTWARE_BRANCH": "olivielpeau/local-license-xproto"
 	},
 	"5.32.0": {
 		"AGENT_VERSION": "5.32.0",
