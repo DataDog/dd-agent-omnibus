@@ -182,8 +182,6 @@ if windows?
   dependency 'datadog-upgrade-helper'
 end
 
-dependency 'datadog-trace-agent'
-
 if not osx?
   dependency 'datadog-process-agent'
 end
@@ -191,6 +189,8 @@ end
 # Datadog agent
 dependency 'datadog-agent'
 dependency 'datadog-agent-integrations'
+dependency 'datadog-trace-agent'
+
 
 # Remove pyc/pyo files from package
 # should be built after all the other python-related software defs
