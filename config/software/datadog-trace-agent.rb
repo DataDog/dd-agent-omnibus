@@ -52,7 +52,7 @@ else
   agent_source_dir = "#{Omnibus::Config.source_dir}/datadog-trace-agent"
   glide_cache_dir = "#{gopath}/src/github.com/Masterminds/glide"
   agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
- 
+
   env = {
     "GOPATH" => gopath,
     "GOROOT" => "#{godir}/go",
@@ -74,7 +74,7 @@ build do
    delete godir
    mkdir godir
 
-   if windows? 
+   if windows?
     command "7z x -o#{godir} #{goout} "
    else
     command "tar zxfv #{goout} -C #{godir}"
@@ -85,7 +85,7 @@ build do
    mkdir "#{gopath}/src/github.com/DataDog/"
    delete "#{gopath}/src/github.com/DataDog/datadog-agent"
    mkdir "#{gopath}/src/github.com/DataDog/datadog-agent"
-   move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-agent"
+   move "#{agent_source_dir}/*", "#{gopath}/src/github.com/DataDog/datadog-agent", :force => true
 
    if windows?
     mkdir "#{gopath}/bin"
