@@ -30,6 +30,7 @@ build do
       godir = windows_safe_path("c:/go110")
       gobin = windows_safe_path("#{godir}/go/bin/go")
       gopath = windows_safe_path("c:/gotmp")
+      curl_command = "powershell -Command wget -OutFile #{goout} #{gourl}"
 
       agent_cache_dir = windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
 
@@ -48,6 +49,7 @@ build do
       godir = "/usr/local/go110"
       gobin = "#{godir}/go/bin/go"
       gopath = "#{Omnibus::Config.cache_dir}/src/#{name}"
+      curl_command = "curl #{gourl} -o #{goout}"
 
       agent_cache_dir = "#{gopath}/src/github.com/DataDog/datadog-agent"
 
@@ -61,7 +63,7 @@ build do
     end
 
    # download go
-   command "curl #{gourl} -o #{goout}"
+   command curl_command
 
    delete godir
    mkdir godir
@@ -81,7 +83,7 @@ build do
    if windows?
     mkdir windows_safe_path("#{gopath}/bin")
     dep = windows_safe_path("#{gopath}/bin/dep.exe")
-    command "curl -sSL https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe -o #{dep}"
+    command "powershell -Command wget -OutFile #{dep} https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe"
     command "#{dep} ensure", :env => env, :cwd => agent_cache_dir
    else
     command "go get -u github.com/golang/dep/cmd/dep", :env => env, :cwd => agent_cache_dir
