@@ -1,14 +1,47 @@
 {
 	"nightly": {
-		"AGENT_VERSION": "5.33.0",
+		"AGENT_VERSION": "5.32.2",
 		"AGENT_BRANCH": "master",
-		"AGENT6_BRANCH": "master",
-		"INTEGRATIONS_CORE_BRANCH": "master",
-		"TRACE_AGENT_BRANCH": "master",
+		"AGENT6_BRANCH": "agent-v5",
+		"INTEGRATIONS_CORE_BRANCH": "agent-v5",
+		"TRACE_AGENT_BRANCH": "agent-v5",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
-		"PROCESS_AGENT_BRANCH": "master",
+		"PROCESS_AGENT_BRANCH": "agent-v5",
+		"OMNIBUS_RUBY_BRANCH": "agent-v5",
+		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
+	},
+	"5.32.2-rc.2": {
+		"AGENT_VERSION": "5.32.2",
+		"AGENT_BRANCH": "5.32.2-rc.2",
+		"AGENT6_BRANCH": "agent-v5",
+		"INTEGRATIONS_CORE_BRANCH": "agent-v5",
+		"TRACE_AGENT_BRANCH": "agent-v5",
+		"TRACE_AGENT_ADD_BUILD_VARS": "true",
+		"PROCESS_AGENT_BRANCH": "6.10.0",
+		"OMNIBUS_RUBY_BRANCH": "agent-v5",
+		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
+	},
+	"5.32.2-rc.1": {
+		"AGENT_VERSION": "5.32.2",
+		"AGENT_BRANCH": "5.32.2-rc.1",
+		"AGENT6_BRANCH": "6.11.0-rc.1",
+		"INTEGRATIONS_CORE_BRANCH": "6.11.0-rc.1",
+		"TRACE_AGENT_BRANCH": "6.11.0-rc.1",
+		"TRACE_AGENT_ADD_BUILD_VARS": "true",
+		"PROCESS_AGENT_BRANCH": "6.10.0",
+		"OMNIBUS_RUBY_BRANCH": "agent-v5",
+		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
+	},
+	"5.32.1": {
+		"AGENT_VERSION": "5.32.1",
+		"AGENT_BRANCH": "5.32.1",
+		"AGENT6_BRANCH": "6.10.1",
+		"INTEGRATIONS_CORE_BRANCH": "6.10.0",
+		"TRACE_AGENT_BRANCH": "6.10.1",
+		"TRACE_AGENT_ADD_BUILD_VARS": "true",
+		"PROCESS_AGENT_BRANCH": "6.10.0",
 		"OMNIBUS_RUBY_BRANCH": "datadog-5.5.0",
-		"OMNIBUS_SOFTWARE_BRANCH": "master"
+		"OMNIBUS_SOFTWARE_BRANCH": "6.10.0"
 	},
 	"5.32.0": {
 		"AGENT_VERSION": "5.32.0",
