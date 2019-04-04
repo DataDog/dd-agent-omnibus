@@ -38,6 +38,7 @@ dependency 'jmxterm'
 
 dependency 'kazoo'
 dependency 'ntplib'
+dependency 'protobuf-py'
 dependency 'psutil'
 dependency 'pyopenssl'
 dependency 'python-consul'
