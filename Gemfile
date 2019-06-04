@@ -12,3 +12,4 @@ gem 'rake', '~> 11.0'
 
 # We need an older version of mixlib-cli on our version of ruby
 gem 'mixlib-cli', '~> 1.7.0'
+gem 'public_suffix', '~>3.0.3'
