@@ -31,7 +31,7 @@ build do
       gobin = windows_safe_path("#{godir}/go/bin/go")
       gopath = windows_safe_path("c:/gotmp")
       powershell_tls_cmdlet = "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12"
-      dl_command = "powershell -Command #{powershell_tls_cmdlet}; Invoke-WebRequest -Uri #{gourl} -OutFile #{goout}"
+      dl_command = "powershell -Command #{powershell_tls_cmdlet}; $url = '#{gourl}'; $outfile = '#{goout}'; (New-Object System.Net.WebClient).DownloadFile($url, $outfile)"
 
       agent_cache_dir = windows_safe_path("#{gopath}/src/github.com/DataDog/datadog-agent")
 
