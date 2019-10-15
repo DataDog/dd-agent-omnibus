@@ -10,7 +10,7 @@
 		"OMNIBUS_RUBY_BRANCH": "agent-v5",
 		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
 	},
-	"5.32.5-rc.1": {
+	"5.32.5-rc.2": {
 		"AGENT_VERSION": "5.32.5",
 		"AGENT_BRANCH": "5.32.5-rc.1",
 		"AGENT6_BRANCH": "agent-v5",
