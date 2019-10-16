@@ -1,7 +1,7 @@
 {
 	"nightly": {
-		"AGENT_VERSION": "5.32.3",
-		"AGENT_BRANCH": "master",
+		"AGENT_VERSION": "5.32.5",
+		"AGENT_BRANCH": "olivielpeau/subprocess-pylint",
 		"AGENT6_BRANCH": "agent-v5",
 		"INTEGRATIONS_CORE_BRANCH": "agent-v5",
 		"TRACE_AGENT_BRANCH": "agent-v5",
