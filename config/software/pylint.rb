@@ -1,6 +1,6 @@
 name "pylint"
 # Ship 1.x as 2.x only supports python 3
-default_version "1.9.6"
+default_version "1.9.5"
 
 dependency "pip"
 
