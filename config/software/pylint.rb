@@ -10,5 +10,6 @@ build do
 
   # this pins a dependency of pylint, later versions (up to v3.7.1) are broken.
   pip "install configparser==3.5.0"
+  pip "install lazy-object-proxy==1.3.1"  # newer lazy-object-proxy wheels break on alpine
   pip "install pylint==#{version}"
 end
