@@ -1,8 +1,9 @@
 source 'https://rubygems.org'
 
-# toml is needed by omnibus and starting version 2 it's no longer compatible
-# with ruby 2.2.0
+# Those gem are no longer compatible with ruby 2.2.0 in there latest vestion:
+# we need to pin them
 gem 'toml-rb', '~> 1.1.2'
+gem 'license_scout', '~> 2.1.5'
 
 # we default if env variable aren't set or set to an empty string
 gem 'omnibus', git: 'git://github.com/datadog/omnibus-ruby.git', branch: (if ENV['OMNIBUS_RUBY_BRANCH'].to_s.empty? then 'datadog-5.5.0' else ENV['OMNIBUS_RUBY_BRANCH'] end)
