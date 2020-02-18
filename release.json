@@ -8,7 +8,7 @@
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "agent-v5",
 		"OMNIBUS_RUBY_BRANCH": "agent-v5",
-		"OMNIBUS_SOFTWARE_BRANCH": "maxime/agent-v5/bump-openssl"
+		"OMNIBUS_SOFTWARE_BRANCH": "maxime/openssl-v5"
 	},
 	"5.32.6": {
 		"AGENT_VERSION": "5.32.6",
