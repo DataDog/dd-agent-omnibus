@@ -8,7 +8,7 @@ gem 'httparty'
 gem 'win32-process'
 gem 'ohai'
 gem 'pedump', '~> 0.5.0'
-gem 'rake', '~> 11.0'
+gem 'rake', '~> 12.3'
 
 # We need an older version of mixlib-cli on our version of ruby
 gem 'mixlib-cli', '~> 1.7.0'
