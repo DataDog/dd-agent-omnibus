@@ -11,6 +11,17 @@
 		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
 	},
 	"5.32.6": {
+		"AGENT_VERSION": "5.32.7",
+		"AGENT_BRANCH": "5.32.7-rc.1",
+		"AGENT6_BRANCH": "agent-v5",
+		"INTEGRATIONS_CORE_BRANCH": "agent-v5",
+		"TRACE_AGENT_BRANCH": "agent-v5",
+		"TRACE_AGENT_ADD_BUILD_VARS": "true",
+		"PROCESS_AGENT_BRANCH": "agent-v5",
+		"OMNIBUS_RUBY_BRANCH": "agent-v5",
+		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
+	},
+	"5.32.6": {
 		"AGENT_VERSION": "5.32.6",
 		"AGENT_BRANCH": "5.32.6",
 		"AGENT6_BRANCH": "agent-v5",
