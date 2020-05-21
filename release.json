@@ -3,7 +3,7 @@
 		"AGENT_VERSION": "5.32.7",
 		"AGENT_BRANCH": "master",
 		"AGENT6_BRANCH": "agent-v5",
-		"INTEGRATIONS_CORE_BRANCH": "jaime/ntplibfix",
+		"INTEGRATIONS_CORE_BRANCH": "agent-v5",
 		"TRACE_AGENT_BRANCH": "agent-v5",
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "agent-v5",
