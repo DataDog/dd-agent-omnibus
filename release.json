@@ -1,7 +1,7 @@
 {
 	"nightly": {
 		"AGENT_VERSION": "5.32.7",
-		"AGENT_BRANCH": "jaime/py2exe_lite",
+		"AGENT_BRANCH": "jaime/py2exe",
 		"AGENT6_BRANCH": "agent-v5",
 		"INTEGRATIONS_CORE_BRANCH": "agent-v5",
 		"TRACE_AGENT_BRANCH": "agent-v5",
