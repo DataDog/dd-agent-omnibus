@@ -34,7 +34,6 @@ dependency 'cacerts'
 dependency 'docker-py'
 
 dependency 'jmxfetch'
-dependency 'jmxterm'
 
 dependency 'kazoo'
 dependency 'ntplib'
