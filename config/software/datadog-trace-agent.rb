@@ -17,6 +17,8 @@ if ENV.has_key?('TRACE_AGENT_ADD_BUILD_VARS') && ENV['TRACE_AGENT_ADD_BUILD_VARS
 end
 
 dd_agent_version = ENV['AGENT_VERSION']
+openshift_branch = "release-3.9"
+openshift_api_uri = "https://github.com/openshift/api"
 
 
 build do
@@ -86,6 +88,14 @@ build do
     dep = windows_safe_path("#{gopath}/bin/dep.exe")
     dep_uri = "https://github.com/golang/dep/releases/download/v0.5.0/dep-windows-amd64.exe"
     command "powershell -Command #{powershell_tls_cmdlet}; Invoke-WebRequest -Uri #{dep_uri} -OutFile #{dep}"
+
+    # we need this workaround to pre-clone github.com/openshift/api. Otherwise dep fails on
+    # error: `error: unable to create file <file>: Invalid argument`, because files on master
+    # have invalid windows names (they contain `:` symbols, for instance)
+    #
+    # The pre-clone helps us by dep skipping its usual clone and checkout process for the repo.
+    command "git clone --recursive -v -b #{openshift_branch} --progress #{openshift_api_uri} #{gopath}/pkg/dep/sources/https---github.com-openshift-api", :env => env, :cwd => agent_cache_dir
+
     command "#{dep} ensure", :env => env, :cwd => agent_cache_dir
    else
     command "go get -u github.com/golang/dep/cmd/dep", :env => env, :cwd => agent_cache_dir
