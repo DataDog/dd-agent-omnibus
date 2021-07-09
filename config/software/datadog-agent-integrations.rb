@@ -21,6 +21,7 @@ relative_path 'integrations-core'
 
 PIPTOOLS_VERSION = "2.0.2"
 WHEELS_VERSION = "0.30.0"
+PYTEST_RUNNER_VERSION = "5.2"
 # dependencies for pip-tools. If any of these is an agent requirement
 # they will not be uninstalled (ie. six). But keeping the list exhaustive.
 UNINSTALL_PIPTOOLS_DEPS = ['six', 'click', 'first', 'pip-tools']
@@ -83,6 +84,7 @@ build do
     # FIX THIS these dependencies have to be grabbed from somewhere
     all_reqs_file.puts "wheel==#{WHEELS_VERSION} --hash=sha256:e721e53864f084f956f40f96124a74da0631ac13fbbd1ba99e8e2b5e9cafdf64"\
         " --hash=sha256:9515fe0a94e823fd90b08d22de45d7bde57c90edce705b22f5e1ecf7e1b653c8"
+    all_reqs_file.puts "pytest-runner==#{PYTEST_RUNNER_VERSION} --hash=sha256:5534b08b133ef9a5e2c22c7886a8f8508c95bb0b0bdc6cc13214f269c3c70d51"
     all_reqs_file.close
 
     # Set frozen requirements (save to var, and to file)
