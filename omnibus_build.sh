@@ -58,9 +58,12 @@ if [ -n "$LOCAL_AGENT_REPO" ]; then
   JMX_VERSION=$(git show $AGENT_BRANCH:config.py | grep 'JMX_VERSION' | cut -f2 -d'=' | tr -d ' "')
   cd -
 else
+  echo "Querying: $REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py"
+  curl -v "$REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py" 2>/dev/null | grep 'JMX_VERSION'
   JMX_VERSION=$(curl -v $REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py 2>/dev/null | grep 'JMX_VERSION' | cut -f2 -d'=' | tr -d ' "')
 fi
-export JMX_VERSION
+echo "FOUND JMX_VERSION: $JMX_VERSION"
+export JMX_VERSION=$JMX_VERSION
 
 # update ruby omnibus package
 bundle update # Make sure to update to the latest version of omnibus-software
