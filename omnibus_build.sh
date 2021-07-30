@@ -59,7 +59,7 @@ if [ -n "$LOCAL_AGENT_REPO" ]; then
   cd -
 else
   echo "Querying: $REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py"
-  curl -v $REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py 2>/dev/null | grep 'JMX_VERSION'
+  curl -v "$REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py" 2>/dev/null | grep 'JMX_VERSION'
   JMX_VERSION=$(curl -v $REMOTE_AGENT_REPO_RAW/$AGENT_BRANCH/config.py 2>/dev/null | grep 'JMX_VERSION' | cut -f2 -d'=' | tr -d ' "')
 fi
 echo "FOUND JMX_VERSION: $JMX_VERSION"
