@@ -8,7 +8,7 @@
 		"TRACE_AGENT_ADD_BUILD_VARS": "true",
 		"PROCESS_AGENT_BRANCH": "agent-v5",
 		"OMNIBUS_RUBY_BRANCH": "agent-v5",
-		"OMNIBUS_SOFTWARE_BRANCH": "jaime/agent-v5"
+		"OMNIBUS_SOFTWARE_BRANCH": "agent-v5"
 	},
 	"5.32.9": {
 		"AGENT_VERSION": "5.32.9",
