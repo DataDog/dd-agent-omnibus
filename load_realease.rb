@@ -25,7 +25,6 @@ release = versions[ENV["RELEASE_VERSION"]]
 	"TRACE_AGENT_ADD_BUILD_VARS",
 	"PROCESS_AGENT_BRANCH",
 	"OMNIBUS_RUBY_BRANCH",
-	"OMNIBUS_SOFTWARE_BRANCH",
 ].each do |var|
 	if !release.key?(var)
 		abort("Error: missing '#{var}' variable in the '#{ENV["RELEASE_VERSION"]}' release. Add it to the release.json file.")

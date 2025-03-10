@@ -1,0 +1,20 @@
+diff --git a/pcap/pcap_unix.go b/pcap/pcap_unix.go
+index 11fdab0..3139d21 100644
+--- a/pcap/pcap_unix.go
++++ b/pcap/pcap_unix.go
+@@ -24,12 +24,13 @@ import (
+ 
+ /*
+ #cgo solaris LDFLAGS: -L /opt/local/lib -lpcap
+-#cgo linux LDFLAGS: -lpcap
++#cgo linux CFLAGS: -I/opt/datadog-agent/embedded/include
++#cgo linux LDFLAGS: /opt/datadog-agent/embedded/lib/libpcap.a
+ #cgo dragonfly LDFLAGS: -lpcap
+ #cgo freebsd LDFLAGS: -lpcap
+ #cgo openbsd LDFLAGS: -lpcap
+ #cgo netbsd LDFLAGS: -lpcap
+-#cgo darwin LDFLAGS: -lpcap
++#cgo darwin LDFLAGS: /usr/local/Cellar/libpcap/1.7.4/lib/libpcap.a
+ #include <stdlib.h>
+ #include <pcap.h>
+ #include <stdint.h>
